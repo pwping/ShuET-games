@@ -1,0 +1,28 @@
+{
+  "name": "shuET-mini-program",
+  "leadAgentId": "3d259b6174fe4472afafc015273cd2d6",
+  "workspacePath": "d:/Vibe_CODE/ShuET-games",
+  "createdAt": "2026-04-29T08:12:27.369Z",
+  "options": {
+    "workspacePath": "d:/Vibe_CODE/ShuET-games",
+    "isAutoTeam": false
+  },
+  "members": [
+    {
+      "memberId": "team-lead@shuET-mini-program",
+      "name": "team-lead",
+      "role": "Team Lead - coordinates the team and interacts with the user"
+    },
+    {
+      "memberId": "frontend-dev@shuET-mini-program",
+      "name": "frontend-dev",
+      "role": "开发小程序前端"
+    },
+    {
+      "memberId": "backend-dev@shuET-mini-program",
+      "name": "backend-dev",
+      "role": "开发云函数后端"
+    }
+  ],
+  "isAutoTeam": false
+}

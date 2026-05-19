@@ -1,0 +1,132 @@
+<view class="container">
+  <!-- ===== 游戏内容 ===== -->
+  <view class="game-content {{showResult ? 'game-hidden' : ''}}">
+    <!-- 提示框：下一个 + 计时器 -->
+    <view class="hint-box">
+      <view class="hint-section">
+        <text class="hint-label">下一个</text>
+        <text class="hint-value">{{hintNumber}}</text>
+      </view>
+      <view class="hint-divider"></view>
+      <view class="timer-section">
+        <text class="timer-value">{{formattedTime}}</text>
+      </view>
+    </view>
+
+    <!-- 棋盘 -->
+    <view class="game-board-container">
+      <view class="game-board {{showStartOverlay ? 'board-disabled' : ''}}" style="grid-template-columns: repeat(5, 1fr);">
+        <view class="game-cell {{item.flash === 'correct' ? 'flash-correct' : ''}} {{item.flash === 'wrong' ? 'flash-wrong' : ''}}"
+              wx:for="{{board}}" wx:key="index"
+              style="font-size:{{cellFontSize}}"
+              data-index="{{index}}" bindtap="onCellTap">
+          <text>{{item.value}}</text>
+        </view>
+      </view>
+      <view class="start-btn" wx:if="{{showStartOverlay}}" bindtap="onStartGame">
+        <text>开始</text>
+      </view>
+    </view>
+
+    <!-- 底部：进度条 + 刷新 -->
+    <view class="bottom-card">
+      <view class="progress-bar-container">
+        <view class="progress-bar-wrapper">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{(currentTarget - 1) / total * 100}}%"></view>
+          </view>
+          <view class="refresh-btn" bindtap="onRestart">
+            <view class="refresh-icon">↻</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 倒计时遮罩 -->
+    <view class="overlay countdown-overlay" wx:if="{{showCountdownOverlay}}">
+      <view class="countdown-stage">第 {{passLevelNumber}} 关 · 限时 {{countdownLimit}}s</view>
+      <view class="countdown-number">{{countdown}}</view>
+    </view>
+  </view>
+
+  <!-- ===== 结果页面（完整页面覆盖） ===== -->
+  <view class="result-page {{showResult ? 'result-show' : ''}}">
+    <view class="result-page-inner {{passResultSuccess ? 'result-success' : 'result-fail'}}">
+      <!-- 装饰背景圆 -->
+      <view class="result-deco {{passResultSuccess ? 'deco-success' : 'deco-fail'}}"></view>
+      <view class="result-deco result-deco-small {{passResultSuccess ? 'deco-success' : 'deco-fail'}}"></view>
+
+      <!-- 主内容 -->
+      <view class="result-main {{resultAnimIn ? 'anim-in' : ''}}">
+        <!-- 图标 -->
+        <view class="result-icon-section">
+          <view class="result-icon-wrap {{passResultSuccess ? 'icon-success' : 'icon-fail'}}">
+            <text class="result-icon-emoji">{{passResultSuccess ? '🏆' : '🥺'}}</text>
+            <view class="result-icon-ring {{passResultSuccess ? 'ring-success' : 'ring-fail'}}"></view>
+          </view>
+          <view class="result-rating-badge {{passResultSuccess ? 'rating-success' : 'rating-fail'}}">{{passResultSuccess ? 'S' : 'F'}}</view>
+        </view>
+
+        <!-- 标题 -->
+        <text class="result-title {{passResultSuccess ? '' : 'title-fail'}}">{{passResultSuccess ? '挑战成功' : '挑战失败'}}</text>
+        <text class="result-subtitle">{{passResultSuccess ? (isLastLevel ? '🏆 恭喜通关全部关卡！' : resultSuccessText) : resultFailText}}</text>
+
+        <!-- 关卡信息 -->
+        <view class="result-pass-info">
+          <text class="result-pass-label">第 {{passLevelNumber}} 关</text>
+          <view class="result-pass-steps">
+            <view class="result-pass-dot {{passResultSuccess ? 'dot-active' : 'dot-fail'}}"></view>
+            <view class="result-pass-line {{passResultSuccess ? 'line-active' : 'line-fail'}}"></view>
+            <view class="result-pass-dot"></view>
+            <view class="result-pass-line"></view>
+            <view class="result-pass-dot"></view>
+          </view>
+        </view>
+
+        <!-- 统计卡片 -->
+        <view class="result-stats-row">
+          <view class="result-stat-card">
+            <view class="result-stat-icon-wrap">
+              <text class="result-stat-icon">⏱</text>
+            </view>
+            <text class="result-stat-value {{passResultSuccess ? '' : 'value-fail'}}">{{resultFormattedTime}}</text>
+            <text class="result-stat-label">用时</text>
+          </view>
+          <view class="result-stat-card">
+            <view class="result-stat-icon-wrap">
+              <view class="result-stat-grid-icon">
+                <view class="result-grid-cell" wx:for="{{9}}" wx:key="*this"></view>
+              </view>
+            </view>
+            <view class="result-accuracy-wrap">
+              <text class="result-accuracy-value {{passResultSuccess ? '' : 'value-fail'}}">{{resultAccuracy}}</text>
+              <text class="result-accuracy-unit">%</text>
+            </view>
+            <text class="result-stat-label">正确率</text>
+          </view>
+        </view>
+
+        <!-- 失败按钮 -->
+        <view class="result-btn-row" wx:if="{{!passResultSuccess}}">
+          <view class="res-btn res-btn-primary-fail res-btn-inline" bindtap="onResultRetry" hover-class="res-btn-hover">
+            <text>再来一次</text>
+          </view>
+        </view>
+
+        <!-- 成功按钮行 -->
+        <view class="result-btn-row" wx:if="{{passResultSuccess}}">
+          <view wx:if="{{!isLastLevel}}" class="res-btn res-btn-primary res-btn-inline" bindtap="onResultNextLevel" hover-class="res-btn-hover">
+            <text>继续下一关</text>
+          </view>
+          <view wx:elif="{{isLastLevel}}" class="res-btn res-btn-primary res-btn-inline" bindtap="onResultGoHome" hover-class="res-btn-hover">
+            <text>返回首页</text>
+          </view>
+          <button class="res-btn res-btn-share res-btn-inline" open-type="share" hover-class="share-hover2">
+            <view class="share-icon-wrap-wechat"></view>
+            <text class="share-text">分享</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

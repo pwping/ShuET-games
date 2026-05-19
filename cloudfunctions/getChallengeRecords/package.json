@@ -1,0 +1,9 @@
+{
+  "name": "getChallengeRecords",
+  "version": "1.0.0",
+  "description": "从云端数据库获取挑战记录",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

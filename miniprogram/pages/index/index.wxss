@@ -1,0 +1,318 @@
+.page-container {
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  padding: 64rpx 32rpx 0;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: -80rpx;
+  left: -100rpx;
+  right: -100rpx;
+  height: 480rpx;
+  background: linear-gradient(180deg,#F0FDF4 0%,#F8FAFC 100%);
+  border-radius: 0 0 60rpx 60rpx;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #07C160;
+  background: rgba(7,193,96,0.08);
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  margin-bottom: 20rpx;
+  letter-spacing: 1rpx;
+  border: 2rpx solid rgba(7,193,96,0.12);
+}
+
+.badge-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #07C160;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title-line {
+  margin-bottom: 12rpx;
+}
+
+.hero-title {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: #07C160;
+  letter-spacing: -2rpx;
+  line-height: 1.1;
+}
+
+.hero-desc {
+  font-size: 26rpx;
+  color: #64748B;
+  line-height: 1.5;
+  margin-bottom: 28rpx;
+}
+
+/* ===== Hero Stats ===== */
+.hero-stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx 16rpx;
+  margin: 0 32rpx 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.stat-num {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #07C160;
+  letter-spacing: -1rpx;
+}
+
+.stat-label {
+  font-size: 20rpx;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 36rpx;
+  background: #E2E8F0;
+}
+
+/* ===== 模式区域 ===== */
+.mode-section {
+  padding: 48rpx 32rpx 100rpx;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding: 0 4rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #1E293B;
+  letter-spacing: -1rpx;
+}
+
+.section-sub {
+  font-size: 22rpx;
+  color: #94A3B8;
+}
+
+/* ===== 模式网格 ===== */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+}
+
+.mode-card {
+  border-radius: 28rpx;
+  padding: 32rpx 20rpx;
+  min-height: 212rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  border: 2rpx solid rgba(0,0,0,0.04);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mode-card:active {
+  transform: scale(0.96) translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.mode-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ===== 图标圆形带光晕 ===== */
+.mode-icon-wrap {
+  position: relative;
+  margin-bottom: 20rpx;
+}
+
+.mode-icon-wrap::before {
+  content: '';
+  position: absolute;
+  top: -4rpx;
+  left: -4rpx;
+  right: -4rpx;
+  bottom: -4rpx;
+  background: inherit;
+  border-radius: 50%;
+  opacity: 0.18;
+  filter: blur(12rpx);
+  z-index: 0;
+}
+
+.mode-icon {
+  position: relative;
+  z-index: 1;
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 -2rpx 4rpx rgba(0,0,0,0.08);
+}
+
+.grid-icon {
+  display: grid;
+  grid-template-columns: repeat(3, 16rpx);
+  gap: 4rpx;
+}
+
+.grid-cell {
+  width: 16rpx;
+  height: 16rpx;
+  background: #fff;
+  border-radius: 3rpx;
+}
+
+.icon-text {
+  font-size: 40rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ===== 倒序模式向下箭头 ===== */
+.down-arrow {
+  position: relative;
+  width: 6rpx;
+  height: 30rpx;
+  background: #fff;
+  border-radius: 3rpx;
+}
+
+.down-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -4rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12rpx solid transparent;
+  border-right: 12rpx solid transparent;
+  border-top: 14rpx solid #fff;
+}
+
+/* ===== 奇偶模式十字四宫格 ===== */
+.cross-grid {
+  width: 52rpx;
+  height: 52rpx;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cross-grid::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3rpx;
+  background: rgba(255,255,255,0.7);
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.cross-grid::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3rpx;
+  background: rgba(255,255,255,0.7);
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.cg-num {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  font-weight: 800;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1rpx 2rpx rgba(0,0,0,0.10);
+}
+
+.cg-tl { border-radius: 6rpx 0 0 0; }
+.cg-tr { border-radius: 0 6rpx 0 0; }
+.cg-bl { border-radius: 0 0 0 6rpx; }
+.cg-br { border-radius: 0 0 6rpx 0; }
+
+/* 奇数(1,3) / 偶数(2,4) 颜色区分 */
+.cg-odd { color: #fff; }
+.cg-even { color: #7DD3FC; }
+
+.mode-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 6rpx;
+}
+
+.mode-desc {
+  font-size: 22rpx;
+  color: #64748B;
+  line-height: 1.3;
+}
+
+
+

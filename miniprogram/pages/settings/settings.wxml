@@ -1,0 +1,51 @@
+<view class="page-container">
+  <view class="settings-section">
+    <view class="setting-item">
+      <view class="setting-info">
+        <view class="setting-title">音效</view>
+        <view class="setting-desc">点击时的提示音</view>
+      </view>
+      <switch checked="{{settings.sound}}" bindchange="toggleSound" color="#4CAF50"/>
+    </view>
+
+    <view class="setting-item">
+      <view class="setting-info">
+        <view class="setting-title">震动反馈</view>
+        <view class="setting-desc">点击时的震动反馈</view>
+      </view>
+      <switch checked="{{settings.vibration}}" bindchange="toggleVibration" color="#4CAF50"/>
+    </view>
+  </view>
+
+  <view class="settings-section">
+    <view class="setting-item setting-item-tap" bindtap="onTapAgeGroup">
+      <view class="setting-left">
+        <view class="setting-info-noicon">
+          <text class="setting-title-inline">年龄段</text>
+          <view class="age-tag-wrap">
+            <text class="setting-age-tag">{{ageGroupText}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="setting-arrow">›</view>
+    </view>
+    <view class="setting-divider"></view>
+    <view class="setting-item" bindtap="clearCache">
+      <view class="setting-info">
+        <view class="setting-title">清除本地缓存</view>
+        <view class="setting-desc">清除本地训练记录和设置</view>
+      </view>
+      <view class="setting-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="logout-section" wx:if="{{isLoggedIn}}" bindtap="doLogout">
+    <text class="logout-text">退出登录</text>
+  </view>
+
+  <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
+
+  <view class="version-info">
+    <text>舒尔特专注力训练 v1.0.0</text>
+  </view>
+</view>

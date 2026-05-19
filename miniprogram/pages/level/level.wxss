@@ -1,0 +1,153 @@
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg,#F0FDF4 0%,#FFFFFF 100%);
+}
+
+/* ===== 模式标题 Badge ===== */
+.mode-title-wrap {
+  padding: 72rpx 32rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.mode-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #07C160;
+  background: rgba(7,193,96,0.08);
+  padding: 12rpx 48rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid rgba(7,193,96,0.12);
+}
+
+/* 若隐若现的小圆点 */
+.badge-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #07C160;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+/* ===== 难度卡片网格 ===== */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 0 32rpx 40rpx;
+}
+
+.level-grid.single-col {
+  grid-template-columns: 1fr;
+}
+
+.level-grid.single-col .level-card {
+  min-height: auto;
+}
+
+.level-card {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 32rpx 24rpx;
+  min-height: 240rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2rpx solid rgba(0,0,0,0.04);
+  box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+}
+
+.level-card:active {
+  transform: scale(0.96) translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+
+.card-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* ===== 彩色方块 ===== */
+.card-block {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+  box-shadow: inset 0 -2rpx 4rpx rgba(0,0,0,0.08);
+}
+
+.card-hint {
+  position: absolute;
+  bottom: 16rpx;
+  left: 24rpx;
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #07C160;
+  background: rgba(7,193,96,0.10);
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.card-size {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.5rpx;
+}
+
+/* ===== 右侧信息 ===== */
+.card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 4rpx;
+  display: block;
+}
+
+.card-desc {
+  font-size: 22rpx;
+  color: #94A3B8;
+  white-space: pre-line;
+  line-height: 1.5;
+  margin-top: 6rpx;
+  display: block;
+}
+
+/* ===== 底部安全区 ===== */
+.bottom-safe {
+  height: 40rpx;
+}
+
+/* ===== 入场动画 ===== */
+.page-container.slide-in {
+  animation: slideInFromRight 0.3s ease-out backwards;
+}
+
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(80rpx); }
+  to { opacity: 1; transform: translateX(0); }
+}

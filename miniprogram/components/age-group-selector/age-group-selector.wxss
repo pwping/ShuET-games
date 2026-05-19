@@ -1,0 +1,100 @@
+/* 遮罩层 */
+.age-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.age-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 底部弹窗 */
+.age-sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 201;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  padding-bottom: 170rpx;
+}
+.age-sheet.sheet-active {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.sheet-handle-area {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0 8rpx;
+  flex-shrink: 0;
+}
+.sheet-handle {
+  width: 48rpx;
+  height: 5rpx;
+  background: #D4D4D8;
+  border-radius: 3rpx;
+}
+
+.age-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 32rpx 20rpx;
+  flex-shrink: 0;
+}
+.age-title-text {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E293B;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.age-list { flex-shrink: 0; }
+.age-list-scroll { max-height: 480rpx; }
+
+.age-list-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 0 32rpx 24rpx;
+  gap: 8rpx;
+}
+
+.age-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 0;
+  border-radius: 16rpx;
+  background: #F8FAFC;
+  border: 2rpx solid transparent;
+  transition: all 0.2s ease;
+}
+
+.age-item-selected {
+  background: rgba(7,193,96,0.06);
+  border-color: #07C160;
+}
+
+.age-item-text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #334155;
+}
+
+.age-item-selected .age-item-text {
+  color: #07C160;
+}

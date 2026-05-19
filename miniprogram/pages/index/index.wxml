@@ -1,0 +1,71 @@
+<view class="page-container">
+  <!-- ===== Hero ===== -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="hero-badge">
+        <view class="badge-dot"></view>
+        专注力训练
+      </view>
+      <view class="hero-title-line">
+        <text class="hero-title">舒尔特方格</text>
+      </view>
+      <view class="hero-desc">选择模式，开始你的专注力挑战</view>
+    </view>
+    <view class="hero-stats">
+      <view class="stat-item">
+        <text class="stat-num">8</text>
+        <text class="stat-label">训练模式</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">∞</text>
+        <text class="stat-label">无限挑战</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-num">5×5</text>
+        <text class="stat-label">经典方格</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 模式卡片 ===== -->
+  <view class="mode-section">
+    <view class="section-header">
+      <text class="section-title">选择玩法</text>
+      <text class="section-sub">由简入繁，循序渐进</text>
+    </view>
+    <view class="mode-grid">
+      <view class="mode-card" wx:for="{{modes}}" wx:key="key" bindtap="onModeTap" data-mode="{{item.key}}"
+           style="background: {{item.bg}};">
+        <view class="mode-card-inner">
+          <view class="mode-icon-wrap">
+          <view class="mode-icon" style="background: {{item.iconBg}};">
+            <view wx:if="{{item.key === 'classic'}}" class="grid-icon">
+              <view class="grid-cell" wx:for="{{9}}" wx:key="*this"></view>
+            </view>
+            <view wx:elif="{{item.key === 'parity'}}" class="cross-grid">
+              <text class="cg-num cg-tl cg-odd">1</text>
+              <text class="cg-num cg-tr cg-even">2</text>
+              <view class="cg-line cg-hline"></view>
+              <view class="cg-line cg-vline"></view>
+              <text class="cg-num cg-bl cg-even">4</text>
+              <text class="cg-num cg-br cg-odd">3</text>
+            </view>
+            <view wx:elif="{{item.key === 'reverse'}}" class="down-arrow"></view>
+            <text wx:else class="icon-text">{{item.icon}}</text>
+          </view>
+          </view>
+          <view class="mode-name">{{item.name}}</view>
+          <view class="mode-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <custom-tabbar active="index"></custom-tabbar>
+
+  <!-- 年龄段选择弹窗（共用组件） -->
+  <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
+</view>

@@ -1,0 +1,116 @@
+<view class="page-container">
+  <view class="filter-wrapper">
+    <view class="filter-all {{currentFilter === 'all' ? 'active' : ''}}" bindtap="setFilter" data-filter="all">全部</view>
+    <scroll-view class="filter-scroll" scroll-x show-scrollbar="{{false}}" scroll-into-view="{{scrollIntoView}}">
+      <view class="filter-scroll-inner">
+        <view id="filter-classic" class="filter-item {{currentFilter === 'classic' ? 'active' : ''}}" bindtap="setFilter" data-filter="classic">经典</view>
+        <view id="filter-interference" class="filter-item {{currentFilter === 'interference' ? 'active' : ''}}" bindtap="setFilter" data-filter="interference">干扰</view>
+        <view id="filter-shuffle" class="filter-item {{currentFilter === 'shuffle' ? 'active' : ''}}" bindtap="setFilter" data-filter="shuffle">换位</view>
+        <view id="filter-reverse" class="filter-item {{currentFilter === 'reverse' ? 'active' : ''}}" bindtap="setFilter" data-filter="reverse">倒序</view>
+        <view id="filter-parity" class="filter-item {{currentFilter === 'parity' ? 'active' : ''}}" bindtap="setFilter" data-filter="parity">奇偶</view>
+        <view id="filter-challenge" class="filter-item {{currentFilter === 'challenge' ? 'active' : ''}}" bindtap="setFilter" data-filter="challenge">限时</view>
+        <view id="filter-memory" class="filter-item {{currentFilter === 'memory' ? 'active' : ''}}" bindtap="setFilter" data-filter="memory">记忆</view>
+        <view id="filter-alphabet" class="filter-item {{currentFilter === 'alphabet' ? 'active' : ''}}" bindtap="setFilter" data-filter="alphabet">字母</view>
+        <view id="filter-challenge_record" class="filter-item {{currentFilter === 'challenge_record' ? 'active' : ''}}" bindtap="setFilter" data-filter="challenge_record">挑战</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 难度筛选（可滑入滑出） -->
+  <view class="size-filter-wrapper {{sizeFilterHidden ? 'size-filter-hide' : ''}}">
+    <view class="size-filter-grid">
+      <view class="size-grid-item {{currentSizeFilter === 3 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="3">
+        <text class="sgi-label">3×3</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 4 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="4">
+        <text class="sgi-label">4×4</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 5 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="5">
+        <text class="sgi-label">5×5</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 6 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="6">
+        <text class="sgi-label">6×6</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 7 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="7">
+        <text class="sgi-label">7×7</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 8 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="8">
+        <text class="sgi-label">8×8</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 9 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="9">
+        <text class="sgi-label">9×9</text>
+      </view>
+      <view class="size-grid-item {{currentSizeFilter === 10 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="10">
+        <text class="sgi-label">10×10</text>
+      </view>
+    </view>
+  </view>
+
+  <swiper class="swiper-wrap" current="{{swiperIndex}}" bindchange="onSwiperChange" duration="300">
+    <swiper-item wx:for="{{FILTER_LIST}}" wx:key="key">
+      <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}" bindscroll="onRecordScroll" bindscrolltolower="onScrollToLower">
+        <view class="record-list">
+          <view class="record-item" wx:for="{{records}}" wx:key="index">
+            <view class="record-body">
+              <!-- 左侧信息区 -->
+              <view class="record-left">
+                <text class="record-mode">{{item.modeName}}</text>
+                <view class="record-meta">
+                  <text class="level-badge">{{item.levelLabel}}</text>
+                  <text class="meta-sep">|</text>
+                  <text class="accuracy-value">{{item.accuracyLabel}}</text>
+                </view>
+                <text class="record-time">{{item.createTime}}</text>
+              </view>
+              <!-- 右侧成绩区 -->
+              <view class="record-right">
+                <view wx:if="{{item.mode === 'challenge_record' || item.mode === 'challenge'}}" class="challenge-result">
+                  <view class="status-badge {{item.status}}">
+                    <text>{{item.statusLabel}}</text>
+                  </view>
+                  <view class="time-badge challenge-time {{item.status}}">
+                    <text class="time-value">{{item.statusText}}</text>
+                  </view>
+                </view>
+                <view wx:else class="time-badge {{item.status}}">
+                  <text class="time-value">{{item.statusText}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+            <view class="empty-state" wx:if="{{records.length === 0}}">
+            <view class="empty-icon">
+              <view class="grid-icon">
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+                <view class="grid-cell"></view>
+              </view>
+            </view>
+            <view class="empty-text">{{emptyText}}</view>
+            <view class="empty-subtext go-train" bindtap="onGoTrain">{{emptySubtext}}</view>
+          </view>
+
+          <view class="load-more" wx:if="{{showFooter && !hasMore && records.length > 0}}">
+            <text>没有记录啦！快去练习吧。</text>
+          </view>
+
+          <view class="load-more-btn" wx:if="{{hasMore && records.length > 0 && !showLoading}}" bindtap="loadMore">
+            <text>点击加载更多</text>
+          </view>
+
+          <view class="loading-more" wx:if="{{showLoading}}">
+            <view class="loading-spinner"></view>
+            <text class="loading-text">加载中...</text>
+          </view>
+        </view>
+      </scroll-view>
+    </swiper-item>
+  </swiper>
+</view>

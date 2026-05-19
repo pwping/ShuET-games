@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "设置",
+  "usingComponents": {
+    "age-group-selector": "/components/age-group-selector/age-group-selector"
+  }
+}

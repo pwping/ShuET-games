@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>舒尔特专注力训练</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 页面容器 -->
+        <div id="page-container">
+            <!-- 专注力首页 -->
+            <div class="page active" id="page-home">
+                <div class="page-header">
+                    <h1>舒尔特训练</h1>
+                    <p class="subtitle">选择训练模式</p>
+                </div>
+                <div class="mode-grid">
+                    <div class="mode-card" data-mode="classic">
+                        <div class="mode-icon">🔢</div>
+                        <div class="mode-name">经典模式</div>
+                        <div class="mode-desc">数字正序依次点击</div>
+                    </div>
+                    <div class="mode-card" data-mode="interfere">
+                        <div class="mode-icon">🎨</div>
+                        <div class="mode-name">干扰模式</div>
+                        <div class="mode-desc">彩色背景抗干扰</div>
+                    </div>
+                    <div class="mode-card" data-mode="swap">
+                        <div class="mode-icon">🔄</div>
+                        <div class="mode-name">换位模式</div>
+                        <div class="mode-desc">正确后全局重排</div>
+                    </div>
+                    <div class="mode-card" data-mode="reverse">
+                        <div class="mode-icon">🔁</div>
+                        <div class="mode-name">倒序模式</div>
+                        <div class="mode-desc">从大到小倒序点击</div>
+                    </div>
+                    <div class="mode-card" data-mode="parity">
+                        <div class="mode-icon">⚡</div>
+                        <div class="mode-name">奇偶模式</div>
+                        <div class="mode-desc">先奇数后偶数</div>
+                    </div>
+                    <div class="mode-card" data-mode="challenge">
+                        <div class="mode-icon">⏱️</div>
+                        <div class="mode-name">挑战模式</div>
+                        <div class="mode-desc">每步限时2秒</div>
+                    </div>
+                    <div class="mode-card" data-mode="memory">
+                        <div class="mode-icon">🧠</div>
+                        <div class="mode-name">记忆模式</div>
+                        <div class="mode-desc">记忆后隐藏数字</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 难度选择页 -->
+            <div class="page" id="page-level">
+                <div class="page-header">
+                    <div class="back-btn" id="level-back">←</div>
+                    <h1>选择难度</h1>
+                    <p class="subtitle" id="level-mode-name">经典模式</p>
+                </div>
+                <div class="level-list" id="level-list">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 游戏训练页 -->
+            <div class="page" id="page-game">
+                <div class="game-header">
+                    <div class="back-btn" id="game-back">←</div>
+                    <div class="game-info">
+                        <div class="game-mode" id="game-mode-name">经典模式</div>
+                        <div class="game-level" id="game-level-name">基础 3×3</div>
+                    </div>
+                    <div class="game-hint" id="game-hint">下一个数: <span id="hint-number">1</span></div>
+                    <div class="game-timer" id="game-timer">00:00.000</div>
+                </div>
+                <div class="game-board-container">
+                    <div class="game-board" id="game-board">
+                        <!-- 动态生成格子 -->
+                    </div>
+                </div>
+                <div class="memory-overlay" id="memory-overlay" style="display:none;">
+                    <div class="memory-text">记忆时间...</div>
+                    <div class="memory-countdown" id="memory-countdown">3</div>
+                </div>
+                <div class="start-overlay" id="start-overlay" style="display:none;">
+                    <div class="start-stage" id="start-stage"></div>
+                    <button class="btn-start-game" id="btn-start-game">开始</button>
+                </div>
+                <div class="countdown-overlay" id="countdown-overlay" style="display:none;">
+                    <div class="countdown-stage" id="countdown-stage">第 1 关</div>
+                    <div class="countdown-number" id="countdown-number">3</div>
+                </div>
+                <div class="game-tools">
+                    <label class="tool-switch">
+                        <input type="checkbox" id="tool-hide">
+                        <span class="tool-slider"></span>
+                        <span class="tool-label">隐藏数字</span>
+                    </label>
+                    <label class="tool-switch">
+                        <input type="checkbox" id="tool-mark">
+                        <span class="tool-slider"></span>
+                        <span class="tool-label">标记数字</span>
+                    </label>
+                    <label class="tool-switch">
+                        <input type="checkbox" id="tool-hint" checked>
+                        <span class="tool-slider"></span>
+                        <span class="tool-label">提示</span>
+                    </label>
+                </div>
+                <div class="game-controls">
+                    <button class="btn-restart" id="btn-restart">重新开始</button>
+                </div>
+            </div>
+
+            <!-- 闯关页 -->
+            <div class="page" id="page-pass">
+                <div class="page-header">
+                    <h1>闯关模式</h1>
+                    <p class="subtitle">经典模式闯关挑战</p>
+                </div>
+                <div class="pass-intro" id="pass-intro">
+                    <div class="pass-rules">
+                        <div class="rule-item">📋 从 5×5 开始，每阶完成 10 局</div>
+                        <div class="rule-item">📈 依次挑战 6×6、7×7、8×8、9×9、10×10</div>
+                        <div class="rule-item">🏆 全部完成即为闯关成功</div>
+                    </div>
+                    <button class="btn-primary" id="btn-pass-start">开始闯关</button>
+                </div>
+                <div class="pass-progress" id="pass-progress" style="display:none;">
+                    <div class="pass-stage-info" id="pass-stage-info">当前阶段：5×5（第 1 / 10 局）</div>
+                    <div class="pass-stage-bar">
+                        <div class="pass-stage-fill" id="pass-stage-fill" style="width:0%"></div>
+                    </div>
+                    <div class="pass-overall-info" id="pass-overall-info">总进度：1 / 60 局</div>
+                    <div class="pass-overall-bar">
+                        <div class="pass-overall-fill" id="pass-overall-fill" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="pass-levels" id="pass-levels" style="display:none;">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 训练结果页 -->
+            <div class="page" id="page-result">
+                <div class="result-wrapper">
+                    <div class="result-card">
+                        <div class="result-face" id="result-face">😊</div>
+                        <div class="result-title" id="result-title">顺利通关</div>
+                        <div class="result-subtitle" id="result-subtitle">令人惊叹的速度！</div>
+
+                        <div class="result-badge" id="result-badge">经典 · 入门</div>
+
+                        <div class="result-stats-row">
+                            <div class="result-stat">
+                                <div class="stat-label">用时</div>
+                                <div class="stat-value" id="result-time">7.8秒</div>
+                            </div>
+                            <div class="result-stat">
+                                <div class="stat-label">正确率</div>
+                                <div class="stat-value" id="result-accuracy">100%</div>
+                            </div>
+                        </div>
+
+                        <div class="result-rank" id="result-rank" style="display:none;">
+                            <span class="rank-icon">📊</span>
+                            <span class="rank-text">查看排行榜</span>
+                            <span class="rank-arrow">›</span>
+                        </div>
+                    </div>
+
+                    <div class="result-history-preview" id="result-history-preview">
+                        <div class="history-preview-header">
+                            <span>训练记录</span>
+                            <span class="history-preview-arrow">›</span>
+                        </div>
+                        <div class="history-preview-item">
+                            <span class="preview-time" id="result-history-time">刚刚</span>
+                            <span class="preview-duration" id="result-history-duration">7.8秒</span>
+                        </div>
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="btn-result-primary" id="btn-again">再来一次</button>
+                        <button class="btn-result-secondary" id="btn-select-level">选择难度</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人中心页 -->
+            <div class="page" id="page-profile">
+                <div class="profile-header">
+                    <div class="avatar" id="user-avatar">👤</div>
+                    <div class="nickname" id="user-nickname">训练者</div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-total">0</div>
+                        <div class="stat-label">总训练次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-best">--</div>
+                        <div class="stat-label">最佳成绩</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-level">基础</div>
+                        <div class="stat-label">当前等级</div>
+                    </div>
+                </div>
+                <div class="profile-menu">
+                    <div class="menu-item" id="menu-history">
+                        <span class="menu-icon">📋</span>
+                        <span class="menu-text">训练记录</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" id="menu-settings">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">设置</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 历史记录页 -->
+            <div class="page" id="page-history">
+                <div class="page-header">
+                    <div class="back-btn" id="history-back">←</div>
+                    <h1>训练记录</h1>
+                </div>
+                <div class="history-list" id="history-list">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 设置页 -->
+            <div class="page" id="page-settings">
+                <div class="page-header">
+                    <div class="back-btn" id="settings-back">←</div>
+                    <h1>设置</h1>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <span class="setting-label">音效</span>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-sound" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">震动</span>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-vibrate">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">清除缓存</span>
+                        <button class="btn-text" id="btn-clear">清除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="tab-bar" id="tab-bar">
+            <div class="tab-item active" data-page="home">
+                <div class="tab-icon">🎯</div>
+                <div class="tab-text">专注力</div>
+            </div>
+            <div class="tab-item" data-page="pass">
+                <div class="tab-icon">🏆</div>
+                <div class="tab-text">挑战</div>
+            </div>
+            <div class="tab-item" data-page="profile">
+                <div class="tab-icon">👤</div>
+                <div class="tab-text">我的</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

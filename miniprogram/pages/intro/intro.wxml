@@ -1,0 +1,181 @@
+<view class="page">
+  <!-- ===== 顶部 Hero ===== -->
+  <view class="hero-section">
+    <view class="hero-icon">
+      <view class="grid-icon-large">
+        <view class="g-cell" wx:for="{{9}}" wx:key="*this"></view>
+      </view>
+    </view>
+    <text class="hero-title">舒尔特方格</text>
+    <text class="hero-subtitle">用科学方法，提升你的专注力</text>
+  </view>
+
+  <!-- ===== 什么是舒尔特方格 ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-dot"></view>
+      <text class="section-title">什么是舒尔特方格</text>
+    </view>
+    <view class="card">
+      <text class="card-text">
+        舒尔特方格（Schulte Grid）是由德国神经心理学家舒尔特发明的一种专注力训练工具。在一个 N×N 的方格中随机填入数字，玩家需要按顺序从 1 开始依次点击每个数字。
+      </text>
+      <text class="card-text">
+        完成全部数字点击所用的时间越短，说明注意力越集中、视觉搜索能力越强。经过长期训练，可以有效提升大脑的反应速度和专注力水平。
+      </text>
+    </view>
+  </view>
+
+  <!-- ===== 训练好处 ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-dot"></view>
+      <text class="section-title">坚持训练的四大好处</text>
+    </view>
+    <view class="benefit-list">
+      <view class="benefit-item">
+        <view class="benefit-num">01</view>
+        <view class="benefit-content">
+          <text class="benefit-title">提升专注力</text>
+          <text class="benefit-desc">快速锁定目标数字，屏蔽外界干扰，让注意力高度集中</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-num">02</view>
+        <view class="benefit-content">
+          <text class="benefit-title">增强视觉搜索能力</text>
+          <text class="benefit-desc">锻炼眼睛快速扫视和定位能力，提升信息处理效率</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-num">03</view>
+        <view class="benefit-content">
+          <text class="benefit-title">提高反应速度</text>
+          <text class="benefit-desc">手眼协调配合，缩短大脑从接收到执行指令的时间</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-num">04</view>
+        <view class="benefit-content">
+          <text class="benefit-title">锻炼大脑灵活性</text>
+          <text class="benefit-desc">多种训练模式交替进行，全方位激活大脑潜能</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 训练方法 ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-dot"></view>
+      <text class="section-title">推荐训练方法</text>
+    </view>
+    <view class="card">
+      <view class="tip-row">
+        <text class="tip-icon">⏰</text>
+        <text class="tip-text">每天坚持训练 10-15 分钟，效果最佳</text>
+      </view>
+      <view class="tip-row">
+        <text class="tip-icon">📈</text>
+        <text class="tip-text">从 3×3 基础难度开始，逐步挑战更高阶</text>
+      </view>
+      <view class="tip-row">
+        <text class="tip-icon">🔄</text>
+        <text class="tip-text">多种模式交替训练，避免大脑产生适应性</text>
+      </view>
+      <view class="tip-row">
+        <text class="tip-icon">📊</text>
+        <text class="tip-text">记录每次成绩，关注自己的进步曲线</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 舒尔特标准(5×5)方格 参考等级 ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-dot"></view>
+      <text class="section-title">舒尔特标准(5×5)方格 参考等级</text>
+    </view>
+    <view class="ref-table">
+      <view class="table-row table-header">
+        <view class="table-cell col-age">
+          <text>年龄段</text>
+        </view>
+        <view class="table-cell col-good">
+          <view class="header-text-wrap">
+            <text class="header-main">优秀</text>
+            <text class="header-sub">(顶尖专注力)</text>
+          </view>
+        </view>
+        <view class="table-cell col-normal">
+          <view class="header-text-wrap">
+            <text class="header-main">良好</text>
+            <text class="header-sub">(平均水平)</text>
+          </view>
+        </view>
+        <view class="table-cell col-poor">
+          <view class="header-text-wrap">
+            <text class="header-main">待提升</text>
+            <text class="header-sub">(初期需训练)</text>
+          </view>
+        </view>
+      </view>
+      <view class="table-row" wx:for="{{referenceData}}" wx:key="age">
+        <text class="table-cell col-age">{{item.age}}</text>
+        <text class="table-cell col-good">{{item.excellent}}</text>
+        <text class="table-cell col-normal">{{item.normal}}</text>
+        <text class="table-cell col-poor">{{item.poor}}</text>
+      </view>
+    </view>
+    <text class="ref-source">数据来源：{{dataSource}}</text>
+  </view>
+
+  <!-- ===== 重要提示 ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-dot"></view>
+      <text class="section-title">重要提示</text>
+    </view>
+    <view class="tips-section">
+      <view class="tip-item">
+        <view class="tip-num">1</view>
+        <view class="tip-body">
+          <text class="tip-head">取 3-5 次平均值</text>
+          <text class="tip-desc">单次测试结果波动较大，高水平者通常在第 3-4 次达到最快速度。</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-num">2</view>
+        <view class="tip-body">
+          <text class="tip-head">屏幕大小影响成绩</text>
+          <text class="tip-desc">手机（小屏）与大屏设备测试结果可能相差 3-5 秒。</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-num">3</view>
+        <view class="tip-body">
+          <text class="tip-head">疲劳度影响巨大</text>
+          <text class="tip-desc">晚上疲倦时测试会比早晨慢 8-10 秒，这是非常正常的现象。</text>
+        </view>
+      </view>
+      <view class="tip-item">
+        <view class="tip-num">4</view>
+        <view class="tip-body">
+          <text class="tip-head">关注进步而非绝对数字</text>
+          <text class="tip-desc">如果你从 28 秒训练到稳定 23 秒，这说明专注力取得了巨大进步！</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 底部 ===== -->
+  <view class="footer">
+    <text class="footer-text">好的专注力，是通往卓越的捷径。</text>
+    <text class="footer-copy">舒尔特专注力训练 © 2026</text>
+  </view>
+
+  <!-- 联系开发者 -->
+  <view class="contact-bar" bindtap="onContact">
+    <text class="contact-text">联系开发者：pwp8899@163.com</text>
+  </view>
+</view>

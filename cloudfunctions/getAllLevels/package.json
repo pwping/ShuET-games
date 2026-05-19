@@ -1,0 +1,9 @@
+{
+  "name": "getAllLevels",
+  "version": "1.0.0",
+  "description": "获取所有难度等级",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

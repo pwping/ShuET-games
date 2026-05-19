@@ -1,0 +1,94 @@
+<view class="page {{isSuccess ? 'success' : 'fail'}}">
+  <!-- ===== 装饰背景圆 ===== -->
+  <view class="deco-circle {{isSuccess ? 'deco-success' : 'deco-fail'}}"></view>
+  <view class="deco-circle deco-small {{isSuccess ? 'deco-success' : 'deco-fail'}}"></view>
+
+  <!-- ===== 主内容区 ===== -->
+  <view class="main-content {{animIn ? 'anim-in' : ''}}">
+    <!-- 图标 + 评级 -->
+    <view class="icon-section">
+      <view class="icon-wrap {{isSuccess ? 'icon-success' : 'icon-fail'}}">
+        <text class="icon-emoji">{{isSuccess ? '🏆' : '🥺'}}</text>
+        <view class="icon-ring {{isSuccess ? 'ring-success' : 'ring-fail'}}"></view>
+      </view>
+      <view class="rating-badge {{isSuccess ? 'rating-success' : 'rating-fail'}}">{{rating}}</view>
+    </view>
+
+    <!-- 标题 -->
+    <text class="result-title {{isSuccess ? '' : 'title-fail'}}">{{title}}</text>
+    <text class="result-subtitle" wx:if="{{subtitle}}">{{subtitle}}</text>
+    <text class="result-encourage" wx:if="{{showLevel && encourageText}}">{{encourageText}}</text>
+
+    <!-- 模式标签 -->
+    <view class="mode-badge {{isSuccess ? '' : 'mode-fail'}}">{{modeName}} · {{levelName}}</view>
+
+    <!-- 统计卡片 -->
+    <view class="stats-row">
+      <!-- 用时卡片 -->
+      <view class="stat-card stat-card-time">
+        <view class="stat-icon-wrap">
+          <text class="stat-icon">⏱</text>
+        </view>
+        <text class="stat-value {{isSuccess ? '' : 'value-fail'}}">{{formattedTime}}</text>
+        <!-- 历史时间 -->
+        <view class="th-inner" wx:if="{{showHistory}}">
+          <view class="th-inner-row" wx:if="{{lastTimeStr}}">
+            <text class="th-inner-label">上次</text>
+            <text class="th-inner-value {{isSuccess ? '' : 'value-fail'}}">{{lastTimeStr}}</text>
+          </view>
+          <view class="th-inner-row" wx:if="{{bestTimeStr}}">
+            <text class="th-inner-label">最短</text>
+            <text class="th-inner-value th-inner-best {{isSuccess ? '' : 'value-fail'}}">{{bestTimeStr}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 正确率卡片 -->
+      <view class="stat-card">
+        <view class="stat-icon-wrap">
+          <view class="stat-grid-icon">
+            <view class="stat-grid-cell" wx:for="{{9}}" wx:key="*this"></view>
+          </view>
+        </view>
+        <view class="accuracy-wrap">
+          <text class="accuracy-value {{isSuccess ? '' : 'value-fail'}}">{{accuracy}}</text>
+          <text class="accuracy-unit">%</text>
+        </view>
+        <text class="stat-label">正确率</text>
+        <!-- 参考时间 -->
+        <view class="ac-ref-row" bindtap="onShowReference">
+          <text class="th-ref-link {{isSuccess ? '' : 'value-fail'}}">查看参考时间</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 挑战模式关卡信息 -->
+    <view class="pass-info" wx:if="{{isPassMode}}">
+      <text class="pass-label">第 {{passLevelNumber}} 关</text>
+      <view class="pass-steps">
+        <view class="pass-dot {{isSuccess ? 'dot-active' : 'dot-fail'}}"></view>
+        <view class="pass-line {{isSuccess ? 'line-active' : 'line-fail'}}"></view>
+        <view class="pass-dot"></view>
+        <view class="pass-line"></view>
+        <view class="pass-dot"></view>
+      </view>
+    </view>
+
+    <!-- ===== 底部按钮 ===== -->
+    <view class="bottom-actions {{isSuccess ? '' : 'bottom-fail'}}">
+      <view class="btn-primary {{isSuccess ? '' : 'btn-primary-fail'}}" bindtap="onRetry" hover-class="btn-hover">
+        <text>再来一次</text>
+      </view>
+      <view class="btn-secondary {{isSuccess ? '' : 'btn-secondary-fail'}}" bindtap="onChangeLevel" hover-class="btn-hover-light">
+        <text>选难度</text>
+      </view>
+      <button class="btn-share {{isSuccess ? '' : 'btn-share-fail'}}" open-type="share" hover-class="share-hover">
+        <view class="share-icon-wrap-wechat"></view>
+        <text class="share-text">分享</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 参考等级弹窗 -->
+  <reference-sheet id="refSheet" size="{{size}}" />
+</view>

@@ -1,0 +1,27 @@
+<view class="page-container {{animIn ? 'slide-in' : ''}}">
+  <!-- ===== 模式标题 Badge ===== -->
+  <view class="mode-title-wrap">
+    <view class="mode-title-badge">
+      <view class="badge-dot"></view>
+      {{modeName}}
+    </view>
+  </view>
+
+  <!-- ===== 难度卡片 ===== -->
+  <view class="level-grid {{mode === 'alphabet' ? 'single-col' : ''}}">
+    <view class="level-card" wx:for="{{levels}}" wx:key="key" bindtap="onLevelTap" data-index="{{index}}">
+      <view class="card-row">
+        <view class="card-block" style="background: {{item.color}};">
+          <text class="card-size">{{item.size}}×{{item.size}}</text>
+        </view>
+        <view class="card-info">
+          <text class="card-name">{{item.name}}</text>
+          <text class="card-desc">{{item.desc}}</text>
+        </view>
+      </view>
+      <text wx:if="{{item.size === 5 && (mode === 'classic' || mode === 'challenge')}}" class="card-hint">✈️ 飞行员平均8-10秒</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

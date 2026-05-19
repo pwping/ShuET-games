@@ -1,0 +1,379 @@
+/* ===== 遮罩 ===== */
+.ref-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.ref-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== 底部面板 ===== */
+.ref-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 201;
+  background: #FAF8F5;
+  border-radius: 36rpx 36rpx 0 0;
+  max-height: 75vh;
+  width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.ref-sheet.sheet-active {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.ref-sheet.dragging {
+  transition: none;
+}
+
+/* ===== 拖拽条 ===== */
+.sheet-handle-area {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0 10rpx;
+  flex-shrink: 0;
+}
+
+.sheet-handle {
+  width: 60rpx;
+  height: 6rpx;
+  background: #D4CFC9;
+  border-radius: 3rpx;
+}
+
+/* ===== 标题 ===== */
+.sheet-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 8rpx 32rpx 4rpx;
+  flex-shrink: 0;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E1B4B;
+}
+
+.mode-highlight {
+  color: #07C160;
+}
+
+.sheet-title-icon {
+  display: flex;
+  flex-wrap: wrap;
+  width: 36rpx;
+  height: 36rpx;
+  gap: 4rpx;
+  justify-content: center;
+  align-content: center;
+}
+
+.st-cell {
+  width: 9rpx;
+  height: 9rpx;
+  background: #07C160;
+  border-radius: 2rpx;
+}
+
+/* ===== 规格切换栏 ===== */
+.size-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 12rpx 32rpx 14rpx;
+  flex-shrink: 0;
+}
+
+.size-tab {
+  padding: 8rpx 16rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #8B8581;
+  background: #EDE9E5;
+  border-radius: 10rpx;
+  transition: all 0.2s;
+}
+
+.size-tab.size-active {
+  color: #fff;
+  background: #07C160;
+}
+
+/* ===== 可滚动内容区 ===== */
+.sheet-scroll {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 50rpx;
+  min-width: 0;
+}
+
+.scroll-inner {
+  padding: 0 32rpx;
+}
+
+/* ===== 参考表格 ===== */
+.ref-table {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 30% 25% 25% 20%;
+  min-height: 72rpx;
+  border-bottom: 2rpx solid #EDE9E5;
+  border-left: 2rpx solid #EDE9E5;
+  border-right: 2rpx solid #EDE9E5;
+  box-sizing: border-box;
+}
+
+.table-row:first-child {
+  border-top: 2rpx solid #EDE9E5;
+  border-radius: 20rpx 20rpx 0 0;
+}
+
+.table-row:last-child {
+  border-bottom: 2rpx solid #EDE9E5;
+  border-radius: 0 0 20rpx 20rpx;
+}
+
+.table-row.table-header {
+  background: #F0FDF4;
+}
+
+.table-row:not(.table-header):nth-child(even) {
+  background: #F8FAF9;
+}
+
+.table-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14rpx 8rpx;
+  font-size: 24rpx;
+  color: #1E1B4B;
+  text-align: center;
+  line-height: 1.3;
+  box-sizing: border-box;
+  border-right: 2rpx solid #EDE9E5;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+.table-header .table-cell {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #07C160;
+}
+
+.header-text-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.header-main {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #07C160;
+}
+
+.header-sub {
+  font-size: 18rpx;
+  font-weight: 400;
+  color: #6BC47E;
+  margin-top: 4rpx;
+}
+
+.col-age {
+  font-weight: 500;
+}
+
+.col-good {
+  font-weight: 600;
+  color: #07C160;
+}
+
+.col-poor {
+  color: #94A3B8;
+}
+
+.na-cell {
+  color: #B0A9A3 !important;
+  font-size: 20rpx !important;
+}
+
+/* ===== 数据来源 ===== */
+.ref-source {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 20rpx;
+  color: #B0A9A3;
+  text-align: center;
+}
+
+/* ===== 无数据提示 ===== */
+.no-data-section {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx 36rpx;
+  min-height: 240rpx;
+  border: 2rpx solid #EDE9E5;
+}
+
+.no-data-text {
+  font-size: 26rpx;
+  color: #6B7280;
+  line-height: 1.9;
+  text-align: center;
+  max-width: 480rpx;
+}
+
+/* ===== 起源区块 ===== */
+.origin-section {
+  background: #F7F5F2;
+  border: 2rpx solid #E8E4DF;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-top: 28rpx;
+}
+
+.origin-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #374151;
+}
+
+.origin-icon {
+  width: 8rpx;
+  height: 8rpx;
+  background: #07C160;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.origin-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.origin-paragraph {
+  font-size: 23rpx;
+  color: #6B7280;
+  line-height: 1.7;
+}
+
+/* ===== 重要提示区块 ===== */
+.tips-section {
+  background: #FFFBEB;
+  border: 2rpx solid #FDE68A;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-top: 28rpx;
+}
+
+.tips-title {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 24rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #92400E;
+}
+
+.tips-dot {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #F59E0B;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tip-item {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-num {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #FDE68A;
+  color: #92400E;
+  font-size: 20rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.tip-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.tip-head {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #92400E;
+}
+
+.tip-desc {
+  font-size: 22rpx;
+  color: #A16207;
+  line-height: 1.5;
+}

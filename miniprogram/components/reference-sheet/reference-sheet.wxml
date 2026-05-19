@@ -1,0 +1,116 @@
+<view class="ref-overlay {{showReference ? 'show' : ''}}" wx:if="{{showReference}}" bindtap="onHideReferenceTap"></view>
+<view class="ref-sheet {{showReference ? 'sheet-active' : ''}} {{isDragging ? 'dragging' : ''}}"
+      style="transform: translateY({{sheetTranslateY}}px)">
+  <!-- 拖拽条 -->
+  <view class="sheet-handle-area"
+        catchtouchstart="onDragStart"
+        catchtouchmove="onDragMove"
+        catchtouchend="onDragEnd">
+    <view class="sheet-handle"></view>
+  </view>
+
+  <!-- 标题 + 规格切换 -->
+  <view class="sheet-title">
+    <text>舒尔特方格（经典模式）参考时间</text>
+  </view>
+  <view class="size-switcher">
+    <view class="size-tab {{currentSize === item ? 'size-active' : ''}}"
+          wx:for="{{gridSizes}}" wx:key="*this"
+          data-size="{{item}}"
+          catchtap="onSwitchSize">{{item}}×{{item}}</view>
+  </view>
+
+  <scroll-view class="sheet-scroll" scroll-y show-scrollbar="{{false}}">
+    <view class="scroll-inner">
+    <!-- 表格 -->
+    <view class="ref-table" wx:if="{{!sizeData.noData}}">
+      <view class="table-row table-header">
+        <view class="table-cell col-age"><text>年龄段</text></view>
+        <view class="table-cell col-good">
+          <view class="header-text-wrap">
+            <text class="header-main">优秀</text>
+            <text class="header-sub">（顶尖专注力）</text>
+          </view>
+        </view>
+        <view class="table-cell col-normal">
+          <view class="header-text-wrap">
+            <text class="header-main">良好</text>
+            <text class="header-sub">（平均水平）</text>
+          </view>
+        </view>
+        <view class="table-cell col-poor">
+          <view class="header-text-wrap">
+            <text class="header-main">待提升</text>
+            <text class="header-sub">（初期需训练）</text>
+          </view>
+        </view>
+      </view>
+      <view class="table-row" wx:for="{{sizeData.ages}}" wx:key="age">
+        <text class="table-cell col-age">{{item.age}}</text>
+        <text class="table-cell col-good {{item.apply ? '' : 'na-cell'}}">{{item.excellent}}</text>
+        <text class="table-cell col-normal {{item.apply ? '' : 'na-cell'}}">{{item.good}}</text>
+        <text class="table-cell col-poor {{item.apply ? '' : 'na-cell'}}">{{item.poor}}</text>
+      </view>
+    </view>
+
+    <!-- 无数据提示 -->
+    <view class="no-data-section" wx:if="{{sizeData.noData}}">
+      <text class="no-data-text">{{noDataMessage}}</text>
+    </view>
+
+    <!-- 来源 -->
+    <text class="ref-source" wx:if="{{!sizeData.noData}}">数据来源：{{dataSource}}</text>
+
+    <!-- 起源 -->
+    <view class="origin-section">
+      <view class="origin-title">
+        <view class="origin-icon"></view>
+        <text>舒尔特方格起源</text>
+      </view>
+      <view class="origin-content">
+        <text class="origin-paragraph">最开始的用途，用于选拔和训练飞行员、宇航员的视觉广角、专注力、注意力稳定性和快速反应能力。后来这种方法逐渐被引入到运动心理学，教育领域（提升儿童专注力）。</text>
+      </view>
+    </view>
+
+    <!-- 重要提示 -->
+    <view class="tips-section">
+      <view class="tips-title">
+        <view class="tips-dot">!</view>
+        <text>重要提示</text>
+      </view>
+
+      <view class="tip-item">
+        <view class="tip-num">1</view>
+        <view class="tip-body">
+          <text class="tip-head">取 3-5 次平均值</text>
+          <text class="tip-desc">单次测试结果波动较大，高水平者通常在第 3-4 次达到最快速度。</text>
+        </view>
+      </view>
+
+      <view class="tip-item">
+        <view class="tip-num">2</view>
+        <view class="tip-body">
+          <text class="tip-head">屏幕大小影响成绩</text>
+          <text class="tip-desc">手机（小屏）与大屏设备测试结果可能相差 3-5 秒。</text>
+        </view>
+      </view>
+
+      <view class="tip-item">
+        <view class="tip-num">3</view>
+        <view class="tip-body">
+          <text class="tip-head">疲劳度影响巨大</text>
+          <text class="tip-desc">晚上疲倦时测试会比早晨慢 8-10 秒，这是非常正常的现象。</text>
+        </view>
+      </view>
+
+      <view class="tip-item">
+        <view class="tip-num">4</view>
+        <view class="tip-body">
+          <text class="tip-head">关注进步而非绝对数字</text>
+          <text class="tip-desc">如果你从 28 秒训练到稳定 23 秒，这说明专注力取得了巨大进步！</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,148 @@
+<view class="page">
+  <!-- ===== 用户信息区 ===== -->
+  <view class="user-section">
+    <view wx:if="{{!isLoggedIn}}" class="login-card" bindtap="doLogin">
+      <view class="avatar-ring">
+        <view class="user-avatar-placeholder">
+          <view class="grid-icon">
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+          </view>
+        </view>
+      </view>
+      <text class="user-name">点击授权登录</text>
+      <text class="login-tip">登录后同步本地训练数据到云端</text>
+    </view>
+    <view wx:else class="login-card">
+      <view class="avatar-ring filled">
+        <view wx:if="{{userInfo.avatarUrl}}" class="user-avatar">
+          <image src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+        </view>
+        <view wx:else class="user-avatar-placeholder logged">
+          <view class="grid-icon">
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+            <view class="grid-cell"></view>
+          </view>
+        </view>
+      </view>
+      <text class="user-name">{{userInfo.nickName || defaultNickName}}</text>
+    </view>
+  </view>
+
+  <!-- ===== 统计卡片 ===== -->
+  <view class="stats-row">
+    <view class="stat-card">
+      <text class="stat-value">{{stats.totalCount}}</text>
+      <text class="stat-label">总训练次数</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-card best-time-card" bindtap="onShowBestDetail">
+      <text class="stat-value">{{stats.bestTime}}</text>
+      <text class="stat-label">最佳成绩 ›</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-card" bindtap="onGoPass">
+      <text class="stat-value">{{stats.currentLevel}}</text>
+      <text class="stat-label">挑战进度 ›</text>
+    </view>
+  </view>
+
+  <!-- ===== 菜单列表 ===== -->
+  <view class="menu-card">
+    <view class="menu-item" bindtap="goToHistory">
+      <view class="menu-icon-wrap" style="background: linear-gradient(135deg, #DBEAFE, #BFDBFE);">
+        <text class="menu-icon-text" style="color: #2563EB;">📋</text>
+      </view>
+      <text class="menu-text">训练记录</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item-wrap">
+      <view class="menu-item">
+        <view class="menu-icon-wrap" style="background: linear-gradient(135deg, #D1FAE5, #A7F3D0);">
+          <view class="menu-icon-wechat"></view>
+        </view>
+        <text class="menu-text">分享</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <button class="share-trigger" open-type="share"></button>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="goToSettings">
+      <view class="menu-icon-wrap" style="background: linear-gradient(135deg, #F3E8FF, #E9D5FF);">
+        <text class="menu-icon-text" style="color: #7C3AED;">⚙</text>
+      </view>
+      <text class="menu-text">设置</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="onIntro">
+      <view class="menu-icon-wrap" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA);">
+        <text class="menu-icon-text" style="color: #EA580C;">📖</text>
+      </view>
+      <text class="menu-text">舒尔特介绍</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 隐私授权确认按钮 -->
+  <button id="privacy-btn" open-type="agreePrivacyAuthorization" style="display:none;"></button>
+
+  <!-- 最佳成绩明细 - 底部弹窗 -->
+  <view class="detail-overlay {{showBestDetail ? 'show' : ''}}" wx:if="{{showBestDetail}}" catchtap="onHideBestDetail"></view>
+  <view class="detail-sheet {{showBestDetail ? 'sheet-active' : ''}} {{isDragging ? 'dragging' : ''}}"
+        style="transform: translateY({{sheetTranslateY}}px)"
+        catchtouchmove="onSheetTouchMove"
+        catchtouchend="onSheetTouchEnd"
+        catchtouchstart="onSheetTouchStart">
+    <!-- 拖拽条 -->
+    <view class="sheet-handle-area">
+      <view class="sheet-handle"></view>
+    </view>
+
+    <!-- 标题 -->
+    <view class="detail-title">
+      <text class="detail-title-icon">🏆</text>
+      <text>各模式最佳成绩</text>
+    </view>
+
+    <scroll-view class="detail-scroll" scroll-y show-scrollbar="{{false}}">
+      <view class="detail-scroll-inner">
+        <!-- 表头 -->
+        <view class="detail-header">
+          <text class="dh-col dh-mode">训练模式</text>
+          <text class="dh-col dh-count">训练次数</text>
+          <text class="dh-col dh-time">最短时间</text>
+        </view>
+
+        <!-- 数据行 -->
+        <view class="detail-row" wx:for="{{bestDetailData}}" wx:key="modeLabel" wx:for-item="item">
+          <text class="dr-col dr-mode">{{item.modeLabel}}</text>
+          <text class="dr-col dr-count">{{item.count}}</text>
+          <text class="dr-col dr-time">{{item.bestTimeLabel}}</text>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="detail-empty" wx:if="{{bestDetailData.length === 0}}">
+          <text>暂无训练记录</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <custom-tabbar active="mine"></custom-tabbar>
+</view>

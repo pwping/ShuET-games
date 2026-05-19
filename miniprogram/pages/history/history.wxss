@@ -1,0 +1,380 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.filter-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0 20rpx 30rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+  flex-shrink: 0;
+}
+
+.filter-all {
+  flex-shrink: 0;
+  padding: 14rpx 28rpx;
+  background: #f5f5f5;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  color: #666;
+  margin-right: 20rpx;
+  white-space: nowrap;
+}
+
+.filter-all.active {
+  background: #E6F7ED;
+  color: #07C160;
+}
+
+.filter-scroll {
+  flex: 1;
+  width: 0;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filter-scroll-inner {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.filter-scroll .filter-item {
+  display: inline-block;
+  padding: 14rpx 28rpx;
+  background: #f5f5f5;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  color: #666;
+  margin-right: 20rpx;
+}
+
+.filter-scroll .filter-item.active {
+  background: #E6F7ED;
+  color: #07C160;
+}
+
+/* ===== 难度筛选（可滑入滑出） ===== */
+.size-filter-wrapper {
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  max-height: 140rpx;
+  opacity: 1;
+  flex-shrink: 0;
+}
+.size-filter-wrapper.size-filter-hide {
+  max-height: 0;
+  opacity: 0;
+}
+
+.size-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12rpx;
+  padding: 10rpx 30rpx 12rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+
+.size-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rpx;
+  padding: 10rpx 0;
+  background: #F8FAFC;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.25s ease;
+}
+
+.size-grid-item:active {
+  transform: scale(0.95);
+}
+
+.size-grid-item.active {
+  background: rgba(7,193,96,0.06);
+  border-color: #07C160;
+  box-shadow: 0 4rpx 16rpx rgba(7,193,96,0.10);
+}
+
+.sgi-label {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: 1rpx;
+}
+
+.size-grid-item.active .sgi-label {
+  color: #07C160;
+}
+
+
+
+.swiper-wrap {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scroll-wrap {
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
+.record-list {
+  padding: 20rpx 30rpx;
+  padding-bottom: 40rpx;
+}
+
+.record-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.record-body {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.record-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.record-mode {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.record-meta {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.level-badge {
+  font-size: 22rpx;
+  color: #666;
+  background: #f0f0f0;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 4rpx 14rpx;
+}
+
+.meta-sep {
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.accuracy-value {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #888;
+}
+
+.record-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20rpx;
+}
+
+.challenge-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6rpx;
+}
+
+.status-badge {
+  padding: 14rpx 32rpx;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.status-badge.success {
+  background: #E6F7ED;
+  color: #07C160;
+}
+
+.status-badge.fail {
+  background: #ffebee;
+  color: #ef5350;
+}
+
+.time-badge.challenge-time {
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.time-badge.challenge-time.success {
+  background: #E6F7ED;
+}
+
+.time-badge.challenge-time.fail {
+  background: #ffebee;
+}
+
+.time-badge.challenge-time.success .time-value {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #07C160;
+}
+
+.time-badge.challenge-time.fail .time-value {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #ef5350;
+}
+
+.time-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120rpx;
+  padding: 16rpx 28rpx;
+  border-radius: 16rpx;
+}
+
+.time-badge.success {
+  background: #E6F7ED;
+}
+
+.time-badge.fail {
+  background: #ffebee;
+}
+
+.time-value {
+  font-size: 35rpx;
+  font-weight: 700;
+}
+
+.time-badge.success .time-value {
+  color: #07C160;
+}
+
+.time-badge.fail .time-value {
+  color: #ef5350;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 140rpx 40rpx 100rpx;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  background: #E6F7ED;
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.grid-icon {
+  display: flex;
+  flex-wrap: wrap;
+  width: 60rpx;
+  height: 60rpx;
+  gap: 6rpx;
+  justify-content: center;
+  align-content: center;
+}
+
+.grid-cell {
+  width: 14rpx;
+  height: 14rpx;
+  background: #07C160;
+  border-radius: 3rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #64748B;
+  font-weight: 500;
+  margin-bottom: 28rpx;
+}
+
+.go-train {
+  display: inline-flex;
+  align-items: center;
+  padding: 18rpx 44rpx;
+  background: #07C160;
+  border-radius: 44rpx;
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 16rpx rgba(7,193,96,0.25);
+}
+
+.go-train:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(7,193,96,0.15);
+}
+
+/* ===== 加载更多 ===== */
+.load-more {
+  text-align: center;
+  padding: 30rpx 10rpx 60rpx;
+  font-size: 26rpx;
+  color: #bbb;
+}
+
+.load-more-btn {
+  text-align: center;
+  padding: 30rpx 10rpx 60rpx;
+  font-size: 28rpx;
+  color: #07C160;
+}
+
+/* 加载中 */
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30rpx 10rpx 60rpx;
+  gap: 16rpx;
+}
+
+.loading-spinner {
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid #ddd;
+  border-top-color: #07C160;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}

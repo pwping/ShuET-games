@@ -1,0 +1,18 @@
+<view class="age-overlay {{visible ? 'show' : ''}}" catchtap="onOverlayTap"></view>
+<view class="age-sheet {{visible ? 'sheet-active' : ''}}">
+  <view class="sheet-handle-area">
+    <view class="sheet-handle"></view>
+  </view>
+  <view class="age-title">
+    <text class="age-title-text">设置年龄段，用时评分更准确</text>
+  </view>
+  <view class="age-list">
+    <scroll-view scroll-y show-scrollbar="{{false}}" class="age-list-scroll">
+      <view class="age-list-inner">
+        <view class="age-item {{selectedAgeGroup === item ? 'age-item-selected' : ''}}" wx:for="{{ageGroups}}" wx:key="*this" catchtap="onSelect" data-age="{{item}}">
+          <text class="age-item-text">{{item}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

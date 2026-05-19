@@ -1,0 +1,39 @@
+/* 全局样式 */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+}
+
+/* 重置样式 */
+view, text, image {
+  box-sizing: border-box;
+}
+
+/* 通用按钮样式 */
+.btn-primary {
+  text-align: center;
+  padding: 28rpx 60rpx;
+  background: #4CAF50;
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.btn-secondary {
+  text-align: center;
+  padding: 24rpx 60rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 48rpx;
+  font-size: 28rpx;
+  color: #666;
+  background: #fff;
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

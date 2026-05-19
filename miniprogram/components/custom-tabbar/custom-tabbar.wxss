@@ -1,0 +1,70 @@
+.tabbar-placeholder {
+  height: 140rpx;
+}
+
+.custom-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130rpx;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(226,232,240,0.5);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 999;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  padding-top: 18rpx;
+}
+
+.tab-icon {
+  font-size: 32rpx;
+  color: #CBD5E1;
+  line-height: 1;
+  transition: color 0.2s ease;
+  margin-bottom: 4rpx;
+}
+
+.tab-icon.active {
+  color: #07C160;
+}
+
+/* 导航栏四宫格图标 */
+.tab-icon .grid-icon {
+  display: grid;
+  grid-template-columns: repeat(2, 10rpx);
+  gap: 3rpx;
+  justify-content: center;
+}
+
+.tab-icon .grid-cell {
+  width: 10rpx;
+  height: 10rpx;
+  background: currentColor;
+  border-radius: 2rpx;
+}
+
+.tab-label {
+  font-size: 22rpx;
+  color: #94A3B8;
+  font-weight: 500;
+  margin-top: 6rpx;
+  transition: color 0.2s ease;
+}
+
+.tab-label.active {
+  color: #07C160;
+  font-weight: 700;
+}

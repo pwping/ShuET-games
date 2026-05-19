@@ -1,0 +1,102 @@
+<view class="container">
+  <!-- 游戏头部（已移到导航栏） -->
+
+  <!-- 提示框：下一个 + 计时器 + 参考 -->
+  <view class="hint-box {{showHint ? '' : 'no-hint'}}">
+    <view class="hint-section" wx:if="{{showHint}}">
+      <text class="hint-label">下一个{{mode === 'alphabet' ? '字母' : '数'}}</text>
+      <text class="hint-value">{{hintNumber}}</text>
+    </view>
+    <view class="hint-divider" wx:if="{{showHint}}"></view>
+    <view class="timer-section {{showHint ? '' : 'full'}}">
+      <view wx:if="{{isMemoryPhase}}" class="memory-timer-wrap">
+        <text class="memory-num">{{memoryTimeLeft >= 10 ? memoryTimeLeft : '0' + memoryTimeLeft}}</text>
+        <text class="memory-text">秒记忆时间</text>
+      </view>
+      <text wx:else class="timer-value">{{formattedTime}}</text>
+    </view>
+    <view class="ref-btn" bindtap="onShowReference">
+      <view class="ref-icon">
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+        <view class="r-cell"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规则提示 -->
+  <view class="rule-hint">{{ruleHint}}</view>
+
+  <!-- 棋盘 -->
+  <view class="game-board-container">
+    <view class="game-board {{showStartOverlay ? 'board-disabled' : ''}} {{isMemoryPhase ? 'memory-disabled' : ''}}" style="grid-template-columns: repeat({{size}}, 1fr);">
+      <view class="game-cell {{item.flash === 'correct' ? 'flash-correct' : ''}} {{item.flash === 'wrong' ? 'flash-wrong' : ''}} {{item.hidden ? 'hidden' : ''}} {{item.marked ? 'marked' : ''}}"
+            wx:for="{{board}}" wx:key="index"
+            style="{{item.bgColor ? 'background:' + item.bgColor + ';' : ''}}font-size:{{cellFontSize}}"
+            data-index="{{index}}" bindtap="onCellTap">
+        <text wx:if="{{item.showValue !== false}}">{{item.value}}</text>
+      </view>
+    </view>
+    <view class="start-btn" wx:if="{{showStartOverlay}}" bindtap="onStartGame">
+      <text>开始</text>
+    </view>
+  </view>
+
+  <!-- 底部卡片：进度条 + 工具栏 -->
+  <view class="bottom-card">
+    <!-- 进度条 -->
+    <view class="progress-bar-container">
+      <view class="progress-bar-wrapper">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{(currentTarget - 1) / total * 100}}%"></view>
+        </view>
+        <view class="refresh-btn" bindtap="onRestart">
+          <view class="refresh-icon">↺</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 工具栏 -->
+    <view class="game-tools" wx:if="{{mode !== 'memory'}}">
+      <view class="tool-item {{toolHide ? 'active' : ''}}" bindtap="toggleHide">
+        <view class="tool-switch">
+          <view class="tool-slider {{toolHide ? 'on' : ''}}"></view>
+        </view>
+        <text class="tool-label">隐藏方格</text>
+      </view>
+      <view class="tool-item {{toolMark ? 'active' : ''}}" bindtap="toggleMark">
+        <view class="tool-switch">
+          <view class="tool-slider {{toolMark ? 'on' : ''}}"></view>
+        </view>
+        <text class="tool-label">标记方格</text>
+      </view>
+      <view class="tool-item {{showHint ? 'active' : ''}}" bindtap="toggleHint">
+        <view class="tool-switch">
+          <view class="tool-slider {{showHint ? 'on' : ''}}"></view>
+        </view>
+        <text class="tool-label">提示</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记忆模式跳过按钮（底部卡片外） -->
+  <view class="memory-skip-btn-outer" wx:if="{{isMemoryPhase}}">
+    <view class="memory-skip-btn {{showMemorySkipBtn ? 'show' : ''}}" bindtap="onSkipMemory">
+      <text>已记住，开始训练</text>
+    </view>
+  </view>
+
+  <!-- 倒计时遮罩 -->
+  <view class="overlay countdown-overlay" wx:if="{{showCountdownOverlay}}">
+    <view class="countdown-number">{{countdown}}</view>
+  </view>
+
+  <!-- 参考等级表 - 底部弹窗 -->
+  <reference-sheet id="refSheet" size="{{size}}" />
+</view>
