@@ -33,6 +33,7 @@ Page({
     }
     return {
       title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
+      path: '/pages/index/index',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   },
@@ -63,25 +64,31 @@ Page({
   doLogin() {
     const that = this;
 
-    // 检查隐私授权状态
-    const checkPrivacy = () => {
-      if (!wx.getPrivacySetting) return that.handleLogin();
-      wx.getPrivacySetting({
-        success: res => {
-          if (res.needAuthorization && wx.requirePrivacyAuthorize) {
-            wx.requirePrivacyAuthorize({
-              success: () => that.handleLogin(),
-              fail: () => wx.showToast({ title: '需要同意隐私协议才能登录', icon: 'none' })
-            });
-          } else {
-            that.handleLogin();
-          }
-        },
-        fail: () => that.handleLogin()
-      });
-    };
+    if (!wx.getPrivacySetting) {
+      that.handleLogin();
+      return;
+    }
 
-    checkPrivacy();
+    wx.getPrivacySetting({
+      success: res => {
+        if (res.needAuthorization) {
+          wx.showToast({ title: '请查看弹窗并同意', icon: 'none', duration: 2000 });
+        } else {
+          that.handleLogin();
+        }
+      },
+      fail: () => {
+        that.handleLogin();
+      }
+    });
+  },
+
+  onAgreePrivacy(e) {
+    if (e.detail && (e.detail.eventId || e.detail.errMsg === 'agreePrivacyAuthorization:ok')) {
+      this.handleLogin();
+    } else {
+      wx.showToast({ title: '需要同意隐私协议才能使用', icon: 'none' });
+    }
   },
 
   handleLogin() {

@@ -13,6 +13,7 @@ Page({
       { key: 'memory', name: '记忆模式', desc: '先记忆后点击', icon: '✦', bg: '#fff', iconBg: 'linear-gradient(135deg,#0284C7,#7DD3FC)' }
     ],
     showAgeSelector: false,
+    stats: { bestTime: '--' }
   },
 
   onLoad() {
@@ -22,6 +23,45 @@ Page({
   onShow() {
     this.checkLogin();
     this.checkAgeGroup();
+    this.loadBestTime();
+  },
+
+  loadBestTime() {
+    const localRecords = wx.getStorageSync('shult_records') || [];
+    let allRecords = [...localRecords];
+
+    // 同上查询云端数据
+    wx.cloud.callFunction({
+      name: 'getUserTrainRecords',
+      data: {},
+      success: res => {
+        if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
+          allRecords = localRecords.concat(res.result.data);
+        }
+        this.computeBestTime(allRecords);
+      },
+      fail: () => {
+        this.computeBestTime(allRecords);
+      }
+    });
+  },
+
+  computeBestTime(allRecords) {
+    let bestTimeMs = Infinity;
+    allRecords.forEach(r => {
+      if (r.status === 'success' && r.timeCost < bestTimeMs) {
+        bestTimeMs = r.timeCost;
+      }
+    });
+    const bestTime = bestTimeMs === Infinity ? '--' : this.formatTime(bestTimeMs);
+    app.globalData.globalBestTime = bestTime;
+    this.setData({ stats: { bestTime } });
+  },
+
+  formatTime(ms) {
+    const s = Math.floor(ms / 1000);
+    const cs = Math.floor((ms % 1000) / 10);
+    return `${s}.${cs.toString().padStart(2, '0')}秒`;
   },
 
   checkAgeGroup() {
@@ -76,6 +116,44 @@ Page({
     const mode = e.currentTarget.dataset.mode;
     wx.navigateTo({
       url: `/pages/level/level?mode=${mode}`
+    });
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    const app = getApp();
+    if (app.globalData.globalBestTime === '--') {
+      app.globalData.globalBestTime = this.data.stats.bestTime || '--';
+    }
+    return {
+      title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
+      path: '/pages/index/index',
+      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+    };
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    const app = getApp();
+    if (app.globalData.globalBestTime === '--') {
+      app.globalData.globalBestTime = this.data.stats.bestTime || '--';
+    }
+    return {
+      title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
+      query: ''
+    };
+  },
+
+  // 复制链接
+  onCopyLink() {
+    wx.setClipboardData({
+      data: 'https://tcb.cloud.tencent.com/dev/xcx-prj-d5gzqi12z8482282f',
+      success: () => {
+        wx.showToast({ title: '链接已复制', icon: 'success' });
+      },
+      fail: () => {
+        wx.showToast({ title: '复制失败，请重试', icon: 'none' });
+      }
     });
   },
 

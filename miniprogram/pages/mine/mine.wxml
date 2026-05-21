@@ -1,7 +1,7 @@
 <view class="page">
   <!-- ===== 用户信息区 ===== -->
   <view class="user-section">
-    <view wx:if="{{!isLoggedIn}}" class="login-card" bindtap="doLogin">
+    <button wx:if="{{!isLoggedIn}}" class="login-card privacy-btn" open-type="agreePrivacyAuthorization" bindagreeprivacyauthorization="onAgreePrivacy" bindtap="doLogin">
       <view class="avatar-ring">
         <view class="user-avatar-placeholder">
           <view class="grid-icon">
@@ -19,7 +19,7 @@
       </view>
       <text class="user-name">点击授权登录</text>
       <text class="login-tip">登录后同步本地训练数据到云端</text>
-    </view>
+    </button>
     <view wx:else class="login-card">
       <view class="avatar-ring filled">
         <view wx:if="{{userInfo.avatarUrl}}" class="user-avatar">

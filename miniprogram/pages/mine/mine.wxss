@@ -78,6 +78,38 @@
   font-weight: 400;
 }
 
+/* 重置隐私授权按钮样式（必须用button才能触发弹窗） */
+.privacy-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  background: #fff !important;
+  border-radius: 28rpx !important;
+  padding: 32rpx 32rpx 28rpx !important;
+  border: 2rpx solid rgba(0,0,0,0.04) !important;
+  box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04) !important;
+  margin: 0 !important;
+  line-height: inherit !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  height: auto !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.privacy-btn::after {
+  display: none !important;
+}
+
+.privacy-btn .avatar-ring,
+.privacy-btn .user-avatar-placeholder,
+.privacy-btn .grid-icon,
+.privacy-btn .grid-cell,
+.privacy-btn .user-name,
+.privacy-btn .login-tip {
+  pointer-events: none;
+}
+
 .logout-text {
   color: #EF4444;
 }

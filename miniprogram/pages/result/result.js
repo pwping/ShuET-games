@@ -330,6 +330,7 @@ Page({
     }
     return {
       title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
+      path: '/pages/index/index',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   }

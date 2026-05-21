@@ -529,6 +529,7 @@ Page({
   onShareAppMessage() {
     return {
       title: `第 ${this.data.passLevelNumber || 1} 关挑战结束，你能挑战到第几关？`,
+      path: '/pages/index/index',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   }
