@@ -1,0 +1,189 @@
+page {
+  --macaron-pink: #FFD1DC;
+  --macaron-yellow: #FFFACD;
+  --macaron-green: #C1FFC1;
+  --macaron-blue: #B0E0E6;
+  --macaron-purple: #E6E6FA;
+}
+
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFF9F0 0%, #FFF5F5 50%, #F8FAFC 100%);
+}
+
+/* ===== Hero 区域 ===== */
+.hero {
+  position: relative;
+  padding: 64rpx 32rpx 32rpx;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  top: -80rpx; left: -100rpx; right: -100rpx;
+  height: 420rpx;
+  background: linear-gradient(180deg, rgba(255,209,220,0.4) 0%, rgba(240,248,255,0.3) 100%);
+  border-radius: 0 0 80rpx 80rpx;
+  z-index: 0;
+}
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10rpx;
+  font-size: 22rpx; font-weight: 600; color: #E91E63;
+  background: rgba(255,209,220,0.6);
+  padding: 10rpx 28rpx; border-radius: 30rpx;
+  margin-bottom: 20rpx;
+  border: 2rpx solid rgba(233,30,99,0.15);
+}
+.badge-emoji { font-size: 26rpx; }
+
+.hero-title {
+  display: block;
+  font-size: 52rpx; font-weight: 900;
+  color: #333;
+  letter-spacing: -2rpx;
+  margin-bottom: 12rpx;
+}
+.hero-desc {
+  font-size: 26rpx; color: #888;
+  margin-bottom: 28rpx;
+}
+
+/* 统计信息 */
+.hero-stats {
+  position: relative; z-index: 1;
+  display: flex; align-items: center;
+  justify-content: space-around;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx 16rpx;
+  box-shadow:
+    0 6rpx 20rpx rgba(0,0,0,0.06),
+    inset 0 -2rpx 0 rgba(0,0,0,0.03);
+  border: 2rpx solid #F0F0F0;
+}
+.stat-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6rpx;
+}
+.stat-num {
+  font-size: 36rpx; font-weight: 900;
+  color: #333; letter-spacing: -1rpx;
+}
+.stat-label {
+  font-size: 20rpx; color: #AAA;
+  font-weight: 500;
+}
+.stat-pink .stat-num { color: #E91E63; }
+.stat-yellow .stat-num { color: #F9A825; }
+.stat-green .stat-num { color: #43A047; }
+
+.stat-divider {
+  width: 2rpx; height: 40rpx;
+  background: linear-gradient(180deg, transparent, #E0E0E0, transparent);
+}
+
+/* ===== 模式选择区域 ===== */
+.mode-section {
+  padding: 40rpx 32rpx 100rpx;
+}
+.section-header {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24rpx; padding: 0 4rpx;
+}
+.section-title {
+  font-size: 34rpx; font-weight: 800;
+  color: #333; letter-spacing: -1rpx;
+}
+.section-sub { font-size: 24rpx; color: #AAA; }
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24rpx;
+}
+
+/* 模式卡片 */
+.mode-card {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 28rpx 24rpx;
+  min-height: 180rpx;
+  display: flex; align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 6rpx 24rpx rgba(0,0,0,0.06),
+    inset 0 1rpx 0 rgba(255,255,255,0.8);
+  border: 2rpx solid rgba(0,0,0,0.04);
+  transition: transform .18s ease,
+              box-shadow .18s ease;
+}
+.mode-card:active {
+  transform: scale(.97) translateY(4rpx);
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.mode-card-inner {
+  width: 100%;
+  display: flex; align-items: center;
+  gap: 24rpx;
+}
+
+/* 迷你预览 */
+.mode-preview {
+  flex-shrink: 0;
+}
+.preview-board {
+  width: 100rpx; height: 100rpx;
+  border-radius: 16rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6rpx;
+  padding: 10rpx;
+  box-shadow: inset 0 2rpx 6rpx rgba(0,0,0,0.08);
+}
+.preview-tile {
+  border-radius: 8rpx;
+  display: flex; align-items: center;
+  justify-content: center;
+  font-size: 22rpx; font-weight: 800;
+  box-shadow:
+    inset 0 1rpx 2rpx rgba(255,255,255,0.5),
+    0 2rpx 4rpx rgba(0,0,0,0.1);
+}
+.pt-pink {
+  background: linear-gradient(145deg, var(--macaron-pink), #FFB6C1);
+  color: #8B4557;
+}
+.pt-yellow {
+  background: linear-gradient(145deg, var(--macaron-yellow), #F0E68C);
+  color: #8B8000;
+}
+.pt-green {
+  background: linear-gradient(145deg, var(--macaron-green), #98FB98);
+  color: #2E8B57;
+}
+.pt-blue {
+  background: linear-gradient(145deg, var(--macaron-blue), #ADD8E6);
+  color: #4682B4;
+}
+
+/* 模式信息 */
+.mode-info {
+  flex: 1;
+}
+.mode-name {
+  font-size: 30rpx; font-weight: 700;
+  color: #333; margin-bottom: 6rpx;
+}
+.mode-desc {
+  font-size: 22rpx; color: #999;
+  line-height: 1.4;
+}
+
+/* 箭头 */
+.mode-arrow {
+  font-size: 32rpx; color: #CCC;
+  font-weight: 300;
+}

@@ -10,10 +10,10 @@ Component({
     onSwitch(e) {
       const page = e.currentTarget.dataset.page;
       if (page === this.properties.active) return;
-      if (page === 'pass') {
-        wx.navigateTo({ url: '/pages/pass/pass' });
+      if (page === 'index') {
+        wx.navigateTo({ url: '/pages/index/index' });
       } else {
-        wx.switchTab({ url: page === 'index' ? '/pages/index/index' : '/pages/mine/mine' });
+        wx.navigateTo({ url: '/pages/mine/mine' });
       }
     }
   }

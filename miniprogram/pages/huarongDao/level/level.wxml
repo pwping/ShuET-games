@@ -1,0 +1,80 @@
+<view class="page-container">
+  <!-- 顶部 Hero -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="hero-badge">
+        <text class="badge-emoji">🎯</text>
+        数字华容道
+      </view>
+      <view class="hero-title">选择难度</view>
+      <view class="hero-desc">从入门到大师，挑战你的极限</view>
+    </view>
+  </view>
+
+  <!-- 难度选择区域 -->
+  <view class="level-section">
+    <view class="section-header">
+      <text class="section-title">难度等级</text>
+      <text class="section-sub">由简入繁，循序渐进</text>
+    </view>
+
+    <view class="level-grid">
+      <view class="level-card lc-pink" wx:if="{{levels[0]}}"
+        bindtap="onLevelTap" data-size="{{levels[0].size}}">
+        <view class="level-size">{{levels[0].size}}×{{levels[0].size}}</view>
+        <view class="level-name">{{levels[0].name}}</view>
+        <view class="level-stars">★</view>
+      </view>
+
+      <view class="level-card lc-yellow" wx:if="{{levels[1]}}"
+        bindtap="onLevelTap" data-size="{{levels[1].size}}">
+        <view class="level-size">{{levels[1].size}}×{{levels[1].size}}</view>
+        <view class="level-name">{{levels[1].name}}</view>
+        <view class="level-stars">★★</view>
+      </view>
+
+      <view class="level-card lc-green" wx:if="{{levels[2]}}"
+        bindtap="onLevelTap" data-size="{{levels[2].size}}">
+        <view class="level-size">{{levels[2].size}}×{{levels[2].size}}</view>
+        <view class="level-name">{{levels[2].name}}</view>
+        <view class="level-stars">★★★</view>
+      </view>
+
+      <view class="level-card lc-blue" wx:if="{{levels[3]}}"
+        bindtap="onLevelTap" data-size="{{levels[3].size}}">
+        <view class="level-size">{{levels[3].size}}×{{levels[3].size}}</view>
+        <view class="level-name">{{levels[3].name}}</view>
+        <view class="level-stars">★★★★</view>
+      </view>
+
+      <view class="level-card lc-purple" wx:if="{{levels[4]}}"
+        bindtap="onLevelTap" data-size="{{levels[4].size}}">
+        <view class="level-size">{{levels[4].size}}×{{levels[4].size}}</view>
+        <view class="level-name">{{levels[4].name}}</view>
+        <view class="level-stars">★★★★★</view>
+      </view>
+
+      <view class="level-card lc-peach" wx:if="{{levels[5]}}"
+        bindtap="onLevelTap" data-size="{{levels[5].size}}">
+        <view class="level-size">{{levels[5].size}}×{{levels[5].size}}</view>
+        <view class="level-name">{{levels[5].name}}</view>
+        <view class="level-stars">★★★★★★</view>
+      </view>
+
+      <view class="level-card lc-pink-dark" wx:if="{{levels[6]}}"
+        bindtap="onLevelTap" data-size="{{levels[6].size}}">
+        <view class="level-size">{{levels[6].size}}×{{levels[6].size}}</view>
+        <view class="level-name">{{levels[6].name}}</view>
+        <view class="level-stars">★★★★★★★</view>
+      </view>
+
+      <view class="level-card lc-yellow-dark" wx:if="{{levels[7]}}"
+        bindtap="onLevelTap" data-size="{{levels[7].size}}">
+        <view class="level-size">{{levels[7].size}}×{{levels[7].size}}</view>
+        <view class="level-name">{{levels[7].name}}</view>
+        <view class="level-stars">★★★★★★★★</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -78,6 +78,55 @@
   font-weight: 400;
 }
 
+/* 头像选择按钮 */
+.avatar-choose-btn {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  line-height: 1;
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
+.avatar-choose-btn::after {
+  border: none;
+}
+.avatar-choose-btn .avatar-ring,
+.avatar-choose-btn .user-avatar,
+.avatar-choose-btn .user-avatar-placeholder {
+  pointer-events: none;
+}
+
+/* 昵称输入框 */
+.nickname-input {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E293B;
+  text-align: center;
+  background: transparent;
+  width: auto;
+  min-width: 200rpx;
+  max-width: 400rpx;
+  padding: 4rpx 16rpx;
+  border: 2rpx solid transparent;
+  border-radius: 8rpx;
+  margin-bottom: 4rpx;
+}
+.nickname-input:focus {
+  border-color: #07C160;
+  background: rgba(7, 193, 96, 0.04);
+}
+.nickname-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.nickname-tip {
+  font-size: 20rpx;
+  color: #94A3B8;
+}
+
 /* 重置隐私授权按钮样式（必须用button才能触发弹窗） */
 .privacy-btn {
   display: flex !important;

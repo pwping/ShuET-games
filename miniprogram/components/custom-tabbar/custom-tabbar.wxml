@@ -1,15 +1,11 @@
 <view class="custom-tabbar">
   <view class="tab-item {{active === 'index' ? 'active' : ''}}" bindtap="onSwitch" data-page="index">
     <view class="tab-icon {{active === 'index' ? 'active' : ''}}">
-      <view class="grid-icon">
-        <view class="grid-cell" wx:for="{{4}}" wx:key="*this"></view>
+      <view class="grid-icon-4">
+        <view class="gc" wx:for="{{4}}" wx:key="*this"></view>
       </view>
     </view>
     <text class="tab-label {{active === 'index' ? 'active' : ''}}">专注力</text>
-  </view>
-  <view class="tab-item {{active === 'pass' ? 'active' : ''}}" bindtap="onSwitch" data-page="pass">
-    <text class="tab-icon {{active === 'pass' ? 'active' : ''}}">☆</text>
-    <text class="tab-label {{active === 'pass' ? 'active' : ''}}">挑战</text>
   </view>
   <view class="tab-item {{active === 'mine' ? 'active' : ''}}" bindtap="onSwitch" data-page="mine">
     <text class="tab-icon {{active === 'mine' ? 'active' : ''}}">◎</text>

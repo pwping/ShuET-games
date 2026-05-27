@@ -1,0 +1,30 @@
+<!-- 隐私授权弹窗 -->
+<view class="privacy-overlay {{visible ? 'show' : ''}}" catchtap="onReject"></view>
+<view class="privacy-dialog {{visible ? 'dialog-show' : ''}}">
+  <!-- 顶部图标 -->
+  <view class="privacy-icon-wrap">
+    <view class="privacy-icon-bg"></view>
+    <view class="privacy-icon">
+      <view class="shield-icon">
+        <view class="shield-body">
+          <text class="shield-check">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标题 -->
+  <view class="privacy-title">用户隐私保护授权说明</view>
+
+  <!-- 描述 -->
+  <view class="privacy-desc">
+    为了更好地保障你的个人权益，使用我们的<text class="privacy-app-name">《舒尔特方格 专注力大挑战》</text>服务前需要你阅读
+    <text class="privacy-link" catchtap="onOpenPrivacyContract">《用户隐私保护指引》</text>，如你同意该指引，请点"同意"开始授权登录小程序
+  </view>
+
+  <!-- 按钮区 -->
+  <view class="privacy-actions">
+    <button class="pa-btn pa-btn-secondary" bindtap="onReject">拒绝</button>
+    <button class="pa-btn pa-btn-primary" bindtap="onAgree">同意</button>
+  </view>
+</view>

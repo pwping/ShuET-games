@@ -15,6 +15,7 @@ Page({
       currentLevel: '--'
     },
     isLoggedIn: false,
+    showAvatarGuide: false,
     showBestDetail: false,
     bestDetailData: [],
     isDragging: false,
@@ -48,11 +49,8 @@ Page({
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     this.setData({ defaultNickName: '微信用户' + randomLetter + randomNum });
 
-    if (wx.onNeedPrivacyAuthorization) {
-      wx.onNeedPrivacyAuthorization((resolve) => {
-        // 不处理，微信自动弹出官方隐私保护提示弹窗
-      });
-    }
+    // 隐私授权由 privacy-auth 组件统一处理
+    // 不需要在此处监听，组件 attached 时会自动注册
   },
 
   onShow() {
@@ -62,25 +60,71 @@ Page({
   },
 
   doLogin() {
-    const that = this;
-
-    if (!wx.getPrivacySetting) {
-      that.handleLogin();
-      return;
+    // 直接执行登录，不再调用 getUserProfile
+    // 头像和昵称通过登录后的组件交互获取
+    if (wx.requirePrivacyAuthorize) {
+      wx.requirePrivacyAuthorize({
+        success: () => this.handleLogin(),
+        fail: () => {}
+      });
+    } else {
+      this.handleLogin();
     }
+  },
 
-    wx.getPrivacySetting({
-      success: res => {
-        if (res.needAuthorization) {
-          wx.showToast({ title: '请查看弹窗并同意', icon: 'none', duration: 2000 });
-        } else {
-          that.handleLogin();
+  /** 隐私弹窗「同意」后回调 */
+  onPrivacyAgreed() {
+    this.handleLogin();
+    // 登录成功后弹出头像设置引导
+    this.setData({ showAvatarGuide: true });
+  },
+
+  /** 头像引导完成 */
+  onAvatarGuideDone(e) {
+    this.setData({ showAvatarGuide: false });
+    if (e.detail.avatarUrl) {
+      this.saveUserInfo({ avatarUrl: e.detail.avatarUrl });
+    }
+  },
+
+  /** 点头像——微信原生选择器 */
+  onChooseAvatar(e) {
+    const { avatarUrl } = e.detail;
+    if (avatarUrl) {
+      this.saveUserInfo({ avatarUrl });
+    }
+  },
+
+  /** 昵称变更 */
+  onNicknameChange(e) {
+    const nickName = e.detail.value;
+    if (nickName) {
+      this.saveUserInfo({ nickName });
+    }
+  },
+
+  /** 保存用户信息：本地缓存 + 云端数据库 */
+  saveUserInfo(partial) {
+    const userInfo = { ...this.data.userInfo, ...partial };
+    this.setData({ userInfo });
+    app.globalData.userInfo = userInfo;
+    wx.setStorageSync('shult_user_info', userInfo);
+
+    // 同步到云端
+    if (app.globalData.openid) {
+      wx.cloud.callFunction({
+        name: 'updateUserInfo',
+        data: {
+          nickName: userInfo.nickName,
+          avatarUrl: userInfo.avatarUrl
         }
-      },
-      fail: () => {
-        that.handleLogin();
-      }
-    });
+      });
+    }
+  },
+
+  /** 隐私弹窗「拒绝」后回调 */
+  onPrivacyRejected() {
+    wx.showToast({ title: '需要同意隐私协议才能登录', icon: 'none' });
   },
 
   onAgreePrivacy(e) {
@@ -141,16 +185,28 @@ Page({
   },
 
   loadUserInfo() {
-    const userInfo = wx.getStorageSync('shult_user_info') || {};
-    this.setData({ userInfo });
+    // 1. 先从本地缓存读取
+    const cached = wx.getStorageSync('shult_user_info') || {};
+    const hasLocal = cached.avatarUrl || cached.nickName;
 
+    if (hasLocal) {
+      // 缓存中有数据，直接用
+      this.setData({ userInfo: cached });
+      app.globalData.userInfo = cached;
+      return;
+    }
+
+    // 2. 缓存为空，从云端读取
     if (app.globalData.openid) {
       wx.cloud.callFunction({
         name: 'getUserInfo',
         success: res => {
           if (res.result && res.result.code === 200) {
-            this.setData({ userInfo: res.result.data });
-            wx.setStorageSync('shult_user_info', res.result.data);
+            const cloudData = res.result.data || {};
+            this.setData({ userInfo: cloudData });
+            app.globalData.userInfo = cloudData;
+            // 存入缓存，下次直接用
+            wx.setStorageSync('shult_user_info', cloudData);
           }
         }
       });
@@ -230,11 +286,8 @@ Page({
   computeChallengeProgress() {
     // 先从本地缓存获取挑战进度
     const progress = wx.getStorageSync('shult_challenge_progress');
-    console.log('computeChallengeProgress - local progress:', progress);
 
     if (progress && progress.passLevel) {
-      // 本地缓存有数据，直接显示
-      console.log('computeChallengeProgress - using local progress');
       const passLevel = progress.passLevel;
       const success = progress.success || false;
 
@@ -252,28 +305,19 @@ Page({
     }
 
     // 本地缓存没有数据，查询云端
-    console.log('computeChallengeProgress - querying cloud...');
     wx.cloud.callFunction({
       name: 'getChallengeRecords',
       data: { page: 1, pageSize: 1 },
       success: res => {
-        console.log('computeChallengeProgress - cloud response:', res);
         if (res.result && res.result.code === 200 && Array.isArray(res.result.data) && res.result.data.length > 0) {
-          // 云端有记录，使用云端最新记录
-          const cloudRecord = res.result.data[0];
-          console.log('computeChallengeProgress - using cloud record:', cloudRecord);
-          this.updateChallengeDisplay(cloudRecord);
+          this.updateChallengeDisplay(res.result.data[0]);
         } else {
-          // 云端无记录，显示--
-          console.log('computeChallengeProgress - no cloud records');
           this.setData({
             'stats.currentLevel': '--'
           });
         }
       },
-      fail: (err) => {
-        console.error('computeChallengeProgress - cloud fail:', err);
-        // 查询失败，显示--
+      fail: () => {
         this.setData({
           'stats.currentLevel': '--'
         });
@@ -307,7 +351,6 @@ Page({
       updateTime: new Date().toISOString()
     };
     wx.setStorageSync('shult_challenge_progress', progress);
-    console.log('saveChallengeProgressToLocal:', progress);
   },
 
   formatTime(ms) {

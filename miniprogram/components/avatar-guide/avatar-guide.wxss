@@ -1,0 +1,74 @@
+.ag-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 1000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.ag-overlay.show { opacity: 1; pointer-events: auto; }
+
+.ag-dialog {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  z-index: 1001;
+  width: 540rpx; background: #fff;
+  border-radius: 36rpx; padding: 48rpx 40rpx 36rpx;
+  box-sizing: border-box; text-align: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.15);
+}
+.ag-dialog.dialog-show {
+  opacity: 1; pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.ag-icon { margin-bottom: 16rpx; display: flex; justify-content: center; }
+.ag-icon-circle {
+  width: 80rpx; height: 80rpx; border-radius: 50%;
+  background: linear-gradient(135deg,#07C160,#10B981);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40rpx;
+}
+
+.ag-title {
+  font-size: 34rpx; font-weight: 800; color: #1E293B;
+  margin-bottom: 8rpx;
+}
+.ag-desc {
+  font-size: 24rpx; color: #94A3B8; margin-bottom: 32rpx;
+}
+
+.ag-avatar-btn {
+  padding: 0; margin: 0 auto 36rpx;
+  background: transparent; border: none;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12rpx;
+}
+.ag-avatar-btn::after { border: none; }
+
+.ag-avatar-wrap {
+  width: 160rpx; height: 160rpx; border-radius: 50%;
+  border: 3rpx dashed #D1D5DB;
+  overflow: hidden; background: #F9FAFB;
+  display: flex; align-items: center; justify-content: center;
+}
+.ag-avatar-img { width: 100%; height: 100%; }
+.ag-avatar-img image { width: 100%; height: 100%; }
+
+.ag-plus { font-size: 56rpx; color: #9CA3AF; font-weight: 300; }
+.ag-btn-text { font-size: 24rpx; color: #07C160; font-weight: 600; }
+
+.ag-actions { display: flex; gap: 20rpx; }
+.ag-btn {
+  flex: 1; height: 80rpx; border-radius: 40rpx;
+  font-size: 28rpx; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; line-height: 1; border: none;
+}
+.ag-btn::after { border: none; }
+.ag-btn-skip { background: #F1F5F9; color: #94A3B8; }
+.ag-btn-ok {
+  background: linear-gradient(135deg,#07C160,#10B981);
+  color: #fff;
+  box-shadow: 0 6rpx 20rpx rgba(7,193,96,0.3);
+}

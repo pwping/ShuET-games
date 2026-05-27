@@ -119,6 +119,11 @@ Page({
     });
   },
 
+  // 挑战闯关
+  onGoChallenge() {
+    wx.navigateTo({ url: '/pages/pass/pass' });
+  },
+
   // 分享给好友
   onShareAppMessage() {
     const app = getApp();

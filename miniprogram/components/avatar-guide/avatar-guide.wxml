@@ -1,0 +1,26 @@
+<!-- 头像设置引导 -->
+<view class="ag-overlay {{visible ? 'show' : ''}}"></view>
+<view class="ag-dialog {{visible ? 'dialog-show' : ''}}">
+  <view class="ag-icon">
+    <view class="ag-icon-circle">👤</view>
+  </view>
+  <view class="ag-title">登录成功</view>
+  <view class="ag-desc">设置一个头像来个性化你的账户吧</view>
+
+  <button class="ag-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+    <view class="ag-avatar-wrap">
+      <view wx:if="{{avatarUrl}}" class="ag-avatar-img">
+        <image src="{{avatarUrl}}" mode="aspectFill" style="width:100%;height:100%"></image>
+      </view>
+      <view wx:else class="ag-avatar-empty">
+        <text class="ag-plus">+</text>
+      </view>
+    </view>
+    <text class="ag-btn-text">{{avatarUrl ? '更换头像' : '点击选择头像'}}</text>
+  </button>
+
+  <view class="ag-actions">
+    <button class="ag-btn ag-btn-skip" bindtap="onSkip">跳过</button>
+    <button class="ag-btn ag-btn-ok" bindtap="onOk">下一步</button>
+  </view>
+</view>

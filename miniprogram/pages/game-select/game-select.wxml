@@ -1,0 +1,58 @@
+<view class="page-container">
+  <!-- Hero -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="hero-badge">
+        <view class="badge-dot"></view>
+        脑力训练
+      </view>
+      <view class="hero-title">智趣训练</view>
+      <view class="hero-desc">选择游戏，开启你的脑力挑战之旅</view>
+    </view>
+  </view>
+
+  <!-- 游戏卡片 -->
+  <view class="game-section">
+    <view class="section-header">
+      <text class="section-title">选择游戏</text>
+      <text class="section-sub">两款经典脑力训练游戏</text>
+    </view>
+    <view class="game-grid">
+      <view class="game-card" wx:for="{{games}}" wx:key="key" bindtap="onGameTap" data-key="{{item.key}}">
+        <view class="game-card-inner">
+          <view class="game-icon-wrap">
+            <view class="game-icon" style="background:{{item.iconBg}};">
+              <view wx:if="{{item.grid}}" class="grid-3x3">
+                <view class="gc" wx:for="{{9}}" wx:key="*this"></view>
+              </view>
+              <view wx:else class="klotski-icon">
+                <view class="ki-row">
+                  <view class="ki-tile">1</view>
+                  <view class="ki-tile">2</view>
+                  <view class="ki-tile">3</view>
+                </view>
+                <view class="ki-row">
+                  <view class="ki-tile">4</view>
+                  <view class="ki-tile">5</view>
+                  <view class="ki-tile">6</view>
+                </view>
+                <view class="ki-row">
+                  <view class="ki-tile">7</view>
+                  <view class="ki-tile">8</view>
+                  <view class="ki-tile ki-empty"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="game-name">{{item.name}}</view>
+          <view class="game-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
+
+  <custom-tabbar active=""></custom-tabbar>
+</view>

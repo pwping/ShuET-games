@@ -1,0 +1,57 @@
+<view class="page-container">
+  <view class="result-card">
+    <!-- 顶部装饰 -->
+    <view class="rc-decoration">
+      <view class="deco-circle dc-1"></view>
+      <view class="deco-circle dc-2"></view>
+      <view class="deco-circle dc-3"></view>
+    </view>
+
+    <!-- 成功图标 -->
+    <view class="rc-icon-wrap">
+      <text class="rc-icon">🎉</text>
+    </view>
+
+    <!-- 标题 -->
+    <view class="rc-title">挑战完成！</view>
+    <view class="rc-mode">数字华容道 {{size}}×{{size}}</view>
+
+    <!-- 统计数据 -->
+    <view class="rc-stats">
+      <view class="rs-item rs-time">
+        <view class="rs-icon rs-icon-time">⏱</view>
+        <view class="rs-data">
+          <text class="rs-value">{{timeStr}}</text>
+          <text class="rs-label">用时</text>
+        </view>
+      </view>
+      <view class="rs-divider"></view>
+      <view class="rs-item rs-moves">
+        <view class="rs-icon rs-icon-steps">👣</view>
+        <view class="rs-data">
+          <text class="rs-value">{{moves}}步</text>
+          <text class="rs-label">步数</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 星级评价 -->
+    <view class="rc-stars">
+      <text class="star {{moves <= size * 10 ? 'active' : ''}}">★</text>
+      <text class="star {{moves <= size * 15 ? 'active' : ''}}">★</text>
+      <text class="star {{moves <= size * 25 ? 'active' : ''}}">★</text>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="rc-actions">
+      <button class="rca-btn rca-btn-primary" bindtap="onRetry">
+        <text class="btn-icon">↻</text>
+        再来一次
+      </button>
+      <button class="rca-btn rca-btn-secondary" bindtap="onBackMenu">
+        <text class="btn-icon">←</text>
+        返回选关
+      </button>
+    </view>
+  </view>
+</view>

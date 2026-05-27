@@ -42,14 +42,13 @@
 }
 
 /* 导航栏四宫格图标 */
-.tab-icon .grid-icon {
+.grid-icon-4 {
   display: grid;
   grid-template-columns: repeat(2, 10rpx);
   gap: 3rpx;
   justify-content: center;
 }
-
-.tab-icon .grid-cell {
+.gc {
   width: 10rpx;
   height: 10rpx;
   background: currentColor;

@@ -21,25 +21,30 @@
       <text class="login-tip">登录后同步本地训练数据到云端</text>
     </button>
     <view wx:else class="login-card">
-      <view class="avatar-ring filled">
-        <view wx:if="{{userInfo.avatarUrl}}" class="user-avatar">
-          <image src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
-        </view>
-        <view wx:else class="user-avatar-placeholder logged">
-          <view class="grid-icon">
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
+      <button class="avatar-choose-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <view class="avatar-ring {{userInfo.avatarUrl ? '' : 'filled'}}">
+          <view wx:if="{{userInfo.avatarUrl}}" class="user-avatar">
+            <image src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+          </view>
+          <view wx:else class="user-avatar-placeholder logged">
+            <view class="grid-icon">
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+              <view class="grid-cell"></view>
+            </view>
           </view>
         </view>
+      </button>
+      <view class="nickname-wrap">
+        <input class="nickname-input" type="nickname" value="{{userInfo.nickName || defaultNickName}}" bindinput="onNicknameChange" bindblur="onNicknameChange" placeholder="点击设置昵称" />
+        <text class="nickname-tip" wx:if="{{!userInfo.nickName}}">点击可选取微信昵称</text>
       </view>
-      <text class="user-name">{{userInfo.nickName || defaultNickName}}</text>
     </view>
   </view>
 
@@ -145,4 +150,10 @@
   </view>
 
   <custom-tabbar active="mine"></custom-tabbar>
+
+  <!-- 隐私授权弹窗 -->
+  <privacy-auth id="privacyAuth" bind:agree="onPrivacyAgreed" bind:reject="onPrivacyRejected"></privacy-auth>
+
+  <!-- 头像设置引导 -->
+  <avatar-guide visible="{{showAvatarGuide}}" bind:done="onAvatarGuideDone"></avatar-guide>
 </view>

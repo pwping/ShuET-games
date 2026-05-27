@@ -1,0 +1,65 @@
+<view class="page-container">
+  <!-- 顶部 Hero 区域 -->
+  <view class="hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="hero-badge">
+        <text class="badge-emoji">🧩</text>
+        脑力训练
+      </view>
+      <view class="hero-title">数字华容道</view>
+      <view class="hero-desc">滑动方块，数字归位</view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="hero-stats">
+      <view class="stat-item stat-pink">
+        <text class="stat-num">1</text>
+        <text class="stat-label">游戏模式</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item stat-yellow">
+        <text class="stat-num">8</text>
+        <text class="stat-label">难度等级</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item stat-green">
+        <text class="stat-num">3×3</text>
+        <text class="stat-label">入门难度</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模式选择区域 -->
+  <view class="mode-section">
+    <view class="section-header">
+      <text class="section-title">选择玩法</text>
+      <text class="section-sub">开始挑战吧！</text>
+    </view>
+
+    <view class="mode-grid">
+      <view class="mode-card" wx:for="{{modes}}" wx:key="key"
+        bindtap="onModeTap" data-mode="{{item.key}}"
+        style="--card-bg: {{item.bg}}; --card-accent: {{item.accent}};">
+        <view class="mode-card-inner">
+          <!-- 迷你华容道预览 -->
+          <view class="mode-preview">
+            <view class="preview-board" style="background:{{item.previewBg}};">
+              <view class="preview-tile pt-pink">1</view>
+              <view class="preview-tile pt-yellow">2</view>
+              <view class="preview-tile pt-green"></view>
+              <view class="preview-tile pt-blue">3</view>
+            </view>
+          </view>
+
+          <view class="mode-info">
+            <view class="mode-name">{{item.name}}</view>
+            <view class="mode-desc">{{item.desc}}</view>
+          </view>
+
+          <view class="mode-arrow">→</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

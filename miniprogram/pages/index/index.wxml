@@ -1,4 +1,5 @@
 <view class="page-container">
+
   <!-- ===== Hero ===== -->
   <view class="hero">
     <view class="hero-bg"></view>
@@ -64,8 +65,21 @@
     </view>
   </view>
 
-  <custom-tabbar active="index"></custom-tabbar>
+  <!-- ===== 挑战闯关卡片 ===== -->
+  <view class="challenge-section">
+    <view class="challenge-card" bindtap="onGoChallenge">
+      <view class="challenge-left">
+        <view class="challenge-icon">☆</view>
+        <view class="challenge-info">
+          <text class="challenge-title">挑战闯关</text>
+          <text class="challenge-desc">试试你能到第几关</text>
+        </view>
+      </view>
+      <view class="challenge-arrow">›</view>
+    </view>
+  </view>
 
   <!-- 年龄段选择弹窗（共用组件） -->
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
+
 </view>

@@ -1,0 +1,134 @@
+.page-container {
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  padding: 80rpx 32rpx 0;
+  overflow: hidden;
+  margin-bottom: 48rpx;
+}
+.hero-bg {
+  position: absolute;
+  top: -60rpx; left: -100rpx; right: -100rpx;
+  height: 420rpx;
+  background: linear-gradient(180deg,#F0FDF4 0%,#F8FAFC 100%);
+  border-radius: 0 0 60rpx 60rpx;
+  z-index: 0;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10rpx;
+  font-size: 22rpx; font-weight: 600; color: #07C160;
+  background: rgba(7,193,96,0.08); padding: 8rpx 24rpx;
+  border-radius: 24rpx; margin-bottom: 20rpx;
+  border: 2rpx solid rgba(7,193,96,0.12);
+}
+.badge-dot {
+  width: 12rpx; height: 12rpx; border-radius: 50%;
+  background: #07C160;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.8)}
+}
+.hero-title {
+  display: block;
+  font-size: 52rpx; font-weight: 800; color: #07C160;
+  letter-spacing: -2rpx; margin-bottom: 12rpx;
+}
+.hero-desc {
+  font-size: 26rpx; color: #64748B;
+}
+
+/* ===== 游戏卡片 ===== */
+.game-section {
+  padding: 0 32rpx 60rpx;
+}
+.section-header {
+  display: flex; align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24rpx; padding: 0 4rpx;
+}
+.section-title {
+  font-size: 32rpx; font-weight: 800; color: #1E293B;
+  letter-spacing: -1rpx;
+}
+.section-sub {
+  font-size: 22rpx; color: #94A3B8;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+}
+.game-card {
+  border-radius: 28rpx; padding: 40rpx 24rpx 32rpx;
+  min-height: 280rpx;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff;
+  box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  border: 2rpx solid rgba(0,0,0,0.04);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.game-card:active {
+  transform: scale(.96) translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+}
+.game-card-inner {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+
+/* 图标 */
+.game-icon-wrap {
+  position: relative; margin-bottom: 24rpx;
+}
+.game-icon-wrap::before {
+  content: ''; position: absolute;
+  top:-4rpx; left:-4rpx; right:-4rpx; bottom:-4rpx;
+  background: inherit; border-radius: 24rpx;
+  opacity: .18; filter: blur(16rpx); z-index: 0;
+}
+.game-icon {
+  position: relative; z-index: 1;
+  width: 100rpx; height: 100rpx; border-radius: 24rpx;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 -2rpx 4rpx rgba(0,0,0,0.08);
+}
+
+/* 舒尔特3x3图标 */
+.grid-3x3 {
+  display: grid;
+  grid-template-columns: repeat(3, 18rpx);
+  gap: 4rpx;
+}
+.gc {
+  width: 18rpx; height: 18rpx;
+  background: #fff; border-radius: 3rpx;
+}
+
+/* 华容道图标 */
+.klotski-icon {
+  display: flex; flex-direction: column; gap: 3rpx;
+}
+.ki-row { display: flex; gap: 3rpx; }
+.ki-tile {
+  width: 22rpx; height: 22rpx;
+  background: rgba(255,255,255,0.9); border-radius: 4rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14rpx; font-weight: 700; color: #A855F7;
+}
+.ki-empty { background: transparent; }
+
+.game-name {
+  font-size: 30rpx; font-weight: 700; color: #1E293B;
+  margin-bottom: 8rpx;
+}
+.game-desc {
+  font-size: 22rpx; color: #64748B; line-height: 1.4;
+}

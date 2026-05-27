@@ -3,7 +3,6 @@
   "navigationBarBackgroundColor": "#F0FDF4",
   "navigationBarTextStyle": "black",
   "usingComponents": {
-    "custom-tabbar": "/components/custom-tabbar/custom-tabbar",
     "age-group-selector": "/components/age-group-selector/age-group-selector"
   }
 }

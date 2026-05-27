@@ -1,0 +1,196 @@
+/* ===== 遮罩层 ===== */
+.privacy-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.privacy-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== 弹窗主体 ===== */
+.privacy-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  z-index: 1000;
+  width: 600rpx;
+  background: #FFFFFF;
+  border-radius: 36rpx;
+  padding: 56rpx 48rpx 44rpx;
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+}
+.privacy-dialog.dialog-show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ===== 图标区域 ===== */
+.privacy-icon-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28rpx;
+}
+.privacy-icon-bg {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(7, 193, 96, 0.1);
+  border-radius: 50%;
+  filter: blur(16rpx);
+}
+.privacy-icon {
+  position: relative;
+  z-index: 1;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(135deg, #07C160, #10B981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.25);
+}
+
+/* 盾牌图标 */
+.shield-icon {
+  width: 48rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shield-body {
+  width: 40rpx;
+  height: 50rpx;
+  border: 3rpx solid #fff;
+  border-radius: 8rpx 8rpx 12rpx 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.shield-body::before {
+  content: '';
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 16rpx solid transparent;
+  border-right: 16rpx solid transparent;
+  border-bottom: 14rpx solid #fff;
+}
+.shield-check {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ===== 标题 ===== */
+.privacy-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1E293B;
+  text-align: center;
+  letter-spacing: -0.5rpx;
+  margin-bottom: 16rpx;
+}
+
+/* ===== 描述 ===== */
+.privacy-desc {
+  font-size: 26rpx;
+  color: #64748B;
+  line-height: 1.6;
+  margin-bottom: 36rpx;
+}
+.privacy-link {
+  color: #07C160;
+  font-weight: 600;
+}
+.privacy-app-name {
+  color: #1E293B;
+  font-weight: 700;
+}
+
+/* ===== 隐私摘要 ===== */
+.privacy-summary {
+  background: #F8FAFC;
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 36rpx;
+}
+.ps-item {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+.ps-item:last-child {
+  margin-bottom: 0;
+}
+.ps-dot {
+  font-size: 24rpx;
+  color: #07C160;
+  font-weight: 700;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+.ps-text {
+  font-size: 24rpx;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* ===== 按钮区 ===== */
+.privacy-actions {
+  display: flex;
+  gap: 20rpx;
+}
+.pa-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  border: none;
+  transition: all 0.2s ease;
+}
+.pa-btn::after {
+  border: none;
+}
+.pa-btn-secondary {
+  background: #F1F5F9;
+  color: #64748B;
+}
+.pa-btn-secondary:active {
+  background: #E2E8F0;
+}
+.pa-btn-primary {
+  background: linear-gradient(135deg, #07C160, #10B981);
+  color: #fff;
+  box-shadow: 0 6rpx 20rpx rgba(7, 193, 96, 0.3);
+}
+.pa-btn-primary:active {
+  transform: scale(0.96);
+  box-shadow: 0 2rpx 8rpx rgba(7, 193, 96, 0.2);
+}

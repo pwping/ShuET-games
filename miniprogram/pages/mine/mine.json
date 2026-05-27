@@ -3,6 +3,8 @@
   "navigationBarBackgroundColor": "#ffffff",
   "navigationBarTextStyle": "black",
   "usingComponents": {
-    "custom-tabbar": "/components/custom-tabbar/custom-tabbar"
+    "custom-tabbar": "/components/custom-tabbar/custom-tabbar",
+    "privacy-auth": "/components/privacy-auth/privacy-auth",
+    "avatar-guide": "/components/avatar-guide/avatar-guide"
   }
 }

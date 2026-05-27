@@ -1,12 +1,13 @@
 .page-container {
   min-height: 100vh;
-  background: #FFFFFF;
+  background: #F0FDF4;
 }
+
 
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  padding: 64rpx 32rpx 0;
+  padding: 32rpx 32rpx 0;
   overflow: hidden;
 }
 
@@ -115,8 +116,9 @@
 
 /* ===== 模式区域 ===== */
 .mode-section {
-  padding: 48rpx 32rpx 100rpx;
+  padding: 48rpx 32rpx 32rpx;
   overflow: hidden;
+  background: #FFFFFF;
 }
 
 .section-header {
@@ -312,6 +314,75 @@
   font-size: 22rpx;
   color: #64748B;
   line-height: 1.3;
+}
+
+/* ===== 挑战闯关卡片 ===== */
+.challenge-section {
+  padding: 0 32rpx 48rpx;
+  background: #FFFFFF;
+}
+
+.challenge-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
+  border: 2rpx solid rgba(0,0,0,0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.challenge-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.challenge-left {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.challenge-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #07C160, #059669);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(7,193,96,0.25);
+  flex-shrink: 0;
+}
+
+.challenge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.challenge-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.challenge-desc {
+  font-size: 24rpx;
+  color: #94A3B8;
+  line-height: 1.3;
+}
+
+.challenge-arrow {
+  font-size: 40rpx;
+  color: #CBD5E1;
+  font-weight: 300;
+  line-height: 1;
 }
 
 
