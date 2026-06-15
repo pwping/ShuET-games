@@ -9,33 +9,7 @@ Page({
     skipLevelTime: 65
   },
 
-  onShow() {
-    this.loadBestRecord();
-  },
-
   loadBestRecord() {
-    // 尝试从云端加载
-    const openid = app.globalData.openid;
-    if (!openid) {
-      this.loadLocalBest();
-      return;
-    }
-
-    wx.cloud.callFunction({
-      name: 'getPassProgress',
-      data: { openid },
-      success: res => {
-        if (res.result && res.result.code === 200 && res.result.data) {
-          this.computeBestFromCloud(res.result.data);
-        } else {
-          this.loadLocalBest();
-        }
-      },
-      fail: () => this.loadLocalBest()
-    });
-  },
-
-  loadLocalBest() {
     const records = wx.getStorageSync('shult_records') || [];
     // 过滤出闯关模式(classic + pass)的记录
     const passRecords = records.filter(r => {
@@ -57,29 +31,6 @@ Page({
       bestRecord: {
         level: passRecords.length,
         fastestTime: this.formatDuration(fastest.timeCost)
-      }
-    });
-  },
-
-  computeBestFromCloud(progress) {
-    // progress.totalCurrent 记录总闯关数
-    const totalCurrent = progress.totalCurrent || 0;
-    if (totalCurrent === 0) {
-      this.setData({ bestRecord: null });
-      return;
-    }
-
-    // 尝试获取本地纪录中的最快用时
-    const records = wx.getStorageSync('shult_records') || [];
-    const passRecords = records.filter(r => r.mode === 'classic' && r.size === 5 && r.status === 'success');
-    const fastest = passRecords.reduce((best, r) => {
-      return (!best || r.timeCost < best.timeCost) ? r : best;
-    }, null);
-
-    this.setData({
-      bestRecord: {
-        level: totalCurrent,
-        fastestTime: fastest ? this.formatDuration(fastest.timeCost) : '--'
       }
     });
   },
@@ -159,16 +110,6 @@ Page({
   },
 
   // 保存挑战进度到本地缓存
-  saveChallengeProgressToLocal(passLevel, success) {
-    const progress = {
-      passLevel: passLevel,
-      success: success,
-      updateTime: new Date().toISOString()
-    };
-    wx.setStorageSync('shult_challenge_progress', progress);
-    console.log('saveChallengeProgressToLocal:', progress);
-  },
-
   // 更新关卡显示
   updateLevelDisplay(nextLevel) {
     const skipLevel = nextLevel + 5;

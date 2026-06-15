@@ -1,4 +1,5 @@
 const app = getApp();
+const settingsSync = require('../../utils/settings-sync');
 
 // 计算闯关时间限制（秒）
 // 规则：初始90s，>50s时每关减5s，30s~50s时每关减2s，10s~30s时每关减1s，到10s为最后一关
@@ -59,7 +60,10 @@ Page({
     resultAccuracy: 0,
     resultSuccessText: '',
     resultFailText: '',
-    isGameOver: false
+    isGameOver: false,
+    showSettings: false,
+    soundEnabled: true,
+    vibrateEnabled: true
   },
 
   timer: null,
@@ -88,6 +92,13 @@ Page({
     wx.setNavigationBarColor({
       backgroundColor: '#EEF2FF',
       frontColor: '#000000'
+    });
+
+    // 加载音效/震动设置
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
+    this.setData({
+      soundEnabled: settings.sound !== false,
+      vibrateEnabled: settings.vibration !== false
     });
 
     this.generateBoard();
@@ -265,74 +276,43 @@ Page({
   saveRecord(success, elapsed) {
     const dateTime = new Date().toISOString();
     const accuracy = success ? 100 : Math.round(this.firstTryCorrect.size / this.data.total * 100);
-
-    console.log('saveRecord - isLoggedIn:', app.globalData.isLoggedIn, 'success:', success, 'elapsed:', elapsed, 'accuracy:', accuracy);
-
-    // 登录时保存到云端（使用专用的挑战记录云函数）
-    if (app.globalData.isLoggedIn) {
-      wx.cloud.callFunction({
-        name: 'saveChallengeRecord',
-        data: {
-          passLevel: this.data.passLevelNumber,
-          timeMs: elapsed,
-          success: success,
-          accuracy: accuracy,
-          createTime: dateTime
-        },
-        success: res => {
-          console.log('saveRecord - cloud response:', res);
-          // 检查返回结果是否有效
-          if (!res.result || res.result.code !== 200) {
-            console.error('saveRecord - cloud returned invalid result:', res);
-            // 如果返回无效，降级保存到本地
-            this.saveToLocal(success, elapsed, accuracy, dateTime);
-          } else {
-            console.log('saveRecord - cloud save success:', res.result.message);
-            // 云端保存成功，也要更新本地进度缓存
-            const progress = {
-              passLevel: this.data.passLevelNumber,
-              success: success,
-              updateTime: new Date().toISOString()
-            };
-            wx.setStorageSync('shult_challenge_progress', progress);
-            console.log('saveRecord - saved challenge progress after cloud success:', progress);
-          }
-        },
-        fail: err => {
-          console.error('saveRecord - cloud fail:', err);
-          // 如果云端保存失败，降级保存到本地
-          this.saveToLocal(success, elapsed, accuracy, dateTime);
-        }
-      });
-      // 登录状态下不保存本地，直接返回
-      return;
-    }
-
-    // 未登录时保存本地
-    this.saveToLocal(success, elapsed, accuracy, dateTime);
-  },
-
-  saveToLocal(success, elapsed, accuracy, dateTime) {
-    const records = wx.getStorageSync('shult_challenge_records') || [];
-    records.unshift({
+    const record = {
       type: 'challenge',
       passLevel: this.data.passLevelNumber,
       timeMs: elapsed,
       success,
       accuracy,
       dateTime
-    });
-    wx.setStorageSync('shult_challenge_records', records.slice(0, 100));
-    console.log('saveToLocal - saved to local storage, count:', records.length);
+    };
 
-    // 更新本地缓存中的挑战进度
+    // 更新挑战进度缓存
     const progress = {
       passLevel: this.data.passLevelNumber,
       success: success,
-      updateTime: new Date().toISOString()
+      updateTime: dateTime
     };
     wx.setStorageSync('shult_challenge_progress', progress);
-    console.log('saveToLocal - saved challenge progress:', progress);
+
+    // 未登录：保存到本地缓存
+    if (!app.globalData.isLoggedIn) {
+      const records = wx.getStorageSync('shult_challenge_records') || [];
+      records.unshift(record);
+      wx.setStorageSync('shult_challenge_records', records.slice(0, 100));
+      return;
+    }
+
+    // 已登录：保存到云端，然后删除本地缓存（不管同步是否成功）
+    wx.cloud.callFunction({
+      name: 'saveChallengeRecord',
+      data: {
+        passLevel: this.data.passLevelNumber,
+        timeMs: elapsed,
+        success: success,
+        accuracy: accuracy,
+        createTime: dateTime
+      }
+    });
+    wx.removeStorageSync('shult_challenge_records');
   },
 
   onTimeOut() {
@@ -483,7 +463,7 @@ Page({
   },
 
   playVibration() {
-    const settings = wx.getStorageSync('shult_settings') || {};
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
     if (settings.vibration === false) return;
     try {
       wx.vibrateShort({ type: 'medium' });
@@ -493,7 +473,7 @@ Page({
   },
 
   playSound(type) {
-    const settings = wx.getStorageSync('shult_settings') || {};
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
     if (settings.sound === false) return;
     try {
       if (!this._audioCtx) {
@@ -526,10 +506,40 @@ Page({
     } catch (e) {}
   },
 
+  /* ===== 设置弹窗 ===== */
+  preventMove() {},
+  onShowSettings() {
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
+    this.setData({
+      showSettings: true,
+      soundEnabled: settings.sound !== false,
+      vibrateEnabled: settings.vibration !== false
+    });
+  },
+  onCloseSettings() {
+    this.setData({ showSettings: false });
+  },
+  onSoundToggle(e) {
+    const enabled = e.detail.value;
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
+    settings.sound = enabled;
+    wx.setStorageSync('shult_challenge_settings', settings);
+    this.setData({ soundEnabled: enabled });
+    settingsSync.syncGlobalAfterToggle('sound', enabled);
+  },
+  onVibrateToggle(e) {
+    const enabled = e.detail.value;
+    const settings = wx.getStorageSync('shult_challenge_settings') || {};
+    settings.vibration = enabled;
+    wx.setStorageSync('shult_challenge_settings', settings);
+    this.setData({ vibrateEnabled: enabled });
+    settingsSync.syncGlobalAfterToggle('vibration', enabled);
+  },
+
   onShareAppMessage() {
     return {
       title: `第 ${this.data.passLevelNumber || 1} 关挑战结束，你能挑战到第几关？`,
-      path: '/pages/index/index',
+      path: '/pages/game-select/game-select',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   }

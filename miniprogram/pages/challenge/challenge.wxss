@@ -59,6 +59,104 @@
   margin: 0 36rpx;
 }
 
+.settings-btn-challenge {
+  flex-shrink: 0;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,#E6F7ED,#D4F5E0);
+  border-radius: 16rpx;
+  transition: background 0.2s;
+}
+.settings-btn-challenge:active {
+  background: #C8E9D6;
+}
+.settings-icon-challenge {
+  font-size: 32rpx;
+  color: #07C160;
+}
+
+/* ===== 游戏设置弹窗 ===== */
+.settings-overlay-cg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+.settings-overlay-cg.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.settings-dialog-cg {
+  width: 540rpx;
+  max-width: 85vw;
+  background: #fff;
+  border-radius: 32rpx;
+  padding: 40rpx 36rpx 28rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.15);
+}
+.settings-title-cg {
+  display: block;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.settings-list-cg {
+  margin: 24rpx 0;
+}
+.settings-row-cg {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid rgba(7,193,96,0.08);
+}
+.settings-row-cg:last-child { border-bottom: none; }
+.settings-label-wrap-cg {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.settings-icon-cg-label {
+  font-size: 32rpx;
+}
+.settings-label-text-cg {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #555;
+}
+.settings-switch-cg {
+  flex-shrink: 0;
+}
+.settings-btn-close-cg {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg,#07C160,#10D579);
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 700;
+  padding: 22rpx 0;
+  border-radius: 48rpx;
+  cursor: pointer;
+  box-shadow: 0 6rpx 20rpx rgba(7,193,96,0.3);
+  transition: transform .15s;
+}
+.settings-btn-close-cg:active {
+  transform: scale(0.97);
+}
+
 /* ===== 棋盘容器 ===== */
 .game-board-container {
   display: flex;

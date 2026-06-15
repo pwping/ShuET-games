@@ -1,0 +1,161 @@
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #FFFBF0;
+  padding: 32rpx 24rpx 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.fixed-header {
+  flex-shrink: 0;
+}
+
+/* ===== 顶部 ===== */
+.header { margin-bottom: 16rpx; }
+.header-top { display: flex; align-items: baseline; gap: 16rpx; }
+.title {
+  font-size: 48rpx; font-weight: 800;
+  color: #854D0E; letter-spacing: -1rpx;
+}
+.count-badge {
+  font-size: 22rpx; color: #FFF;
+  background: linear-gradient(135deg, #FACC15, #FDE047);
+  padding: 4rpx 18rpx; border-radius: 20rpx; font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(250,204,21,0.4);
+}
+.subtitle { font-size: 26rpx; color: #A16207; margin-top: 4rpx; display: block; }
+
+/* ===== 进度条 — 亮黄风格 ===== */
+.progress-bar-wrap {
+  height: 8rpx; background: #FEF3C7; border-radius: 4rpx;
+  margin: 20rpx 0 8rpx; overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #FACC15, #FDE047);
+  border-radius: 4rpx; transition: width 0.4s ease;
+}
+.progress-text {
+  font-size: 22rpx; color: #A16207; display: block;
+  margin-bottom: 16rpx; font-weight: 500;
+}
+
+/* ===== 滚动区域 ===== */
+.level-scroll {
+  flex: 1;
+  height: 0;
+  padding: 0 24rpx 40rpx;
+  margin: 0 -24rpx;
+}
+
+/* ===== 5列网格 ===== */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14rpx;
+}
+
+
+/* ===== 关卡卡片 — 马卡龙立体风格 ===== */
+.level-card {
+  aspect-ratio: 1;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 2rpx solid rgba(255,255,255,0.5);
+  background: linear-gradient(145deg, #FDE68A, #FCD34D);
+  box-shadow: 
+    0 4rpx 8rpx rgba(180,140,80,0.12),
+    0 8rpx 16rpx rgba(180,140,80,0.08),
+    inset 0 1rpx 2rpx rgba(255,255,255,0.8),
+    inset 0 -2rpx 4rpx rgba(200,160,100,0.1);
+  cursor: pointer;
+}
+.level-card:active {
+  transform: scale(0.95) translateY(2rpx);
+  box-shadow: 
+    0 2rpx 4rpx rgba(180,140,80,0.1),
+    inset 0 1rpx 2rpx rgba(255,255,255,0.6);
+}
+
+.level-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+
+.level-num {
+  font-size: 22rpx; font-weight: 700;
+  line-height: 1.2;
+  color: #854D0E;
+}
+
+.level-badge {
+  min-height: 28rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.check-icon {
+  font-size: 24rpx; color: #B45309;
+  font-weight: bold;
+}
+.steps-text {
+  font-size: 16rpx; font-weight: 500;
+  color: #A16207; line-height: 1;
+}
+.lock-icon { font-size: 24rpx; color: #D4D4D4; opacity: 0.6; }
+.lock-row {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+.lock-row .steps-text {
+  font-size: 16rpx; font-weight: 500;
+  color: #A16207; line-height: 1;
+}
+
+/* ===== 加载更多 ===== */
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 36rpx 0;
+  cursor: pointer;
+}
+.load-more:active { opacity: 0.6; }
+.load-more-line {
+  width: 60rpx;
+  height: 2rpx;
+  background: #FDE68A;
+}
+.load-more-text {
+  font-size: 24rpx;
+  color: #D4A574;
+  font-weight: 500;
+  letter-spacing: 2rpx;
+}
+
+/* ===== 加载完成 ===== */
+.load-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 36rpx 0;
+}
+.load-done-line {
+  width: 40rpx;
+  height: 2rpx;
+  background: #E8D5C4;
+}
+.load-done-text {
+  font-size: 22rpx;
+  color: #C4B59A;
+  font-weight: 400;
+}

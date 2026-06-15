@@ -28,6 +28,7 @@
         </view>
       </view>
       <view class="setting-arrow">›</view>
+      <view class="age-hint">适用于舒尔特方格</view>
     </view>
     <view class="setting-divider"></view>
     <view class="setting-item" bindtap="clearCache">
@@ -45,7 +46,4 @@
 
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
 
-  <view class="version-info">
-    <text>舒尔特专注力训练 v1.0.0</text>
-  </view>
 </view>

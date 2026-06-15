@@ -17,7 +17,6 @@ Page({
   },
 
   onLoad() {
-    this.initCloud();
   },
 
   onShow() {
@@ -79,18 +78,6 @@ Page({
     this.setData({ showAgeSelector: false });
   },
 
-  initCloud() {
-    if (!wx.cloud) {
-      console.error('请使用 2.2.3 或以上的基础库');
-      return;
-    }
-
-    wx.cloud.init({
-      env: 'xcx-prj-d5gzqi12z8482282f',
-      traceUser: true
-    });
-  },
-
   checkLogin() {
     const openid = wx.getStorageSync('shult_openid');
     if (openid) {
@@ -132,7 +119,7 @@ Page({
     }
     return {
       title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
-      path: '/pages/index/index',
+      path: '/pages/game-select/game-select',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   },
@@ -160,6 +147,10 @@ Page({
         wx.showToast({ title: '复制失败，请重试', icon: 'none' });
       }
     });
+  },
+
+  onIntro() {
+    wx.navigateTo({ url: '/pages/intro/intro' });
   },
 
 });

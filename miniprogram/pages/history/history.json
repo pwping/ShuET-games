@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "训练记录",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
   "usingComponents": {}
 }

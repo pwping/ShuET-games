@@ -1,4 +1,5 @@
 const app = getApp();
+var rating = require('../../utils/sudoku-rating');
 
 const MODE_NAMES = {
   classic: '经典模式', interference: '干扰模式', shuffle: '换位模式',
@@ -14,72 +15,102 @@ Page({
       bestTime: '--',
       currentLevel: '--'
     },
+    hrStats: {
+      totalCount: 0,
+      bestTime: '--',
+      minMoves: '--'
+    },
+    mbStats: {
+      totalCount: 0,
+      challengeLevel: '--'
+    },
+    sdStats: {
+      totalCount: 0,
+      bestTime: '--'
+    },
     isLoggedIn: false,
     showAvatarGuide: false,
     showBestDetail: false,
     bestDetailData: [],
     isDragging: false,
     sheetTranslateY: 0,
-    defaultNickName: ''
+    defaultNickName: '',
+    swiperCurrent: 0,
+    showSwipeHint: true
   },
 
   _winHeight: 0,
   _sheetStartY: 0,
+  _hasAutoSwiped: false,
 
-  // 页面初始化时注册一次
   onShareAppMessage() {
-    const app = getApp();
     if (app.globalData.globalBestTime === '--') {
       app.globalData.globalBestTime = this.data.stats.bestTime || '--';
     }
     return {
-      title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
-      path: '/pages/index/index',
+      title: '你能几秒内找完以下数字，我用时' + app.globalData.globalBestTime + '。',
+      path: '/pages/game-select/game-select',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   },
 
   onLoad() {
-    const sys = wx.getSystemInfoSync();
+    var sys = wx.getSystemInfoSync();
     this._winHeight = sys.windowHeight;
     this.setData({ sheetTranslateY: this._winHeight });
 
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const randomLetter = letters[Math.floor(Math.random() * 26)];
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var randomLetter = letters[Math.floor(Math.random() * 26)];
+    var randomNum = Math.floor(1000 + Math.random() * 9000);
     this.setData({ defaultNickName: '微信用户' + randomLetter + randomNum });
-
-    // 隐私授权由 privacy-auth 组件统一处理
-    // 不需要在此处监听，组件 attached 时会自动注册
   },
 
   onShow() {
     this.setData({ isLoggedIn: app.globalData.isLoggedIn });
     this.loadUserInfo();
     this.loadStats();
+    this.loadHuarongStats();
+    this.loadMovingBlockStats();
+    this.loadSudokuStats();
+    this.autoSwipeDemo();
+  },
+
+  autoSwipeDemo() {
+    if (this._hasAutoSwiped) return;
+    this._hasAutoSwiped = true;
+    var self = this;
+    setTimeout(function() {
+      self.setData({ swiperCurrent: 1 });
+      setTimeout(function() {
+        self.setData({ swiperCurrent: 0 });
+        self.setData({ showSwipeHint: true });
+        setTimeout(function() {
+          self.setData({ showSwipeHint: false });
+        }, 3000);
+      }, 600);
+    }, 800);
+  },
+
+  onSwiperChange(e) {
+    this.setData({ swiperCurrent: e.detail.current, showSwipeHint: false });
   },
 
   doLogin() {
-    // 直接执行登录，不再调用 getUserProfile
-    // 头像和昵称通过登录后的组件交互获取
     if (wx.requirePrivacyAuthorize) {
       wx.requirePrivacyAuthorize({
-        success: () => this.handleLogin(),
-        fail: () => {}
+        success: function() { this.handleLogin(); }.bind(this),
+        fail: function() {}
       });
     } else {
       this.handleLogin();
     }
   },
 
-  /** 隐私弹窗「同意」后回调 */
   onPrivacyAgreed() {
     this.handleLogin();
-    // 登录成功后弹出头像设置引导
     this.setData({ showAvatarGuide: true });
   },
 
-  /** 头像引导完成 */
   onAvatarGuideDone(e) {
     this.setData({ showAvatarGuide: false });
     if (e.detail.avatarUrl) {
@@ -87,42 +118,35 @@ Page({
     }
   },
 
-  /** 点头像——微信原生选择器 */
   onChooseAvatar(e) {
-    const { avatarUrl } = e.detail;
+    var avatarUrl = e.detail.avatarUrl;
     if (avatarUrl) {
-      this.saveUserInfo({ avatarUrl });
+      this.saveUserInfo({ avatarUrl: avatarUrl });
     }
   },
 
-  /** 昵称变更 */
   onNicknameChange(e) {
-    const nickName = e.detail.value;
+    var nickName = e.detail.value;
     if (nickName) {
-      this.saveUserInfo({ nickName });
+      this.saveUserInfo({ nickName: nickName });
     }
   },
 
-  /** 保存用户信息：本地缓存 + 云端数据库 */
   saveUserInfo(partial) {
-    const userInfo = { ...this.data.userInfo, ...partial };
-    this.setData({ userInfo });
+    var userInfo = {};
+    for (var k in this.data.userInfo) userInfo[k] = this.data.userInfo[k];
+    for (var k in partial) userInfo[k] = partial[k];
+    this.setData({ userInfo: userInfo });
     app.globalData.userInfo = userInfo;
     wx.setStorageSync('shult_user_info', userInfo);
-
-    // 同步到云端
     if (app.globalData.openid) {
       wx.cloud.callFunction({
         name: 'updateUserInfo',
-        data: {
-          nickName: userInfo.nickName,
-          avatarUrl: userInfo.avatarUrl
-        }
+        data: { nickName: userInfo.nickName, avatarUrl: userInfo.avatarUrl }
       });
     }
   },
 
-  /** 隐私弹窗「拒绝」后回调 */
   onPrivacyRejected() {
     wx.showToast({ title: '需要同意隐私协议才能登录', icon: 'none' });
   },
@@ -136,237 +160,372 @@ Page({
   },
 
   handleLogin() {
+    if (this._logining) return;
+    this._logining = true;
     wx.showLoading({ title: '登录中...' });
-
-    const ensureOpenid = () => {
-      return new Promise((resolve) => {
-        if (app.globalData.openid) {
-          resolve();
-          return;
-        }
+    var self = this;
+    var ensureOpenid = function() {
+      return new Promise(function(resolve) {
+        if (app.globalData.openid) { resolve(); return; }
         wx.cloud.callFunction({
           name: 'login',
-          success: res => {
+          success: function(res) {
             if (res.result && res.result.code === 200) {
               app.globalData.openid = res.result.data.openid;
             }
           },
-          complete: () => resolve()
+          complete: function() { resolve(); }
         });
       });
     };
-
-    ensureOpenid().then(() => {
-      app.syncLocalRecordsToCloud(() => {
+    ensureOpenid().then(function() {
+      app.syncLocalRecordsToCloud(function() {
         app.globalData.isLoggedIn = true;
         wx.setStorageSync('shult_login_state', { loggedIn: true });
-        this.setData({ isLoggedIn: true });
+        self.setData({ isLoggedIn: true });
         wx.hideLoading();
         wx.showToast({ title: '登录成功', icon: 'success' });
-        this.loadUserInfo();
-        this.loadStats();
+        self.loadUserInfo();
+        self.loadStats();
+        self.loadHuarongStats();
+        self.loadMovingBlockStats();
+        self.loadSudokuStats();
+        self._logining = false;
       });
+    }).catch(function() {
+      self._logining = false;
     });
   },
 
   doLogout() {
+    var self = this;
     wx.showModal({
       title: '退出登录',
       content: '退出后训练数据将只保存在本地',
-      success: res => {
+      success: function(res) {
         if (res.confirm) {
           app.globalData.isLoggedIn = false;
           wx.setStorageSync('shult_login_state', { loggedIn: false });
-          this.setData({ isLoggedIn: false });
-          this.loadStats();
+          self.setData({ isLoggedIn: false });
+          self.loadAllStats();
         }
       }
     });
   },
 
   loadUserInfo() {
-    // 1. 先从本地缓存读取
-    const cached = wx.getStorageSync('shult_user_info') || {};
-    const hasLocal = cached.avatarUrl || cached.nickName;
-
+    var cached = wx.getStorageSync('shult_user_info') || {};
+    var hasLocal = cached.avatarUrl || cached.nickName;
     if (hasLocal) {
-      // 缓存中有数据，直接用
       this.setData({ userInfo: cached });
       app.globalData.userInfo = cached;
       return;
     }
-
-    // 2. 缓存为空，从云端读取
     if (app.globalData.openid) {
       wx.cloud.callFunction({
         name: 'getUserInfo',
-        success: res => {
+        success: function(res) {
           if (res.result && res.result.code === 200) {
-            const cloudData = res.result.data || {};
+            var cloudData = res.result.data || {};
             this.setData({ userInfo: cloudData });
             app.globalData.userInfo = cloudData;
-            // 存入缓存，下次直接用
             wx.setStorageSync('shult_user_info', cloudData);
           }
-        }
+        }.bind(this)
       });
     }
   },
 
   computeModeStats(records) {
-    const MODE_ORDER = ['classic','interference','shuffle','reverse','parity','challenge','memory'];
-    const map = new Map();
-    records.forEach(r => {
+    var MODE_ORDER = ['classic','interference','shuffle','reverse','parity','challenge','memory'];
+    var map = {};
+    records.forEach(function(r) {
       if (r.status !== 'success') return;
-      const key = `${r.mode}-${r.size}`;
-      if (!map.has(key)) {
-        map.set(key, { key, mode: r.mode, size: r.size, count: 0, bestTimeMs: Infinity });
+      var key = r.mode + '-' + r.size;
+      if (!map[key]) {
+        map[key] = { mode: r.mode, size: r.size, count: 0, bestTimeMs: Infinity };
       }
-      const item = map.get(key);
-      item.count++;
-      if (r.timeCost < item.bestTimeMs) item.bestTimeMs = r.timeCost;
+      map[key].count++;
+      if (r.timeCost < map[key].bestTimeMs) map[key].bestTimeMs = r.timeCost;
     });
-    return Array.from(map.values()).sort((a, b) => {
-      const ai = MODE_ORDER.indexOf(a.mode);
-      const bi = MODE_ORDER.indexOf(b.mode);
+    var arr = [];
+    for (var k in map) arr.push(map[k]);
+    arr.sort(function(a, b) {
+      var ai = MODE_ORDER.indexOf(a.mode);
+      var bi = MODE_ORDER.indexOf(b.mode);
       return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi) || a.size - b.size;
-    }).map(item => ({
-      modeLabel: `${MODE_NAMES[item.mode] || item.mode}(${item.size}x${item.size})`,
-      count: item.count,
-      bestTimeLabel: item.bestTimeMs === Infinity ? '--' : this.formatTime(item.bestTimeMs)
-    }));
+    });
+    return arr.map(function(item) {
+      return {
+        modeLabel: (MODE_NAMES[item.mode] || item.mode) + '(' + item.size + 'x' + item.size + ')',
+        count: item.count,
+        bestTimeLabel: item.bestTimeMs === Infinity ? '--' : this.formatTime(item.bestTimeMs)
+      };
+    }.bind(this));
   },
 
-  loadStats() {
-    const localRecords = wx.getStorageSync('shult_records') || [];
-    let allRecords = [...localRecords];
+  loadAllStats() {
+    this.loadStats();
+    this.loadHuarongStats();
+    this.loadMovingBlockStats();
+    this.loadSudokuStats();
+  },
 
-    // 无论登录状态，都查云端数据
+  // ===== 舒尔特统计 =====
+  loadStats() {
+    var localRecords = wx.getStorageSync('shult_records') || [];
     wx.cloud.callFunction({
       name: 'getUserTrainRecords',
-      data: {},
-      success: res => {
-        if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
-          allRecords = localRecords.concat(res.result.data);
-        }
-        this.renderStats(allRecords);
-      },
-      fail: () => {
-        this.renderStats(allRecords);
-      }
+      data: { stats: true },
+      success: function(res) {
+        this.renderStats(localRecords, res.result);
+      }.bind(this),
+      fail: function() {
+        this.renderStats(localRecords, null);
+      }.bind(this)
     });
   },
 
-  renderStats(allRecords) {
-    const successRecords = allRecords.filter(r => r.status === 'success');
-    const totalCount = allRecords.length;
-    let bestTimeMs = Infinity;
-    successRecords.forEach(r => { if (r.timeCost < bestTimeMs) bestTimeMs = r.timeCost; });
+  renderStats(localRecords, cloudResult) {
+    var MODE_ORDER = ['classic','interference','shuffle','reverse','parity','challenge','memory'];
+    var self = this;
 
-    const modeStats = this.computeModeStats(allRecords);
-    const bestTime = bestTimeMs === Infinity ? '--' : this.formatTime(bestTimeMs);
+    // 本地统计
+    var localTotalCount = 0;
+    var localBestTimeMs = Infinity;
+    var localModeMap = {};
 
-    // 缓存到 app.globalData 供其他页面分享使用
-    getApp().globalData.globalBestTime = bestTime;
-
-    this.setData({
-      stats: {
-        totalCount,
-        bestTime,
-        currentLevel: '--'
-      },
-      bestDetailData: modeStats
+    localRecords.forEach(function(r) {
+      localTotalCount++;
+      if (r.status !== 'success') return;
+      if (r.timeCost > 0 && r.timeCost < localBestTimeMs) localBestTimeMs = r.timeCost;
+      if (r.mode && r.size) {
+        var key = r.mode + '-' + r.size;
+        if (!localModeMap[key]) {
+          localModeMap[key] = { mode: r.mode, size: r.size, count: 0, bestTimeMs: Infinity };
+        }
+        localModeMap[key].count++;
+        if (r.timeCost > 0 && r.timeCost < localModeMap[key].bestTimeMs) localModeMap[key].bestTimeMs = r.timeCost;
+      }
     });
 
-    // 计算挑战进度
+    // 云端统计
+    var cloudTotalCount = 0;
+    var cloudBestTimeMs = Infinity;
+    var cloudModeMap = {};
+
+    if (cloudResult && cloudResult.code === 200 && cloudResult.stats) {
+      var s = cloudResult.stats;
+      cloudTotalCount = s.totalCount || 0;
+      if (s.bestTimeMs && s.bestTimeMs > 0) cloudBestTimeMs = s.bestTimeMs;
+      (s.modeStats || []).forEach(function(m) {
+        var key = m.mode + '-' + m.size;
+        cloudModeMap[key] = { mode: m.mode, size: m.size, count: m.count || 0, bestTimeMs: m.bestTimeMs || Infinity };
+      });
+    }
+
+    var totalCount = localTotalCount + cloudTotalCount;
+    var bestTimeMs = Math.min(localBestTimeMs, cloudBestTimeMs);
+
+    // 合并模式统计
+    var merged = {};
+    for (var k in localModeMap) merged[k] = localModeMap[k];
+    for (var k in cloudModeMap) {
+      if (merged[k]) {
+        merged[k].count += cloudModeMap[k].count;
+        merged[k].bestTimeMs = Math.min(merged[k].bestTimeMs, cloudModeMap[k].bestTimeMs);
+      } else {
+        merged[k] = cloudModeMap[k];
+      }
+    }
+    var modeStats = [];
+    for (var k in merged) modeStats.push(merged[k]);
+    modeStats.sort(function(a, b) {
+      var ai = MODE_ORDER.indexOf(a.mode);
+      var bi = MODE_ORDER.indexOf(b.mode);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi) || a.size - b.size;
+    });
+    modeStats = modeStats.map(function(item) {
+      return {
+        modeLabel: (MODE_NAMES[item.mode] || item.mode) + '(' + item.size + 'x' + item.size + ')',
+        count: item.count,
+        bestTimeLabel: item.bestTimeMs === Infinity ? '--' : this.formatTime(item.bestTimeMs)
+      };
+    }.bind(this));
+
+    var bestTime = bestTimeMs === Infinity ? '--' : this.formatTime(bestTimeMs);
+    getApp().globalData.globalBestTime = bestTime;
+    this.setData({
+      'stats.totalCount': totalCount,
+      'stats.bestTime': bestTime,
+      'stats.currentLevel': '--',
+      bestDetailData: modeStats
+    });
     this.computeChallengeProgress();
   },
 
-  // 计算挑战进度
-  computeChallengeProgress() {
-    // 先从本地缓存获取挑战进度
-    const progress = wx.getStorageSync('shult_challenge_progress');
-
-    if (progress && progress.passLevel) {
-      const passLevel = progress.passLevel;
-      const success = progress.success || false;
-
-      let displayLevel;
-      if (success) {
-        displayLevel = passLevel;
-      } else {
-        displayLevel = Math.max(1, passLevel - 1);
-      }
-
-      this.setData({
-        'stats.currentLevel': displayLevel > 0 ? `第${displayLevel}关` : '--'
-      });
-      return;
-    }
-
-    // 本地缓存没有数据，查询云端
+  // ===== 华容道统计 =====
+  loadHuarongStats() {
+    var local = wx.getStorageSync('huarong_records') || [];
     wx.cloud.callFunction({
-      name: 'getChallengeRecords',
-      data: { page: 1, pageSize: 1 },
-      success: res => {
-        if (res.result && res.result.code === 200 && Array.isArray(res.result.data) && res.result.data.length > 0) {
-          this.updateChallengeDisplay(res.result.data[0]);
-        } else {
-          this.setData({
-            'stats.currentLevel': '--'
-          });
+      name: 'getHuarongRecords',
+      data: { stats: true },
+      success: function(res) {
+        this.renderHuarongStats(local, res.result);
+      }.bind(this),
+      fail: function() { this.renderHuarongStats(local, null); }.bind(this)
+    });
+  },
+
+  renderHuarongStats(local, cloudResult) {
+    var localBestTime = Infinity, localMinMoves = Infinity;
+    local.forEach(function(r) {
+      if (r.time > 0 && r.time < localBestTime) localBestTime = r.time;
+      if (r.moves > 0 && r.moves < localMinMoves) localMinMoves = r.moves;
+    });
+    var localCount = local.length;
+    var cloudCount = 0, cloudBestTime = Infinity, cloudMinMoves = Infinity;
+    if (cloudResult && cloudResult.code === 200 && cloudResult.stats) {
+      var s = cloudResult.stats;
+      cloudCount = s.totalCount || 0;
+      if (s.bestTime && s.bestTime > 0) cloudBestTime = s.bestTime;
+      if (s.minMoves && s.minMoves > 0) cloudMinMoves = s.minMoves;
+    }
+    this.setData({
+      'hrStats.totalCount': localCount + cloudCount,
+      'hrStats.bestTime': Math.min(localBestTime, cloudBestTime) === Infinity ? '--' : this.formatSeconds(Math.min(localBestTime, cloudBestTime)),
+      'hrStats.minMoves': Math.min(localMinMoves, cloudMinMoves) === Infinity ? '--' : Math.min(localMinMoves, cloudMinMoves) + ' 步'
+    });
+  },
+
+  // ===== 积木迷阵统计 =====
+  loadMovingBlockStats() {
+    var local = wx.getStorageSync('mb_records') || [];
+    var localCount = local.length;
+    var maxLevel = 0;
+    for (var i = 0; i < local.length; i++) {
+      var id = parseInt(local[i].levelId, 10);
+      if (!isNaN(id) && id > maxLevel) maxLevel = id;
+    }
+    var localLevel = maxLevel > 0 ? '第' + maxLevel + '关' : '--';
+    var self = this;
+    wx.cloud.callFunction({
+      name: 'getMovingBlockRecords',
+      data: { limit: 200 },
+      success: function(res) {
+        var cloudCount = 0, cloudMaxLevel = 0;
+        if (res.result && res.result.code === 200 && res.result.data) {
+          cloudCount = res.result.data.length;
+          for (var i = 0; i < res.result.data.length; i++) {
+            var id = parseInt(res.result.data[i].levelId, 10);
+            if (!isNaN(id) && id > cloudMaxLevel) cloudMaxLevel = id;
+          }
         }
+        var level = Math.max(maxLevel, cloudMaxLevel) > 0 ? '第' + Math.max(maxLevel, cloudMaxLevel) + '关' : '--';
+        self.setData({
+          'mbStats.totalCount': localCount + cloudCount,
+          'mbStats.challengeLevel': level
+        });
       },
-      fail: () => {
-        this.setData({
-          'stats.currentLevel': '--'
+      fail: function() {
+        self.setData({
+          'mbStats.totalCount': localCount,
+          'mbStats.challengeLevel': localLevel
         });
       }
     });
   },
 
-  updateChallengeDisplay(cloudRecord) {
-    const passLevel = cloudRecord.passLevel || 1;
-    const success = cloudRecord.success || false;
-
-    // 保存到本地缓存
-    this.saveChallengeProgressToLocal(passLevel, success);
-
-    let displayLevel;
-    if (success) {
-      displayLevel = passLevel;
-    } else {
-      displayLevel = Math.max(1, passLevel - 1);
+  // ===== 数独统计 =====
+  loadSudokuStats() {
+    var local = wx.getStorageSync('sudoku_records') || [];
+    var localCount = 0, localBest = Infinity;
+    for (var i = 0; i < local.length; i++) {
+      if (local[i].status === 'success') localCount++;
+      if (local[i].time > 0 && local[i].time < localBest) localBest = local[i].time;
     }
-
-    this.setData({
-      'stats.currentLevel': displayLevel > 0 ? `第${displayLevel}关` : '--'
+    var self = this;
+    wx.cloud.callFunction({
+      name: 'getSudokuRecords',
+      data: { stats: true },
+      success: function(res) {
+        var cloudCount = 0, cloudBest = Infinity;
+        if (res.result && res.result.code === 200 && res.result.stats) {
+          var s = res.result.stats;
+          cloudCount = s.totalCount || 0;
+          if (s.bestTime && s.bestTime > 0) cloudBest = s.bestTime;
+        }
+        var totalCount = localCount + cloudCount;
+        var bestTime = localBest < cloudBest ? localBest : cloudBest;
+        self.setData({
+          'sdStats.totalCount': totalCount,
+          'sdStats.bestTime': bestTime === Infinity ? '--' : self.formatSeconds(bestTime)
+        });
+      },
+      fail: function() {
+        self.setData({
+          'sdStats.totalCount': localCount,
+          'sdStats.bestTime': localBest === Infinity ? '--' : self.formatSeconds(localBest)
+        });
+      }
     });
   },
 
+  formatSeconds(s) {
+    var m = Math.floor(s / 60);
+    var sec = s % 60;
+    return m > 0 ? m + '分' + (sec < 10 ? '0' : '') + sec + '秒' : sec + '秒';
+  },
+
+  // ===== 挑战进度 =====
+  computeChallengeProgress() {
+    var progress = wx.getStorageSync('shult_challenge_progress');
+    if (progress && progress.passLevel) {
+      var passLevel = progress.passLevel;
+      var success = progress.success || false;
+      var displayLevel = success ? passLevel : Math.max(1, passLevel - 1);
+      this.setData({ 'stats.currentLevel': displayLevel > 0 ? '第' + displayLevel + '关' : '--' });
+      return;
+    }
+    wx.cloud.callFunction({
+      name: 'getChallengeRecords',
+      data: { page: 1, pageSize: 1 },
+      success: function(res) {
+        if (res.result && res.result.code === 200 && Array.isArray(res.result.data) && res.result.data.length > 0) {
+          this.updateChallengeDisplay(res.result.data[0]);
+        } else {
+          this.setData({ 'stats.currentLevel': '--' });
+        }
+      }.bind(this),
+      fail: function() { this.setData({ 'stats.currentLevel': '--' }); }.bind(this)
+    });
+  },
+
+  updateChallengeDisplay(cloudRecord) {
+    var passLevel = cloudRecord.passLevel || 1;
+    var success = cloudRecord.success || false;
+    this.saveChallengeProgressToLocal(passLevel, success);
+    var displayLevel = success ? passLevel : Math.max(1, passLevel - 1);
+    this.setData({ 'stats.currentLevel': displayLevel > 0 ? '第' + displayLevel + '关' : '--' });
+  },
+
   saveChallengeProgressToLocal(passLevel, success) {
-    const progress = {
-      passLevel: passLevel,
-      success: success,
-      updateTime: new Date().toISOString()
-    };
-    wx.setStorageSync('shult_challenge_progress', progress);
+    wx.setStorageSync('shult_challenge_progress', { passLevel: passLevel, success: success, updateTime: new Date().toISOString() });
   },
 
   formatTime(ms) {
-    const s = Math.floor(ms / 1000);
-    const cs = Math.floor((ms % 1000) / 10);
-    return `${s}.${cs.toString().padStart(2, '0')}秒`;
+    var s = Math.floor(ms / 1000);
+    var cs = Math.floor((ms % 1000) / 10);
+    return s + '.' + (cs < 10 ? '0' : '') + cs + '秒';
   },
 
-  /* ===== 最佳成绩明细弹窗 ===== */
   onShowBestDetail() {
     this.setData({ showBestDetail: true, isDragging: false, sheetTranslateY: 0 });
   },
 
   onHideBestDetail() {
     this.setData({ isDragging: true, sheetTranslateY: this._winHeight });
-    setTimeout(() => this.setData({ showBestDetail: false }), 350);
+    setTimeout(function() { this.setData({ showBestDetail: false }); }.bind(this), 350);
   },
 
   onSheetTouchStart(e) {
@@ -376,17 +535,15 @@ Page({
 
   onSheetTouchMove(e) {
     if (!this.data.isDragging && !this.data.showBestDetail) return;
-    const delta = e.touches[0].clientY - this._sheetStartY;
-    if (delta >= 0) {
-      this.setData({ sheetTranslateY: delta });
-    }
+    var delta = e.touches[0].clientY - this._sheetStartY;
+    if (delta >= 0) this.setData({ sheetTranslateY: delta });
   },
 
   onSheetTouchEnd() {
-    const currentY = this.data.sheetTranslateY;
+    var currentY = this.data.sheetTranslateY;
     if (currentY > 120) {
       this.setData({ isDragging: false, sheetTranslateY: this._winHeight });
-      setTimeout(() => this.setData({ showBestDetail: false }), 350);
+      setTimeout(function() { this.setData({ showBestDetail: false }); }.bind(this), 350);
     } else {
       this.setData({ isDragging: false, sheetTranslateY: 0 });
     }
@@ -394,6 +551,10 @@ Page({
 
   onGoPass() {
     wx.navigateTo({ url: '/pages/pass/pass' });
+  },
+
+  onGoMovingBlock() {
+    wx.navigateTo({ url: '/pages/movingBlocks/level/level' });
   },
 
   goToHistory() {
@@ -404,47 +565,27 @@ Page({
     wx.navigateTo({ url: '/pages/settings/settings' });
   },
 
-  onIntro() {
-    wx.navigateTo({ url: '/pages/intro/intro' });
-  },
-
   onContact() {
-    const email = 'pwp8899@163.com';
-    const doCopy = () => {
+    var email = 'pwp8899@163.com';
+    var doCopy = function() {
       wx.setClipboardData({
         data: email,
-        success: () => wx.showToast({ title: '已复制邮箱', icon: 'none', duration: 2000 }),
-        fail: () => {
-          wx.showModal({
-            title: '联系开发者',
-            content: email,
-            confirmText: '复制邮箱',
-            success: res => {
-              if (res.confirm) {
-                wx.setClipboardData({
-                  data: email,
-                  success: () => wx.showToast({ title: '已复制邮箱', icon: 'none', duration: 2000 })
-                });
-              }
-            }
-          });
-        }
+        success: function() { wx.showToast({ title: '已复制邮箱', icon: 'none', duration: 2000 }); }
       });
     };
-
     if (wx.getPrivacySetting) {
       wx.getPrivacySetting({
-        success: res => {
+        success: function(res) {
           if (res.needAuthorization) {
             wx.requirePrivacyAuthorize({
-              success: () => doCopy(),
-              fail: () => wx.showToast({ title: '需要同意隐私协议', icon: 'none' })
+              success: function() { doCopy(); },
+              fail: function() {}
             });
           } else {
             doCopy();
           }
         },
-        fail: () => doCopy()
+        fail: function() { doCopy(); }
       });
     } else {
       doCopy();

@@ -1,0 +1,84 @@
+<view class="page">
+  <!-- 装饰背景圆 -->
+  <view class="deco-circle deco-big"></view>
+  <view class="deco-circle deco-small"></view>
+
+  <!-- 主内容区 -->
+  <view class="main-content">
+    <!-- 图标 -->
+    <view class="icon-section">
+      <view class="icon-wrap">
+        <text class="icon-emoji">{{starLevel === 'excellent' ? '🏆' : starLevel === 'good' ? '🌟' : '💪'}}</text>
+        <view class="icon-ring"></view>
+      </view>
+    </view>
+
+    <text class="diff-pill diff-pill-{{diff}}">{{diffLabel}}</text>
+
+    <!-- 星级（5星制） -->
+    <view class="stars-row title-stars">
+      <text class="star {{stars >= 1 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 2 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 3 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 4 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 5 ? 'active' : ''}}">★</text>
+    </view>
+
+    <!-- 评价语录 -->
+    <text class="result-quote">{{quote}}</text>
+
+    <!-- 统计卡片 -->
+    <view class="stats-row">
+      <view class="stat-card">
+        <view class="stat-icon-wrap-lg">
+          <text class="stat-icon-lg">⏱</text>
+        </view>
+        <text class="stat-value-lg">{{time}}秒</text>
+        <text class="stat-label-lg">用时</text>
+      </view>
+      <view class="stat-card stat-card-lines">
+        <view class="stat-lines-wrap">
+          <view class="stat-line-row">
+            <text class="stat-lbl">正确数</text>
+            <text class="stat-num">{{correct}}</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-line-row">
+            <text class="stat-lbl">错误</text>
+            <text class="stat-num">{{errors}} 次</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-line-row">
+            <text class="stat-lbl">提示</text>
+            <text class="stat-num">{{hints}} 次</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-line-row">
+            <text class="stat-lbl">撤销</text>
+            <text class="stat-num">{{undo}} 次</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 全部记录入口 -->
+    <view class="records-entry" bindtap="onHistory" hover-class="entry-hover">
+      <text class="records-entry-text">查看全部数独记录</text>
+      <text class="records-entry-arrow">→</text>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="bottom-actions">
+      <view class="btn-primary" bindtap="onRetry" hover-class="btn-hover">
+        <text>再来一局</text>
+      </view>
+      <view class="btn-secondary" bindtap="onChangeLevel" hover-class="btn-hover-light">
+        <text>切换难度</text>
+      </view>
+      <button class="btn-share" open-type="share" hover-class="share-hover">
+        <view class="share-icon-wechat"></view>
+        <text class="share-text">分享</text>
+      </button>
+    </view>
+  </view>
+</view>

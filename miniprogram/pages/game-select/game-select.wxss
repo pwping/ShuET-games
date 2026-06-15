@@ -6,7 +6,7 @@
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  padding: 80rpx 32rpx 0;
+  padding: 60rpx 32rpx 0;
   overflow: hidden;
   margin-bottom: 48rpx;
 }
@@ -61,6 +61,7 @@
   font-size: 22rpx; color: #94A3B8;
 }
 
+
 .game-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -74,6 +75,25 @@
   box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
   border: 2rpx solid rgba(0,0,0,0.04);
   transition: transform .15s ease, box-shadow .15s ease;
+  position: relative;
+  overflow: visible;
+}
+.new-badge {
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  min-width: 44rpx;
+  height: 44rpx;
+  line-height: 44rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #F97316, #EF4444);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 800;
+  border-radius: 22rpx;
+  padding: 0 14rpx;
+  z-index: 10;
+  box-shadow: 0 4rpx 12rpx rgba(239,68,68,0.4);
 }
 .game-card:active {
   transform: scale(.96) translateY(2rpx);
@@ -111,6 +131,12 @@
   width: 18rpx; height: 18rpx;
   background: #fff; border-radius: 3rpx;
 }
+.gc-num {
+  font-size: 18rpx; font-weight: 700;
+  color: #3B82F6;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 18rpx;
+}
 
 /* 华容道图标 */
 .klotski-icon {
@@ -121,9 +147,62 @@
   width: 22rpx; height: 22rpx;
   background: rgba(255,255,255,0.9); border-radius: 4rpx;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14rpx; font-weight: 700; color: #A855F7;
+  font-size: 14rpx; font-weight: 700; color: #E91E63;
 }
 .ki-empty { background: transparent; }
+
+/* 数独图标（匹配华容道方块样式） */
+.sd-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 22rpx);
+  gap: 3rpx;
+}
+.sd-icon-tile {
+  width: 22rpx; height: 22rpx;
+  background: rgba(255,255,255,0.9); border-radius: 4rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14rpx; font-weight: 700; color: #3B82F6;
+}
+.sd-icon-empty { background: rgba(255,255,255,0.9); }
+
+/* 积木迷阵图标 */
+.moveblock-icon {
+  width: 100rpx; height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 16rpx);
+  grid-template-rows: repeat(4, 16rpx);
+  gap: 3rpx;
+  position: relative;
+}
+.mb-cell {
+  background: rgba(255,255,255,0.15);
+  border-radius: 3rpx;
+}
+.mb-block {
+  background: rgba(255,255,255,0.9);
+  border-radius: 4rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.1);
+}
+.mb-block-h { background: rgba(255,255,255,0.9); }
+.mb-block-v { background: rgba(255,255,255,0.85); }
+.mb-gap {
+  background: rgba(255,255,255,0.08);
+  border: 2rpx dashed rgba(255,255,255,0.3);
+  border-radius: 3rpx;
+}
+.mb-arrow {
+  position: absolute;
+  bottom: -20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14rpx;
+  color: rgba(255,255,255,0.6);
+}
 
 .game-name {
   font-size: 30rpx; font-weight: 700; color: #1E293B;
@@ -131,4 +210,81 @@
 }
 .game-desc {
   font-size: 22rpx; color: #64748B; line-height: 1.4;
+}
+.coming-soon-icon {
+  font-size: 42rpx;
+  color: #fff;
+}
+.baishu-icon {
+  position: relative;
+  width: 100rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-circle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.bs-num {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24rpx;
+  height: 24rpx;
+  font-size: 14rpx;
+  font-weight: 700;
+  color: #fff;
+  background: #FF8C00;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24rpx;
+  margin-left: -12rpx;
+  margin-top: -12rpx;
+  transform-origin: center center;
+}
+.bs-num:nth-child(1) { transform: rotate(270deg) translateY(-36rpx) rotate(-270deg); }
+.bs-num:nth-child(2) { transform: rotate(306deg) translateY(-36rpx) rotate(-306deg); }
+.bs-num:nth-child(3) { transform: rotate(342deg) translateY(-36rpx) rotate(-342deg); }
+.bs-num:nth-child(4) { transform: rotate(18deg)  translateY(-36rpx) rotate(-18deg); }
+.bs-num:nth-child(5) { transform: rotate(54deg)  translateY(-36rpx) rotate(-54deg); }
+.bs-num:nth-child(6) { transform: rotate(90deg)  translateY(-36rpx) rotate(-90deg); }
+.bs-num:nth-child(7) { transform: rotate(126deg) translateY(-36rpx) rotate(-126deg); }
+.bs-num:nth-child(8) { transform: rotate(162deg) translateY(-36rpx) rotate(-162deg); }
+.bs-num:nth-child(9) { transform: rotate(198deg) translateY(-36rpx) rotate(-198deg); }
+.bs-num:nth-child(10) { transform: rotate(234deg) translateY(-36rpx) rotate(-234deg); }
+.bs-center {
+  position: relative;
+  z-index: 1;
+  width: 44rpx;
+  height: 44rpx;
+  background: #88D8A0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(136,216,160,0.5);
+}
+.bs-triangle {
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid #fff;
+  border-top: 7rpx solid transparent;
+  border-bottom: 7rpx solid transparent;
+  margin-left: 3rpx;
+}
+.coming-badge {
+  margin-top: 12rpx;
+  padding: 4rpx 16rpx;
+  background: #F1F5F9;
+  color: #94A3B8;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.sd-empty {
+  background: transparent;
 }

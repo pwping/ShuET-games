@@ -1,0 +1,103 @@
+<view class="page">
+  <!-- 顶部统计栏 (同华容道/积木迷阵风格) -->
+  <view class="stats-row">
+    <view class="settings-wrap" bindtap="onShowSettings">
+      <view class="settings-btn">⚙</view>
+    </view>
+    <view class="stats-bar">
+      <view class="sb-item">
+        <view class="sb-icon sb-icon-time">⏱</view>
+        <view class="sb-info">
+          <text class="sb-value">{{timerText}}</text>
+        </view>
+      </view>
+      <view class="sb-divider"></view>
+      <view class="sb-item">
+        <view class="sb-icon sb-icon-correct">✓</view>
+        <view class="sb-info">
+          <text class="sb-value">{{correctCount}}</text>
+        </view>
+      </view>
+      <view class="sb-divider"></view>
+      <view class="sb-item">
+        <view class="sb-icon sb-icon-error">✕</view>
+        <view class="sb-info">
+          <text class="sb-value">{{errors}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="reset-wrap" bindtap="onRestart">
+      <view class="reset-btn">↻</view>
+    </view>
+  </view>
+
+  <!-- 数独盘面 -->
+  <view class="board-wrap">
+    <view class="board">
+      <view class="{{cellClasses[index]}} {{cellAnimCls[index]}}"
+        wx:for="{{81}}" wx:key="*this"
+        data-row="{{rows[index]}}"
+        data-col="{{cols[index]}}"
+        style="{{cellAnimStyle[index]}}"
+        bindtap="onCellTap"
+      >
+        <text class="cell-num" wx:if="{{flatBoard[index] !== 0}}">{{flatBoard[index]}}</text>
+        <view class="notes-grid" wx:elif="{{flatNotes[index].length > 0}}">
+          <text class="note-num" wx:for="{{flatNotes[index]}}" wx:key="*this">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部工具栏 -->
+  <view class="toolbar">
+    <view class="tool-btn" bindtap="onUndo">
+      <text class="tool-icon">↩</text>
+      <text class="tool-lbl">撤销</text>
+    </view>
+    <view class="tool-btn" bindtap="onErase">
+      <text class="tool-icon">⌫</text>
+      <text class="tool-lbl">擦除</text>
+    </view>
+    <view class="tool-btn {{noteMode ? 'tool-active' : ''}}" bindtap="onToggleNote">
+      <text class="tool-icon">✏</text>
+      <text class="tool-lbl">笔记</text>
+    </view>
+    <view class="tool-btn" bindtap="onHint">
+      <text class="tool-icon">💡</text>
+      <text class="tool-lbl">提示</text>
+    </view>
+  </view>
+
+  <!-- 数字选择器 -->
+  <view class="numpad">
+    <view class="num-btn" wx:for="{{[1,2,3,4,5,6,7,8,9]}}" wx:key="*this"
+      data-num="{{item}}" bindtap="onNumberTap">
+      <text class="num-txt">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 设置弹窗 (居中覆盖，同项目风格) -->
+  <view class="overlay {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="dialog">
+      <text class="dialog-title">游戏设置</text>
+      <view class="dialog-list">
+        <view class="dialog-row">
+          <view class="dialog-lbl-wrap">
+            <text class="dialog-icon">🔊</text>
+            <text class="dialog-lbl">音效</text>
+          </view>
+          <switch checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#3B82F6"/>
+        </view>
+        <view class="dialog-row">
+          <view class="dialog-lbl-wrap">
+            <text class="dialog-icon">📳</text>
+            <text class="dialog-lbl">震动</text>
+          </view>
+          <switch checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#3B82F6"/>
+        </view>
+      </view>
+      <view class="dialog-btn" bindtap="onCloseSettings">知道了</view>
+    </view>
+  </view>
+</view>

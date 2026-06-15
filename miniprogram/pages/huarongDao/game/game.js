@@ -1,57 +1,55 @@
+const settingsSync = require('../../../utils/settings-sync');
+
 Page({
   data: {
     size: 4,
-    tiles: [],       // [{num, row, col, english, colorClass}]
+    tiles: [],
     emptyRow: -1,
     emptyCol: -1,
     moves: 0,
     timer: 0,
     timerStr: '00:00',
     solved: false,
-    canMove: true
+    canMove: false,
+    gameStarted: false,
+    showSettings: false,
+    soundEnabled: true,
+    vibrateEnabled: true
   },
 
   _timerId: null,
   _startTime: 0,
-
-  // 英文数字映射
-  _englishMap: [
-    '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
-    'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
-    'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
-    'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four', 'twenty-five',
-    'twenty-six', 'twenty-seven', 'twenty-eight', 'twenty-nine', 'thirty',
-    'thirty-one', 'thirty-two', 'thirty-three', 'thirty-four', 'thirty-five',
-    'thirty-six'
-  ],
-
-  // 马卡龙色系（6色循环）
   _colorClasses: ['pink', 'yellow', 'green', 'blue', 'purple', 'peach'],
 
   onLoad(options) {
     const size = parseInt(options.size) || 4;
+    const hrSettings = wx.getStorageSync('hr_settings') || {};
+    this.setData({
+      soundEnabled: hrSettings.sound !== false,
+      vibrateEnabled: hrSettings.vibrate !== false
+    });
     this.computeBoard(size);
-    this.initGame(size);
+    this.initOrdered(size);
+    wx.setNavigationBarTitle({
+      title: `华容道(${size}x${size})`
+    });
   },
 
   computeBoard(size) {
     const sys = wx.getSystemInfoSync();
     const screenW = sys.windowWidth;
-    const padding = 16; // px on each side
-    const gap = 8; // px between tiles
-    const boardW = screenW - 64; // 32rpx padding each side (~16px)
-    const tilePx = (boardW - gap * (size + 1)) / size;
-    const tileInner = tilePx - 2;
-    const boardPx = tilePx * size + gap * (size + 1);
-    // font: 3x3=36, 4x4=32, 5x5=28, 6+=24
-    const tileFont = size <= 3 ? 36 : size <= 4 ? 32 : size <= 5 ? 28 : size <= 6 ? 24 : 22;
+    // 每侧占位：frame padding(12rpx) + frame border(3rpx) = 15rpx
+    const sidePad = Math.round(15 * screenW / 750);
+    const boardW = screenW - sidePad * 2;
+    const gap = 2;
+    const tileSize = Math.floor((boardW - gap * (size + 1)) / size);
+    const tileFont = size <= 3 ? 64 : size <= 4 ? 56 : size <= 5 ? 50 : size <= 7 ? 40 : size <= 8 ? 34 : size <= 9 ? 30 : 26;
     this.setData({
       size,
-      boardPx,
-      tilePx,
-      tileInner,
+      boardPx: boardW,
+      tilePx: tileSize,
       tileFont,
-      padding: gap
+      gap
     });
   },
 
@@ -59,8 +57,7 @@ Page({
     this.stopTimer();
   },
 
-  initGame(size) {
-    // 生成初始有序排列
+  initOrdered(size) {
     const n = size * size;
     const tiles = [];
     for (let i = 0; i < n - 1; i++) {
@@ -69,15 +66,28 @@ Page({
         num,
         row: Math.floor(i / size),
         col: i % size,
-        english: this._englishMap[num] || num,
         colorClass: this._colorClasses[(num - 1) % 6]
       });
     }
-    const emptyRow = size - 1;
-    const emptyCol = size - 1;
+    this.setData({
+      tiles,
+      emptyRow: size - 1,
+      emptyCol: size - 1,
+      moves: 0,
+      timer: 0,
+      timerStr: '00:00',
+      solved: false,
+      canMove: false,
+      gameStarted: false
+    });
+  },
 
-    // 通过随机滑动来打乱（保证可解性）
-    let er = emptyRow, ec = emptyCol;
+  // 开始游戏：打乱棋子
+  onStart() {
+    const size = this.data.size;
+    const tiles = [...this.data.tiles];
+    let er = size - 1, ec = size - 1;
+
     for (let i = 0; i < size * size * 20; i++) {
       const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
       const valid = dirs.filter(([dr, dc]) => {
@@ -98,8 +108,9 @@ Page({
       moves: 0,
       timer: 0,
       timerStr: '00:00',
-      solved: false,
-      canMove: true
+      gameStarted: true,
+      canMove: true,
+      solved: false
     });
     this.startTimer();
   },
@@ -124,24 +135,106 @@ Page({
     }
   },
 
-  onTileTap(e) {
-    if (!this.data.canMove || this.data.solved) return;
-    const { row, col } = e.currentTarget.dataset;
-    const { emptyRow, emptyCol, size } = this.data;
+  playMoveSound() {
+    if (!this.data.soundEnabled) return;
+    try {
+      if (!this._audioCtx) {
+        this._audioCtx = wx.createWebAudioContext();
+      }
+      const ctx = this._audioCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(660, ctx.currentTime);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } catch (e) {}
+  },
 
-    // 检查是否与空格相邻
-    const dr = Math.abs(row - emptyRow);
-    const dc = Math.abs(col - emptyCol);
-    if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
-      // 移动
-      const tiles = [...this.data.tiles];
-      const tile = tiles.find(t => t.row === row && t.col === col);
-      tile.row = emptyRow;
-      tile.col = emptyCol;
-      const moves = this.data.moves + 1;
-      this.setData({ tiles, emptyRow: row, emptyCol: col, moves });
-      this.checkWin();
+  playVibration() {
+    if (!this.data.vibrateEnabled) return;
+    try {
+      wx.vibrateShort({ type: 'medium' });
+    } catch (e) {
+      try { wx.vibrateShort({ type: 'light' }); } catch (e2) {}
     }
+  },
+
+  playErrorSound() {
+    const settings = wx.getStorageSync('shult_settings') || {};
+    if (settings.sound === false) return;
+    try {
+      if (!this._audioCtx) {
+        this._audioCtx = wx.createWebAudioContext();
+      }
+      const ctx = this._audioCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } catch (e) {}
+  },
+
+  onTileTap(e) {
+    if (!this.data.canMove || this.data.solved) {
+      if (!this.data.gameStarted) this.playErrorSound();
+      return;
+    }
+    const { row, col } = e.currentTarget.dataset;
+    const { emptyRow, emptyCol, tiles } = this.data;
+
+    // 检查是否与空格在同一行或同一列
+    if (row !== emptyRow && col !== emptyCol) return;
+
+    // 计算滑动方向
+    const dRow = Math.sign(emptyRow - row);
+    const dCol = Math.sign(emptyCol - col);
+
+    // 获取从点击位置到空格之间的所有棋子（不含空格）
+    const toMove = [];
+    let r = row, c = col;
+    while (r !== emptyRow || c !== emptyCol) {
+      const tile = tiles.find(t => t.row === r && t.col === c);
+      if (tile) toMove.push(tile);
+      r += dRow;
+      c += dCol;
+    }
+
+    if (toMove.length === 0) return;
+
+    // 播放音效和震动
+    this.playMoveSound();
+    this.playVibration();
+
+    // 移动这些棋子（向空格方向滑动一格）
+    const newTiles = [...tiles];
+    toMove.forEach(t => {
+      const tile = newTiles.find(nt => nt.num === t.num);
+      tile.row += dRow;
+      tile.col += dCol;
+    });
+
+    // 空格移动到点击位置
+    const moves = this.data.moves + 1;
+    this.setData({
+      tiles: newTiles,
+      emptyRow: row,
+      emptyCol: col,
+      moves
+    }, () => {
+      // setData 完成后再检查胜利，确保棋子已滑动到正确位置
+      this.checkWin();
+    });
   },
 
   checkWin() {
@@ -158,20 +251,50 @@ Page({
     if (allCorrect) {
       this.stopTimer();
       this.setData({ solved: true, canMove: false });
-      setTimeout(() => {
-        wx.navigateTo({
-          url: `/pages/huarongDao/result/result?size=${this.data.size}&time=${this.data.timer}&moves=${this.data.moves}`
-        });
-      }, 600);
+      wx.navigateTo({
+        url: `/pages/huarongDao/result/result?size=${this.data.size}&time=${this.data.timer}&moves=${this.data.moves}`
+      });
     }
   },
 
+  // 重来：回到初始有序状态
   onReset() {
+    if (!this.data.gameStarted) return;
     this.stopTimer();
-    this.initGame(this.data.size);
+    this.initOrdered(this.data.size);
   },
 
   onBack() {
     wx.navigateBack();
-  }
+  },
+
+  // 设置弹窗
+  onShowSettings() {
+    const hrSettings = wx.getStorageSync('hr_settings') || {};
+    this.setData({
+      showSettings: true,
+      soundEnabled: hrSettings.sound !== false,
+      vibrateEnabled: hrSettings.vibrate !== false
+    });
+  },
+  onCloseSettings() {
+    this.setData({ showSettings: false });
+  },
+  onSoundToggle(e) {
+    const val = e.detail.value;
+    this.setData({ soundEnabled: val });
+    const settings = wx.getStorageSync('hr_settings') || {};
+    settings.sound = val;
+    wx.setStorageSync('hr_settings', settings);
+    settingsSync.syncGlobalAfterToggle('sound', val);
+  },
+  onVibrateToggle(e) {
+    const val = e.detail.value;
+    this.setData({ vibrateEnabled: val });
+    const settings = wx.getStorageSync('hr_settings') || {};
+    settings.vibrate = val;
+    wx.setStorageSync('hr_settings', settings);
+    settingsSync.syncGlobalAfterToggle('vibration', val);
+  },
+  preventMove() {}
 });

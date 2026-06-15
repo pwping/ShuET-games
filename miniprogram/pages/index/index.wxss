@@ -1,5 +1,7 @@
 .page-container {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #F0FDF4;
 }
 
@@ -73,6 +75,36 @@
   line-height: 1.5;
   margin-bottom: 28rpx;
 }
+.hero-desc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28rpx;
+}
+.intro-btn {
+  height: 44rpx;
+  border-radius: 22rpx;
+  background: rgba(7,193,96,0.08);
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 0 14rpx;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+}
+.intro-btn:active {
+  background: rgba(7,193,96,0.2);
+  transform: scale(0.95);
+}
+.intro-icon {
+  font-size: 20rpx;
+}
+.intro-text {
+  font-size: 20rpx;
+  color: #07C160;
+  font-weight: 500;
+}
 
 /* ===== Hero Stats ===== */
 .hero-stats {
@@ -116,7 +148,7 @@
 
 /* ===== 模式区域 ===== */
 .mode-section {
-  padding: 48rpx 32rpx 32rpx;
+  padding: 48rpx 32rpx 240rpx;
   overflow: hidden;
   background: #FFFFFF;
 }
@@ -316,10 +348,15 @@
   line-height: 1.3;
 }
 
-/* ===== 挑战闯关卡片 ===== */
+/* ===== 挑战闯关卡片（屏幕底部固定） ===== */
 .challenge-section {
-  padding: 0 32rpx 48rpx;
-  background: #FFFFFF;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0;
+  background: transparent;
+  z-index: 100;
 }
 
 .challenge-card {
@@ -327,11 +364,12 @@
   align-items: center;
   justify-content: space-between;
   background: #fff;
-  border-radius: 24rpx;
-  padding: 28rpx 28rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.06);
-  border: 2rpx solid rgba(0,0,0,0.04);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 28rpx 32rpx;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.06);
+  border: none;
+  transition: transform 0.15s ease;
 }
 
 .challenge-card:active {

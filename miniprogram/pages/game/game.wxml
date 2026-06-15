@@ -28,6 +28,9 @@
         <view class="r-cell"></view>
       </view>
     </view>
+    <view class="settings-btn-game" bindtap="onShowSettings">
+      <text class="settings-icon-game">⚙</text>
+    </view>
   </view>
 
   <!-- 规则提示 -->
@@ -99,4 +102,28 @@
 
   <!-- 参考等级表 - 底部弹窗 -->
   <reference-sheet id="refSheet" size="{{size}}" />
+
+  <!-- 游戏设置弹窗 -->
+  <view class="settings-overlay-game {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="settings-dialog-game">
+      <text class="settings-title-game">游戏设置</text>
+      <view class="settings-list-game">
+        <view class="settings-row-game">
+          <view class="settings-label-wrap-game">
+            <text class="settings-icon-game-label">🔊</text>
+            <text class="settings-label-text">音效</text>
+          </view>
+          <switch class="settings-switch-game" checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#07C160"/>
+        </view>
+        <view class="settings-row-game">
+          <view class="settings-label-wrap-game">
+            <text class="settings-icon-game-label">📳</text>
+            <text class="settings-label-text">震动</text>
+          </view>
+          <switch class="settings-switch-game" checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#07C160"/>
+        </view>
+      </view>
+      <view class="settings-btn-close-game" bindtap="onCloseSettings">知道了</view>
+    </view>
+  </view>
 </view>

@@ -6,6 +6,198 @@
   overflow: hidden;
 }
 
+/* ===== 游戏类型切换（可左右滑动） ===== */
+.game-toggle-scroll {
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 16rpx 0 0;
+  box-sizing: border-box;
+}
+.game-toggle-scroll::-webkit-scrollbar { display: none; }
+.game-toggle {
+  display: inline-flex;
+  padding: 0 30rpx;
+  gap: 16rpx;
+}
+.toggle-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 18rpx 28rpx;
+  background: #f5f5f5;
+  border-radius: 20rpx 20rpx 0 0;
+  font-size: 26rpx;
+  color: #94A3B8;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-bottom: 3rpx solid transparent;
+}
+.toggle-item.active {
+  background: #fff;
+  color: #07C160;
+  border-bottom-color: #07C160;
+}
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 8rpx);
+  gap: 2rpx;
+}
+.tg-cell {
+  width: 8rpx;
+  height: 8rpx;
+  background: #CBD5E1;
+  border-radius: 2rpx;
+}
+.toggle-item.active .tg-cell {
+  background: #07C160;
+}
+.tg-huarong .tg-cell {
+  background: #CBD5E1;
+}
+.toggle-item.active .tg-huarong .tg-cell {
+  background: #07C160;
+}
+.tg-empty {
+  background: transparent !important;
+}
+/* ===== 积木迷阵Tab图标 ===== */
+.mb-board-bg {
+  width: 40rpx;
+  height: 40rpx;
+  background: #22C55E;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.toggle-item:not(.active) .mb-board-bg {
+  background: #94A3B8;
+}
+/* 4行网格，每行flex */
+.mb-grid-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+.mg-row {
+  display: flex;
+  gap: 2rpx;
+  align-items: center;
+}
+.mg-cell {
+  width: 6rpx;
+  height: 6rpx;
+  background: rgba(255,255,255,0.2);
+  border-radius: 1rpx;
+}
+.mg-block {
+  border-radius: 2rpx;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 1rpx 2rpx rgba(0,0,0,0.08);
+}
+.mg-block-v-tab {
+  width: 6rpx;
+  height: 14rpx;
+}
+.mg-block-h-tab {
+  width: 14rpx;
+  height: 6rpx;
+}
+.mg-gap-tab {
+  width: 6rpx;
+  height: 6rpx;
+  background: rgba(255,255,255,0.08);
+  border: 1rpx dashed rgba(255,255,255,0.3);
+  border-radius: 1rpx;
+  box-sizing: border-box;
+}
+.mb-arrow-tab {
+  position: absolute;
+  bottom: 2rpx;
+  font-size: 8rpx;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== 积木迷阵空状态图标 ===== */
+.mb-empty-bg {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #22C55E;
+  border-radius: 18rpx;
+  width: 140rpx;
+  height: 140rpx;
+  position: relative;
+}
+.mb-grid-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.mge-row {
+  display: flex;
+  gap: 4rpx;
+  align-items: center;
+}
+.mge-cell {
+  width: 22rpx;
+  height: 22rpx;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4rpx;
+}
+.mge-block {
+  background: rgba(255,255,255,0.9);
+  border-radius: 5rpx;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.08);
+}
+.mge-block-v {
+  width: 22rpx;
+  height: 48rpx;
+}
+.mge-block-h {
+  width: 48rpx;
+  height: 22rpx;
+}
+.mge-gap {
+  width: 22rpx;
+  height: 22rpx;
+  background: rgba(255,255,255,0.08);
+  border: 2rpx dashed rgba(255,255,255,0.3);
+  border-radius: 4rpx;
+  box-sizing: border-box;
+}
+.mb-arrow-empty {
+  position: absolute;
+  bottom: 4rpx;
+  font-size: 14rpx;
+  color: rgba(255,255,255,0.4);
+}
+
+/* 积木迷阵记录小星星 */
+.mb-record-stars-sm {
+  display: inline-flex;
+  gap: 2rpx;
+  margin-left: 6rpx;
+}
+.mb-star-sm {
+  font-size: 20rpx;
+  color: #E2E8F0;
+  line-height: 1;
+}
+.mb-star-sm.on {
+  color: #F59E0B;
+}
+
 .filter-wrapper {
   display: flex;
   align-items: center;
@@ -129,7 +321,7 @@
 
 .record-list {
   padding: 20rpx 30rpx;
-  padding-bottom: 40rpx;
+  padding-bottom: 120rpx;
 }
 
 .record-item {
@@ -335,6 +527,98 @@
   transform: scale(0.95);
   box-shadow: 0 2rpx 8rpx rgba(7,193,96,0.15);
 }
+.go-train-wrap {
+  padding: 10rpx 0 40rpx;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===== 华容道独立区域 ===== */
+.huarong-section {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.scroll-wrap {
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+.huarong-section .scroll-wrap {
+  flex: 1;
+  height: 0;
+}
+.hr-empty-icon {
+  font-size: 48rpx;
+}
+.huarong-section .record-meta {
+  gap: 12rpx;
+}
+.huarong-section .level-badge {
+  font-size: 26rpx;
+  padding: 6rpx 18rpx;
+}
+.huarong-section .accuracy-value {
+  font-size: 24rpx;
+  color: #888;
+}
+.huarong-section .sd-star-text {
+  font-size: 24rpx;
+  color: #F59E0B;
+  letter-spacing: 2rpx;
+}
+.huarong-section .sd-stat-row {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 8rpx;
+  flex-wrap: wrap;
+}
+.huarong-section .sd-stat-item {
+  font-size: 22rpx;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.huarong-section .sd-stat-num {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #64748B;
+}
+.huarong-section .meta-sep {
+  font-size: 26rpx;
+}
+.huarong-section .time-badge .time-value {
+  font-size: 38rpx;
+}
+.huarong-board {
+  display: flex;
+  flex-direction: column;
+  gap: 3rpx;
+  padding: 16rpx !important;
+  background: #E6F7ED !important;
+  border-radius: 16rpx;
+}
+.hb-row {
+  display: flex;
+  gap: 3rpx;
+}
+.hb-cell {
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12rpx;
+  font-weight: 700;
+  color: #fff;
+  background: #07C160;
+}
+.hb-empty {
+  background: transparent;
+}
 
 /* ===== 加载更多 ===== */
 .load-more {
@@ -377,4 +661,56 @@
 .loading-text {
   font-size: 26rpx;
   color: #999;
+}
+
+.loading-hint {
+  text-align: center;
+  padding: 40rpx 10rpx;
+  font-size: 26rpx;
+  color: #94A3B8;
+}
+
+/* ===== 数独 Tab 图标 ===== */
+.sd-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 10rpx);
+  gap: 2rpx;
+}
+.sd-tab-cell {
+  width: 10rpx;
+  height: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sd-tab-num {
+  font-size: 7rpx;
+  font-weight: 700;
+  color: #3B82F6;
+}
+
+/* 数独记录 - 难度颜色 */
+.level-badge.sd-easy { color: #059669; }
+.level-badge.sd-medium { color: #D97706; }
+.level-badge.sd-hard { color: #DC2626; }
+.level-badge.sd-expert { color: #7C3AED; }
+
+/* 数独空状态图标 */
+.sd-empty-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 16rpx);
+  gap: 2rpx;
+  padding: 6rpx;
+  background: rgba(59,130,246,0.1);
+  border-radius: 6rpx;
+}
+.sde-row {
+  display: contents;
+}
+.sde-cell {
+  width: 16rpx;
+  height: 16rpx;
+  background: #3B82F6;
+  border-radius: 3rpx;
+  opacity: 0.4;
 }

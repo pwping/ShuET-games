@@ -1,0 +1,122 @@
+<view class="page">
+  <!-- 统计卡片 + 刷新 (同华容道) -->
+  <view class="stats-row">
+    <view class="settings-wrap" bindtap="onShowSettings">
+      <view class="settings-btn">⚙</view>
+    </view>
+    <view class="stats-bar">
+      <view class="sb-item sb-time">
+        <view class="sb-icon sb-icon-time">⏱</view>
+        <view class="sb-info">
+          <text class="sb-value">{{timerText}}</text>
+        </view>
+      </view>
+      <view class="sb-divider"></view>
+      <view class="sb-item sb-moves">
+        <view class="sb-icon sb-icon-steps">👣</view>
+        <view class="sb-info">
+          <text class="sb-value">{{moves}}步</text>
+        </view>
+      </view>
+    </view>
+    <view class="reset-wrap" bindtap="onRestart">
+      <view class="reset-btn">↻</view>
+    </view>
+  </view>
+
+  <!-- 棋盘 -->
+  <view class="board-wrap">
+    <view class="board" style="width:{{boardWidth}}px;height:{{boardWidth}}px;">
+      <view class="exit-marker" style="left:{{EXIT_COL * cellSize}}px;width:{{cellSize}}px;height:{{cellSize}}px;">
+        <text class="exit-arrow">▼</text>
+      </view>
+      <view
+        wx:for="{{blocks}}"
+        wx:key="id"
+        class="block block-wood {{item.isTarget ? 'block-target' : ''}} {{item.selected ? 'selected' : ''}} {{item.drag ? 'dragging' : ''}}"
+        data-id="{{item.id}}"
+        catchtouchstart="onBoardTouchStart"
+        catchtouchmove="onBoardTouchMove"
+        catchtouchend="onBoardTouchEnd"
+        style="position:absolute;left:{{item.pxLeft != null ? item.pxLeft : item.col * cellSize}}px;top:{{item.pxTop != null ? item.pxTop : item.row * cellSize}}px;width:{{item.orient === 'h' ? item.size * cellSize : cellSize}}px;height:{{item.orient === 'v' ? item.size * cellSize : cellSize}}px;border-radius:6px;z-index:{{item.id === 'G' ? 10 : 1}};transition:{{item.drag ? 'none' : (item.wonExit ? 'top 0.35s ease-in' : 'left 0.1s ease, top 0.1s ease')}};"
+      >
+        <view wx:if="{{item.id === 'G'}}" class="g-mark">★</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏（棋盘正下方） -->
+  <view class="action-bar">
+    <view class="action-item action-guide" bindtap="onHint">
+      <view class="action-icon-guide">💡</view>
+      <text class="action-label">攻略</text>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-item action-best">
+      <text class="best-num">{{steps}}</text>
+      <text class="best-label">最优步数</text>
+    </view>
+    <view class="action-divider"></view>
+    <view class="action-item action-help" bindtap="onShowHelp">
+      <view class="action-icon-help">?</view>
+    </view>
+  </view>
+
+  <!-- 帮助弹窗（自定义） -->
+  <view class="help-overlay {{showHelp ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="help-dialog">
+      <text class="help-title">游戏目标</text>
+      <text class="help-desc">将红色方块(★)向下滑出底部出口即可通关</text>
+
+      <text class="help-section-title">操作方式</text>
+      <view class="help-list">
+        <text class="help-item">• 手指按住积木拖拽移动</text>
+        <text class="help-item">• 水平积木：左右滑动</text>
+        <text class="help-item">• 垂直积木：上下滑动</text>
+      </view>
+
+      <text class="help-section-title">游戏提示</text>
+      <text class="help-tip">先移开挡路积木，为红色方块清出通道！</text>
+
+      <view class="help-close-btn" bindtap="onCloseHelp">知道了</view>
+    </view>
+  </view>
+
+  <!-- 最优解提示弹窗（自定义） -->
+  <view class="help-overlay {{showHintModal ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="help-dialog">
+      <text class="help-title">最优解演示</text>
+      <text class="help-desc">{{hintSteps ? '共 ' + hintSteps + ' 步' : ''}}</text>
+      <text class="help-tip" style="margin-top:12rpx;">将重置到初始状态，从第1步开始演示</text>
+      <view class="hint-btn-row">
+        <view class="hint-btn hint-btn-cancel" bindtap="onCancelHint">取消</view>
+        <view class="help-close-btn hint-btn-confirm" bindtap="onConfirmHint">确认演示</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置弹窗 -->
+  <view class="help-overlay {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="help-dialog game-settings-dialog">
+      <text class="help-title">游戏设置</text>
+      <view class="settings-list">
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">🔊</text>
+            <text class="settings-label">音效</text>
+          </view>
+          <switch class="settings-switch" checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#F59E0B"/>
+        </view>
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">📳</text>
+            <text class="settings-label">震动</text>
+          </view>
+          <switch class="settings-switch" checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#F59E0B"/>
+        </view>
+      </view>
+      <view class="help-close-btn" bindtap="onCloseSettings">知道了</view>
+    </view>
+  </view>
+
+</view>

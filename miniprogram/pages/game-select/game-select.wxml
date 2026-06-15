@@ -16,17 +16,18 @@
   <view class="game-section">
     <view class="section-header">
       <text class="section-title">选择游戏</text>
-      <text class="section-sub">两款经典脑力训练游戏</text>
+      <text class="section-sub">经典脑力训练游戏</text>
     </view>
     <view class="game-grid">
       <view class="game-card" wx:for="{{games}}" wx:key="key" bindtap="onGameTap" data-key="{{item.key}}">
+        <view class="new-badge" wx:if="{{item.isNew && item.showNew}}">新</view>
         <view class="game-card-inner">
           <view class="game-icon-wrap">
             <view class="game-icon" style="background:{{item.iconBg}};">
               <view wx:if="{{item.grid}}" class="grid-3x3">
                 <view class="gc" wx:for="{{9}}" wx:key="*this"></view>
               </view>
-              <view wx:else class="klotski-icon">
+              <view wx:elif="{{item.key === 'klotski'}}" class="klotski-icon">
                 <view class="ki-row">
                   <view class="ki-tile">1</view>
                   <view class="ki-tile">2</view>
@@ -43,10 +44,42 @@
                   <view class="ki-tile ki-empty"></view>
                 </view>
               </view>
+              <view wx:elif="{{item.key === 'baishu'}}" class="baishu-icon">
+                <view class="bs-circle">
+                  <text class="bs-num" wx:for="{{['0','1','2','3','4','5','6','7','8','9']}}" wx:key="*this">{{item}}</text>
+                </view>
+                <view class="bs-center">
+                  <view class="bs-triangle"></view>
+                </view>
+              </view>
+              <view wx:elif="{{item.key === 'moveblock'}}" class="moveblock-icon">
+                <view class="mb-grid">
+                  <view class="mb-cell"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-block mb-block-v" style="grid-column:3;grid-row:1/3;"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-block mb-block-h" style="grid-column:2/4;grid-row:3;"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-cell"></view>
+                  <view class="mb-gap" style="grid-column:3;grid-row:4;"></view>
+                  <view class="mb-arrow">▼</view>
+                </view>
+              </view>
+              <view wx:elif="{{item.key === 'sudoku'}}">
+                <view class="sd-icon-grid">
+                  <view wx:for="{{9}}" wx:key="*this" class="sd-icon-tile {{sdIconCells[index] === '' ? 'sd-icon-empty' : ''}}">
+                    <text wx:if="{{sdIconCells[index] !== ''}}">{{sdIconCells[index]}}</text>
+                  </view>
+                </view>
+              </view>
+              <text wx:else class="coming-soon-icon">⚡</text>
             </view>
           </view>
           <view class="game-name">{{item.name}}</view>
           <view class="game-desc">{{item.desc}}</view>
+          <view class="coming-badge" wx:if="{{item.comingSoon}}">即将上线</view>
         </view>
       </view>
     </view>
@@ -54,5 +87,5 @@
 
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
 
-  <custom-tabbar active=""></custom-tabbar>
+  <custom-tabbar active="index"></custom-tabbar>
 </view>

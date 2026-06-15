@@ -11,7 +11,7 @@ Component({
       const page = e.currentTarget.dataset.page;
       if (page === this.properties.active) return;
       if (page === 'index') {
-        wx.navigateTo({ url: '/pages/index/index' });
+        wx.reLaunch({ url: '/pages/game-select/game-select' });
       } else {
         wx.navigateTo({ url: '/pages/mine/mine' });
       }

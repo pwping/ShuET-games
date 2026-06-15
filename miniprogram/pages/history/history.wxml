@@ -1,5 +1,67 @@
 <view class="page-container">
-  <view class="filter-wrapper">
+  <!-- 游戏类型切换（可左右滑动） -->
+  <scroll-view class="game-toggle-scroll" scroll-x enhanced show-scrollbar="{{false}}" scroll-into-view="{{scrollToGame}}" scroll-with-animation>
+    <view class="game-toggle">
+      <view id="tab-shulte" class="toggle-item {{currentGame === 'shulte' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="shulte">
+      <view class="toggle-icon">
+        <view class="tg-grid">
+          <view class="tg-cell" wx:for="{{9}}" wx:key="*this"></view>
+        </view>
+      </view>
+      <text class="toggle-label">舒尔特方格</text>
+    </view>
+    <view id="tab-huarong" class="toggle-item {{currentGame === 'huarong' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="huarong">
+      <view class="toggle-icon">
+        <view class="tg-grid tg-huarong">
+          <view class="tg-cell" wx:for="{{8}}" wx:key="*this"></view>
+          <view class="tg-cell tg-empty"></view>
+        </view>
+      </view>
+      <text class="toggle-label">数字华容道</text>
+    </view>
+    <view id="tab-movingBlock" class="toggle-item {{currentGame === 'movingBlock' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="movingBlock">
+      <view class="toggle-icon">
+        <view class="mb-board-bg">
+          <view class="mb-grid-tab">
+            <view class="mg-row">
+              <view class="mg-cell"></view>
+              <view class="mg-cell"></view>
+              <view class="mg-cell"></view>
+            </view>
+            <view class="mg-row">
+              <view class="mg-cell"></view>
+              <view class="mg-block mg-block-v-tab"></view>
+            </view>
+            <view class="mg-row">
+              <view class="mg-cell"></view>
+              <view class="mg-block mg-block-h-tab"></view>
+            </view>
+            <view class="mg-row">
+              <view class="mg-cell"></view>
+              <view class="mg-cell"></view>
+              <view class="mg-gap-tab"></view>
+            </view>
+          </view>
+          <view class="mb-arrow-tab">▼</view>
+        </view>
+      </view>
+      <text class="toggle-label">积木迷阵</text>
+    </view>
+    <view id="tab-sudoku" class="toggle-item {{currentGame === 'sudoku' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="sudoku">
+      <view class="toggle-icon">
+        <view class="sd-tab-grid">
+          <view class="sd-tab-cell" wx:for="{{9}}" wx:key="*this">
+            <text class="sd-tab-num" wx:if="{{index < 5}}">{{index + 1}}</text>
+          </view>
+        </view>
+      </view>
+      <text class="toggle-label">数独</text>
+    </view>
+  </view>
+</scroll-view>
+
+  <!-- ===== 舒尔特方格 ===== -->
+  <view class="filter-wrapper" hidden="{{currentGame !== 'shulte'}}">
     <view class="filter-all {{currentFilter === 'all' ? 'active' : ''}}" bindtap="setFilter" data-filter="all">全部</view>
     <scroll-view class="filter-scroll" scroll-x show-scrollbar="{{false}}" scroll-into-view="{{scrollIntoView}}">
       <view class="filter-scroll-inner">
@@ -16,8 +78,7 @@
     </scroll-view>
   </view>
 
-  <!-- 难度筛选（可滑入滑出） -->
-  <view class="size-filter-wrapper {{sizeFilterHidden ? 'size-filter-hide' : ''}}">
+  <view class="size-filter-wrapper {{sizeFilterHidden ? 'size-filter-hide' : ''}}" hidden="{{currentGame !== 'shulte'}}">
     <view class="size-filter-grid">
       <view class="size-grid-item {{currentSizeFilter === 3 ? 'active' : ''}}" bindtap="setSizeFilter" data-size="3">
         <text class="sgi-label">3×3</text>
@@ -46,13 +107,12 @@
     </view>
   </view>
 
-  <swiper class="swiper-wrap" current="{{swiperIndex}}" bindchange="onSwiperChange" duration="300">
+  <swiper class="swiper-wrap" current="{{swiperIndex}}" bindchange="onSwiperChange" duration="300" hidden="{{currentGame !== 'shulte'}}">
     <swiper-item wx:for="{{FILTER_LIST}}" wx:key="key">
       <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}" bindscroll="onRecordScroll" bindscrolltolower="onScrollToLower">
         <view class="record-list">
           <view class="record-item" wx:for="{{records}}" wx:key="index">
             <view class="record-body">
-              <!-- 左侧信息区 -->
               <view class="record-left">
                 <text class="record-mode">{{item.modeName}}</text>
                 <view class="record-meta">
@@ -62,7 +122,6 @@
                 </view>
                 <text class="record-time">{{item.createTime}}</text>
               </view>
-              <!-- 右侧成绩区 -->
               <view class="record-right">
                 <view wx:if="{{item.mode === 'challenge_record' || item.mode === 'challenge'}}" class="challenge-result">
                   <view class="status-badge {{item.status}}">
@@ -79,38 +138,242 @@
             </view>
           </view>
 
-            <view class="empty-state" wx:if="{{records.length === 0}}">
+          <view class="empty-state" wx:if="{{records.length === 0}}">
             <view class="empty-icon">
               <view class="grid-icon">
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
-                <view class="grid-cell"></view>
+                <view class="grid-cell" wx:for="{{9}}" wx:key="*this"></view>
               </view>
             </view>
-            <view class="empty-text">{{emptyText}}</view>
-            <view class="empty-subtext go-train" bindtap="onGoTrain">{{emptySubtext}}</view>
+              <view class="empty-text">{{emptyText}}</view>
           </view>
 
           <view class="load-more" wx:if="{{showFooter && !hasMore && records.length > 0}}">
             <text>没有记录啦！快去练习吧。</text>
           </view>
-
           <view class="load-more-btn" wx:if="{{hasMore && records.length > 0 && !showLoading}}" bindtap="loadMore">
             <text>点击加载更多</text>
           </view>
-
           <view class="loading-more" wx:if="{{showLoading}}">
             <view class="loading-spinner"></view>
             <text class="loading-text">加载中...</text>
+          </view>
+          <view class="go-train-wrap">
+            <view class="go-train" bindtap="onGoTrain">去练习一下</view>
           </view>
         </view>
       </scroll-view>
     </swiper-item>
   </swiper>
+
+  <!-- ===== 积木迷阵 ===== -->
+  <view class="huarong-section" hidden="{{currentGame !== 'movingBlock'}}">
+    <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="record-list">
+        <view class="record-item" wx:for="{{mbRecords}}" wx:key="index">
+          <view class="record-body">
+            <view class="record-left">
+              <view class="record-meta">
+                <text class="level-badge">第{{item.levelId}}关</text>
+                <view class="mb-record-stars-sm">
+                  <text wx:for="{{5}}" wx:for-item="i" wx:key="i"
+                    class="mb-star-sm {{i < item.starLevel ? 'on' : ''}}">★</text>
+                </view>
+              </view>
+              <text class="record-time">{{item.createTime}}</text>
+            </view>
+            <view class="record-right">
+              <view class="time-badge success">
+                <text class="time-value">{{item.moves}}步 · {{item.timeStr}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="loading-hint" wx:if="{{mbLoading}}">
+          <text>加载中...</text>
+        </view>
+        <view class="empty-state" wx:elif="{{mbRecords.length === 0}}">
+          <view class="empty-icon">
+            <view class="mb-empty-bg">
+              <view class="mb-grid-empty">
+                <view class="mge-row">
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                </view>
+                <view class="mge-row">
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-block mge-block-v"></view>
+                </view>
+                <view class="mge-row">
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-block mge-block-h"></view>
+                </view>
+                <view class="mge-row">
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-cell"></view>
+                  <view class="mge-gap"></view>
+                </view>
+              </view>
+              <view class="mb-arrow-empty">▼</view>
+            </view>
+          </view>
+          <view class="empty-text">暂无积木迷阵记录</view>
+        </view>
+
+        <view class="load-more" wx:if="{{mbRecords.length > 0}}">
+          <text>没有记录啦，快去练习吧。</text>
+        </view>
+        <view class="go-train-wrap">
+          <view class="go-train" bindtap="onGoMovingBlock">去练习一下</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 数独 ===== -->
+  <view class="huarong-section" hidden="{{currentGame !== 'sudoku'}}">
+    <view class="filter-wrapper">
+      <view class="filter-all {{sdDifficultyFilter === 'all' ? 'active' : ''}}" bindtap="setSdDifficulty" data-diff="all">全部</view>
+      <scroll-view class="filter-scroll" scroll-x show-scrollbar="{{false}}">
+        <view class="filter-scroll-inner">
+          <view wx:for="{{sdDiffList}}" wx:key="key" class="filter-item {{sdDifficultyFilter === item.key ? 'active' : ''}}" bindtap="setSdDifficulty" data-diff="{{item.key}}">{{item.name}}</view>
+        </view>
+      </scroll-view>
+    </view>
+    <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="record-list">
+        <view class="record-item" wx:for="{{sdRecords}}" wx:key="index">
+          <view class="record-body">
+            <view class="record-left">
+              <view class="record-meta">
+                <text class="level-badge sd-{{item.difficulty}}">{{item.diffLabel}}</text>
+                <text class="meta-sep">|</text>
+                <text class="sd-star-text">{{item.starStr}}</text>
+              </view>
+              <view class="sd-stat-row">
+                <text class="sd-stat-item">正确(<text class="sd-stat-num">{{item.correct}}</text>)</text>
+                <text class="sd-stat-item">错误(<text class="sd-stat-num">{{item.errors}}</text>)</text>
+                <text class="sd-stat-item">提示(<text class="sd-stat-num">{{item.hints}}</text>)</text>
+                <text class="sd-stat-item">撤销(<text class="sd-stat-num">{{item.undo}}</text>)</text>
+              </view>
+              <text class="record-time">{{item.createTime}}</text>
+            </view>
+            <view class="record-right">
+              <view class="time-badge success">
+                <text class="time-value">{{item.timeStr}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="loading-hint" wx:if="{{sdLoading}}">
+          <text>加载中...</text>
+        </view>
+        <view class="empty-state" wx:elif="{{sdRecords.length === 0}}">
+          <view class="empty-icon">
+            <view class="sd-empty-grid">
+              <view class="sde-row" wx:for="{{3}}" wx:key="*this">
+                <view class="sde-cell" wx:for="{{3}}" wx:key="*this"></view>
+              </view>
+            </view>
+          </view>
+          <view class="empty-text">暂无数独记录</view>
+        </view>
+
+        <view class="load-more" wx:if="{{sdRecords.length > 0}}">
+          <text>没有记录啦，快去练习吧。</text>
+        </view>
+        <view class="go-train-wrap">
+          <view class="go-train" bindtap="onGoSudoku">去练习一下</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 数字华容道 ===== -->
+  <view class="huarong-section" hidden="{{currentGame !== 'huarong'}}">
+    <view class="size-filter-wrapper">
+      <view class="size-filter-grid">
+        <view class="size-grid-item {{hrSizeFilter === 3 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="3">
+          <text class="sgi-label">3×3</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 4 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="4">
+          <text class="sgi-label">4×4</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 5 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="5">
+          <text class="sgi-label">5×5</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 6 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="6">
+          <text class="sgi-label">6×6</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 7 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="7">
+          <text class="sgi-label">7×7</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 8 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="8">
+          <text class="sgi-label">8×8</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 9 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="9">
+          <text class="sgi-label">9×9</text>
+        </view>
+        <view class="size-grid-item {{hrSizeFilter === 10 ? 'active' : ''}}" bindtap="setHrSizeFilter" data-size="10">
+          <text class="sgi-label">10×10</text>
+        </view>
+      </view>
+    </view>
+
+    <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="record-list">
+        <view class="record-item" wx:for="{{hrRecords}}" wx:key="index">
+          <view class="record-body">
+            <view class="record-left">
+              <view class="record-meta">
+                <text class="level-badge">{{item.levelName}}({{item.sizeLabel}})</text>
+                <text class="meta-sep">|</text>
+                <text class="accuracy-value">步数({{item.moves}}步)</text>
+              </view>
+              <text class="record-time">{{item.createTime}}</text>
+            </view>
+            <view class="record-right">
+              <view class="time-badge success">
+                <text class="time-value">{{item.timeStr}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="empty-state" wx:if="{{hrRecords.length === 0}}">
+          <view class="empty-icon huarong-board">
+            <view class="hb-row">
+              <view class="hb-cell">1</view>
+              <view class="hb-cell">2</view>
+              <view class="hb-cell">3</view>
+            </view>
+            <view class="hb-row">
+              <view class="hb-cell">4</view>
+              <view class="hb-cell">5</view>
+              <view class="hb-cell">6</view>
+            </view>
+            <view class="hb-row">
+              <view class="hb-cell">7</view>
+              <view class="hb-cell">8</view>
+              <view class="hb-cell hb-empty"></view>
+            </view>
+          </view>
+          <view class="empty-text">暂无华容道训练记录</view>
+        </view>
+
+        <view class="load-more" wx:if="{{hrRecords.length > 0}}">
+          <text>没有记录啦，快去练习吧。</text>
+        </view>
+        <view class="go-train-wrap">
+          <view class="go-train" bindtap="onGoHuarong">去练习一下</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
 </view>

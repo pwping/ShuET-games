@@ -1,75 +1,68 @@
 <view class="page-container">
-  <!-- 顶部信息栏 -->
-  <view class="top-bar">
-    <view class="tb-left" bindtap="onBack">
-      <view class="tb-btn tb-back-btn">←</view>
+  <!-- 统计卡片 + 刷新 -->
+  <view class="stats-row">
+    <view class="settings-wrap" bindtap="onShowSettings">
+      <view class="settings-btn">⚙</view>
     </view>
-    <view class="tb-center">
-      <text class="tb-title">{{size}}×{{size}}</text>
-      <text class="tb-sub">华容道</text>
-    </view>
-    <view class="tb-right" bindtap="onReset">
-      <view class="tb-btn tb-reset-btn">↻</view>
-    </view>
-  </view>
-
-  <!-- 统计卡片 -->
-  <view class="stats-bar">
-    <view class="sb-item sb-time">
-      <view class="sb-icon sb-icon-time">⏱</view>
-      <view class="sb-info">
-        <text class="sb-value">{{timerStr}}</text>
-        <text class="sb-label">用时</text>
+    <view class="stats-bar">
+      <view class="sb-item sb-time">
+        <view class="sb-icon sb-icon-time">⏱</view>
+        <view class="sb-info">
+          <text class="sb-value">{{timerStr}}</text>
+        </view>
+      </view>
+      <view class="sb-divider"></view>
+      <view class="sb-item sb-moves">
+        <view class="sb-icon sb-icon-steps">👣</view>
+        <view class="sb-info">
+          <text class="sb-value">{{moves}}步</text>
+        </view>
       </view>
     </view>
-    <view class="sb-divider"></view>
-    <view class="sb-item sb-moves">
-      <view class="sb-icon sb-icon-steps">👣</view>
-      <view class="sb-info">
-        <text class="sb-value">{{moves}}</text>
-        <text class="sb-label">步数</text>
-      </view>
+    <view class="reset-wrap" bindtap="onReset">
+      <view class="reset-btn {{gameStarted ? '' : 'disabled'}}">↻</view>
     </view>
   </view>
 
   <!-- 棋盘容器 -->
-  <view class="board-wrapper">
-    <view class="board-frame">
-      <view class="board" style="width:{{boardPx}}px;height:{{boardPx}}px;">
+  <view class="board-frame">
+    <view class="board" style="width:{{boardPx}}px;height:{{boardPx}}px;">
         <view class="tile tile-{{item.colorClass}}" wx:for="{{tiles}}" wx:key="num"
-          style="left:{{item.col * tilePx + padding}}px;top:{{item.row * tilePx + padding}}px;width:{{tileInner}}px;height:{{tileInner}}px;"
-          bindtap="onTileTap" data-row="{{item.row}}" data-col="{{item.col}}">
+          style="left:{{item.col * (tilePx + gap) + gap}}px;top:{{item.row * (tilePx + gap) + gap}}px;width:{{tilePx}}px;height:{{tilePx}}px;"
+          bindtap="onTileTap" data-row="{{item.row}}" data-col="{{item.col}}" hover-class="none" hover-start-time="0" hover-stay-time="0">
           <view class="tile-inner">
-            <text class="tile-num">{{item.num}}</text>
-            <text class="tile-en">{{item.english}}</text>
+            <text class="tile-num" style="font-size:{{tileFont}}rpx">{{item.num}}</text>
           </view>
         </view>
-      </view>
     </view>
   </view>
 
-  <!-- 胜利弹窗 -->
-  <view class="win-overlay" wx:if="{{solved}}">
-    <view class="win-card">
-      <view class="win-header">
-        <view class="win-stars">★ ★ ★</view>
-        <text class="win-title">太棒了!</text>
-        <text class="win-sub">你完成了挑战</text>
-      </view>
-      <view class="win-stats">
-        <view class="ws-item">
-          <text class="ws-val">{{timerStr}}</text>
-          <text class="ws-lbl">用时</text>
+  <!-- 开始按钮 -->
+  <view class="start-btn-wrap" wx:if="{{!gameStarted}}">
+    <view class="start-btn" bindtap="onStart">开始游戏</view>
+  </view>
+
+  <!-- 设置弹窗 -->
+  <view class="settings-overlay {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="settings-dialog">
+      <text class="settings-title">游戏设置</text>
+      <view class="settings-list">
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">🔊</text>
+            <text class="settings-label">音效</text>
+          </view>
+          <switch class="settings-switch" checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#E91E63"/>
         </view>
-        <view class="ws-item">
-          <text class="ws-val">{{moves}}步</text>
-          <text class="ws-lbl">步数</text>
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">📳</text>
+            <text class="settings-label">震动</text>
+          </view>
+          <switch class="settings-switch" checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#E91E63"/>
         </view>
       </view>
-      <view class="win-actions">
-        <button class="win-btn win-btn-primary" bindtap="onReset">再来一次</button>
-        <button class="win-btn win-btn-secondary" bindtap="onBack">返回</button>
-      </view>
+      <view class="settings-close-btn" bindtap="onCloseSettings">知道了</view>
     </view>
   </view>
 </view>

@@ -1,4 +1,5 @@
 const app = getApp();
+var rating = require('../../utils/sudoku-rating');
 
 const MODE_NAMES = {
   classic: '经典模式',
@@ -33,7 +34,9 @@ const FILTER_LIST = [
 
 Page({
   data: {
+    currentGame: 'shulte',
     currentFilter: 'all',
+    _pendingTab: null,
     currentSizeFilter: 0,
     swiperIndex: 0,
     records: [],
@@ -46,17 +49,63 @@ Page({
     scrollIntoView: '',
     emptyText: '暂无训练记录',
     emptySubtext: '快去开始训练吧！',
-    sizeFilterHidden: false
+    sizeFilterHidden: false,
+    hrSizeFilter: 0,
+    hrRecords: [],
+    mbRecords: [],
+    mbLoading: false,
+    sdRecords: [],
+    sdLoading: false,
+    sdDifficultyFilter: 'all',
+    sdDiffList: rating.DIFF_LIST,
+    scrollToGame: ''
   },
 
   _allRecords: [],
   _loadingTimer: null,
-  _filterCache: {},
   _dataLoading: false,
   _lastScrollTop: 0,
 
-  getCacheKey() {
-    return `${this.data.currentFilter}_${this.data.currentSizeFilter}`;
+  onGameSwitch(e) {
+    const game = e.currentTarget.dataset.game;
+    if (game === this.data.currentGame) return;
+    this.setData({ scrollToGame: 'tab-' + game });
+    if (game === 'huarong') {
+      this.setData({
+        currentGame: 'huarong',
+        records: [],
+        hrSizeFilter: 0,
+        hrRecords: [],
+      }, () => this.loadHuarongRecords());
+    } else if (game === 'movingBlock') {
+      this.setData({
+        currentGame: 'movingBlock',
+        records: [],
+        mbRecords: [],
+      }, () => this.loadMovingBlockRecords());
+    } else if (game === 'sudoku') {
+      this.setData({
+        currentGame: 'sudoku',
+        records: [],
+        sdRecords: [],
+      }, () => this.loadSudokuRecords());
+    } else {
+      this.setData({
+        currentGame: 'shulte',
+        currentFilter: 'all',
+        currentSizeFilter: 0,
+        records: [],
+        page: 1,
+        hasMore: true,
+        showFooter: false,
+        showLoading: false,
+        sizeFilterHidden: false,
+        swiperIndex: 0,
+        emptyText: '暂无训练记录',
+        emptySubtext: '快去开始训练吧！',
+      }, () => this.loadRecords());
+      this._allRecords = [];
+    }
   },
 
   getEmptyText(filter) {
@@ -71,141 +120,138 @@ Page({
     this.setData({ emptyText: text, emptySubtext: subtext });
   },
 
+  onLoad(options) {
+    if (options && options.tab) {
+      this._pendingTab = options.tab;
+    }
+  },
+
   onShow() {
     this._dataLoading = false;
-    // 清除缓存强制重新加载，确保新记录能显示
-    this._filterCache = {};
+    // 如果有待切换的Tab，优先切换
+    if (this._pendingTab) {
+      const tab = this._pendingTab;
+      this._pendingTab = null;
+      this.switchToTab(tab);
+      return;
+    }
     this.loadRecords();
+    if (this.data.currentGame === 'huarong') {
+      this.loadHuarongRecords();
+    } else if (this.data.currentGame === 'movingBlock') {
+      this.loadMovingBlockRecords();
+    } else if (this.data.currentGame === 'sudoku') {
+      this.loadSudokuRecords();
+    }
+  },
+
+  switchToTab(tab) {
+    if (tab === 'movingBlock') {
+      this.setData({
+        currentGame: 'movingBlock',
+        records: [],
+        mbRecords: [],
+      }, () => this.loadMovingBlockRecords());
+    } else if (tab === 'huarong') {
+      this.setData({
+        currentGame: 'huarong',
+        records: [],
+        hrSizeFilter: 0,
+        hrRecords: [],
+      }, () => this.loadHuarongRecords());
+    } else if (tab === 'sudoku') {
+      this.setData({
+        currentGame: 'sudoku',
+        records: [],
+        sdRecords: [],
+      }, () => this.loadSudokuRecords());
+    }
   },
 
   loadRecords(sizeFilter) {
     this._allRecords = [];
     const filter = this.data.currentFilter;
     const sf = sizeFilter !== undefined ? sizeFilter : this.data.currentSizeFilter;
-    const cacheKey = `${filter}_${sf}`;
-    
-    console.log('loadRecords - entering:', 'filter:', filter, 'size:', sf, 'cacheKey:', cacheKey);
 
-    // 挑战模式隐藏难度筛选
     if (filter === 'challenge_record') {
       this.setData({ page: 1, hasMore: true, showFooter: false, showLoading: false, sizeFilterHidden: true });
     } else {
       this.setData({ page: 1, hasMore: true, showFooter: false, showLoading: false, sizeFilterHidden: false });
     }
 
-    // 检查缓存
-    if (this._filterCache[cacheKey]) {
-      console.log('loadRecords - using cache:', cacheKey, 'record count:', this._filterCache[cacheKey].length);
-      this._allRecords = this._filterCache[cacheKey];
-      this.loadPage();
-      return;
-    }
-
-    // 挑战记录特殊处理
+    // 挑战记录
     if (filter === 'challenge_record') {
-      // 获取本地挑战记录
-      let localChallengeRecords = wx.getStorageSync('shult_challenge_records') || [];
-      console.log('loadRecords - challenge local records:', localChallengeRecords.length);
-      // 转换为统一格式
-      localChallengeRecords = localChallengeRecords.map(r => ({
-        mode: 'challenge_record',
-        level: 'high',
-        size: 5,
+      const localChallengeRecords = wx.getStorageSync('shult_challenge_records') || [];
+      const fmtLocal = localChallengeRecords.map(r => ({
+        mode: 'challenge_record', level: 'high', size: 5,
         timeCost: r.timeMs,
         status: r.success ? 'success' : 'fail',
-        accuracy: r.accuracy !== undefined ? r.accuracy : (r.success ? 100 : Math.round(Math.random() * 80 + 20)),
+        accuracy: r.accuracy !== undefined ? r.accuracy : (r.success ? 100 : 0),
         createTime: r.dateTime,
         passLevel: r.passLevel
       }));
-      // 查询云端挑战记录（从专用的 challenge_records 表查询）
       wx.cloud.callFunction({
         name: 'getChallengeRecords',
         data: { page: 1, pageSize: 100 },
         success: res => {
-          console.log('loadRecords - challenge cloud response:', res);
           let cloudRecords = [];
           if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
-            console.log('loadRecords - challenge cloud records:', res.result.data.length);
-            // 转换为统一格式
             cloudRecords = res.result.data.map(r => ({
-              mode: 'challenge_record',
-              level: 'high',
-              size: 5,
-              timeCost: r.timeMs,
-              status: r.success ? 'success' : 'fail',
-              accuracy: r.accuracy || 0,
-              createTime: r.createTime,
-              passLevel: r.passLevel
+              mode: 'challenge_record', level: 'high', size: 5,
+              timeCost: r.timeMs, status: r.success ? 'success' : 'fail',
+              accuracy: r.accuracy || 0, createTime: r.createTime, passLevel: r.passLevel
             }));
-          } else {
-            console.log('loadRecords - challenge cloud invalid response:', res.result);
           }
-          const merged = [...localChallengeRecords, ...cloudRecords];
-          console.log('loadRecords - challenge merged records:', merged.length);
-          this.processRecords(merged);
+          // 合并本地+云端，不去重，按时间排序
+          this.processRecords([...fmtLocal, ...cloudRecords]);
         },
-        fail: (err) => {
-          console.error('loadRecords - challenge cloud fail:', err);
-          this.processRecords(localChallengeRecords);
-        }
+        fail: () => this.processRecords(fmtLocal)
       });
       return;
     }
 
-    // 普通训练记录处理
+    // 普通训练记录
     let localRecords = wx.getStorageSync('shult_records') || [];
-    
-    console.log('loadRecords - before filter:', filter, 'size:', sf, 'localRecords count:', localRecords.length);
-    
     localRecords = localRecords.filter(r => {
       const modeMatch = filter === 'all' || r.mode === filter;
       const sizeMatch = sf === 0 || r.size === sf;
-      const keep = modeMatch && sizeMatch;
-      if (!keep && modeMatch) {
-        console.log('loadRecords - filter out (size mismatch):', r.mode, r.size, 'expected size:', sf);
-      }
-      if (!keep && sizeMatch) {
-        console.log('loadRecords - filter out (mode mismatch):', r.mode, 'expected mode:', filter);
-      }
-      return keep;
+      return modeMatch && sizeMatch;
     });
-    
-    console.log('loadRecords - after filter:', 'localRecords count:', localRecords.length);
-    
-    const cloudData = {};
-    if (filter !== 'all') cloudData.mode = filter;
-    if (sf !== 0) cloudData.size = sf;
-    
-    console.log('loadRecords - cloudData:', cloudData);
-    
+
     wx.cloud.callFunction({
       name: 'getUserTrainRecords',
-      data: cloudData,
+      data: {
+        ...(filter !== 'all' ? { mode: filter } : {}),
+        ...(sf !== 0 ? { size: sf } : {})
+      },
       success: res => {
         let cloudRecords = [];
         if (res.result && res.result.code === 200) {
-          cloudRecords = res.result.data || [];
+          cloudRecords = (res.result.data || []).filter(r => r.mode !== 'huarong');
         }
-        console.log('loadRecords - cloud response:', res.result);
-        console.log('loadRecords - cloudRecords count:', cloudRecords.length);
-        if (cloudRecords.length > 0) {
-          console.log('loadRecords - first cloud record:', cloudRecords[0]);
-        }
-        const merged = [...localRecords, ...cloudRecords];
-        this.processRecords(merged);
+        // 合并本地+云端，不去重，按时间排序
+        this.processRecords([...localRecords, ...cloudRecords]);
       },
-      fail: () => {
-        this.processRecords(localRecords);
-      }
+      fail: () => this.processRecords(localRecords)
     });
   },
 
   processRecords(records) {
-    // 过滤掉数据损坏的记录（缺失关键字段）
     const validRecords = records.filter(r => r.mode && r.level && r.size);
+    // 按 createTime 倒序排列
+    validRecords.sort((a, b) => {
+      const ta = a.createTime || '';
+      const tb = b.createTime || '';
+      return tb.localeCompare(ta);
+      var filterDiff = this.data.sdDifficultyFilter;
+      if (filterDiff !== 'all') {
+        allRecords = allRecords.filter(function(r) {
+          return r.difficulty === filterDiff;
+        });
+      }
+    });
 
     this._allRecords = validRecords.map(r => {
-      // 挑战记录特殊处理
       if (r.mode === 'challenge_record') {
         return {
           ...r,
@@ -214,12 +260,11 @@ Page({
           accuracyLabel: `正确率(${r.accuracy || 0}%)`,
           status: r.status === 'success' ? 'success' : 'fail',
           statusLabel: r.status === 'success' ? '成功' : '失败',
-          statusText: this.formatSeconds(r.timeCost),  // 失败也显示用时
+          statusText: this.formatSeconds(r.timeCost),
           formattedTime: this.formatTime(r.timeCost),
           createTime: this.formatDate(r.createTime)
         };
       }
-      // 普通记录处理
       const isSuccess = r.status === 'success';
       return {
         ...r,
@@ -228,15 +273,11 @@ Page({
         accuracyLabel: `正确率(${r.accuracy || 0}%)`,
         status: isSuccess ? 'success' : 'fail',
         statusLabel: isSuccess ? '成功' : '失败',
-        statusText: isSuccess ? this.formatSeconds(r.timeCost) : this.formatSeconds(r.timeCost),
+        statusText: this.formatSeconds(r.timeCost),
         formattedTime: this.formatTime(r.timeCost),
         createTime: this.formatDate(r.createTime)
       };
     });
-
-    // 缓存当前筛选器的数据
-    const cacheKey = `${this.data.currentFilter}_${this.data.currentSizeFilter}`;
-    this._filterCache[cacheKey] = this._allRecords;
 
     this.loadPage();
   },
@@ -268,11 +309,9 @@ Page({
 
     this.updateEmptyText(filter);
 
-    // 自动滚动筛选器到对应按钮
     let scrollTarget = `filter-${filter}`;
     if (filter === 'all') scrollTarget = 'filter-classic';
 
-    // 立即清空记录，避免显示旧数据
     this.setData({
       swiperIndex: index,
       currentFilter: filter,
@@ -285,22 +324,13 @@ Page({
       scrollIntoView: scrollTarget
     });
 
-    // 从缓存取，或重新加载
-    const cacheKey2 = `${filter}_0`;
-    if (this._filterCache[cacheKey2]) {
-      this._allRecords = this._filterCache[cacheKey2];
-      this.loadPage();
-      this._dataLoading = false;
-    } else {
-      this.loadRecords(0);
-      this._dataLoading = false;
-    }
+    this.loadRecords(0);
+    this._dataLoading = false;
   },
 
   setSizeFilter(e) {
     const size = parseInt(e.currentTarget.dataset.size);
     if (size === this.data.currentSizeFilter) return;
-    this._filterCache = {};
     this.setData({ currentSizeFilter: size, records: [], page: 1, showFooter: false, showLoading: false });
     this._allRecords = [];
     this._dataLoading = true;
@@ -349,6 +379,214 @@ Page({
       clearTimeout(this._loadingTimer);
       this._loadingTimer = null;
     }
+  },
+
+  setHrSizeFilter(e) {
+    const size = parseInt(e.currentTarget.dataset.size);
+    const val = this.data.hrSizeFilter === size ? 0 : size;
+    this.setData({ hrSizeFilter: val }, () => this.loadHuarongRecords());
+  },
+
+  loadHuarongRecords() {
+    const LEVEL_NAMES = { 3:'基础', 4:'初阶', 5:'标准', 6:'中阶', 7:'高阶', 8:'极限', 9:'疯狂', 10:'宗师' };
+    const sizeFilter = this.data.hrSizeFilter;
+    const local = wx.getStorageSync('huarong_records') || [];
+
+    const render = (allRecords) => {
+      const filtered = sizeFilter ? allRecords.filter(r => r.size === sizeFilter) : allRecords;
+      // 按 createTime 倒序
+      filtered.sort((a, b) => {
+        const ta = a.createTime || '';
+        const tb = b.createTime || '';
+        return tb.localeCompare(ta);
+      var filterDiff = this.data.sdDifficultyFilter;
+      if (filterDiff !== 'all') {
+        allRecords = allRecords.filter(function(r) {
+          return r.difficulty === filterDiff;
+        });
+      }
+      });
+      const hrRecords = filtered.map(r => {
+        const s = r.time || 0;
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return {
+          size: r.size, moves: r.moves,
+          timeStr: m > 0 ? `${m}分${String(sec).padStart(2,'0')}秒` : `${sec}秒`,
+          sizeLabel: `${r.size}×${r.size}`,
+          levelName: LEVEL_NAMES[r.size] || `${r.size}×${r.size}`,
+          createTime: r.createTime || ''
+        };
+      });
+      this.setData({ hrRecords });
+    };
+
+    // 合并本地+云端，不去重
+    wx.cloud.callFunction({
+      name: 'getHuarongRecords',
+      data: { size: sizeFilter || undefined },
+      success: res => {
+        let cloud = [];
+        if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
+          cloud = res.result.data.map(r => ({
+            size: r.size, moves: r.moves, time: r.time,
+            createTime: this.formatDate(r.createTime)
+          }));
+        }
+        render([...local, ...cloud]);
+      },
+      fail: () => render(local)
+    });
+  },
+
+  loadMovingBlockRecords() {
+    this.setData({ mbLoading: true });
+    const local = wx.getStorageSync('mb_records') || [];
+    let retried = false;
+
+    const render = (allRecords) => {
+      allRecords.sort((a, b) => {
+        const ta = a.createTime || '';
+        const tb = b.createTime || '';
+        return tb.localeCompare(ta);
+      var filterDiff = this.data.sdDifficultyFilter;
+      if (filterDiff !== 'all') {
+        allRecords = allRecords.filter(function(r) {
+          return r.difficulty === filterDiff;
+        });
+      }
+      });
+      const mbRecords = allRecords.map(r => {
+        const s = r.time || 0;
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        const diffMoves = r.moves - (r.steps || 1);
+        const starLevel = diffMoves <= 4 ? 5 : diffMoves <= 8 ? 4 : 3;
+        return {
+          levelId: r.levelId,
+          moves: r.moves,
+          timeStr: m > 0 ? `${m}分${String(sec).padStart(2,'0')}秒` : `${sec}秒`,
+          starLevel,
+          createTime: this.formatDate(r.createTime)
+        };
+      });
+      this.setData({ mbRecords, mbLoading: false });
+    };
+
+    // 合并本地+云端
+    const doFetch = () => {
+      wx.cloud.callFunction({
+        name: 'getMovingBlockRecords',
+        success: res => {
+          let cloud = [];
+          if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
+            cloud = res.result.data.map(r => ({
+              levelId: r.levelId, moves: r.moves, steps: r.steps,
+              time: r.time, difficulty: r.difficulty,
+              createTime: r.createTime
+            }));
+          }
+          render([...local, ...cloud]);
+        },
+        fail: () => {
+          if (!retried) {
+            retried = true;
+            setTimeout(doFetch, 500);
+          } else {
+            render(local);
+          }
+        }
+      });
+    };
+    doFetch();
+  },
+
+  loadSudokuRecords() {
+    this.setData({ sdLoading: true });
+    var local = wx.getStorageSync("sudoku_records") || [];
+    var retried = false;
+    var self = this;
+
+    function render(allRecords) {
+      allRecords.sort(function(a, b) {
+        return (b.createTime || "").localeCompare(a.createTime || "");
+      });
+      var filterDiff = self.data.sdDifficultyFilter;
+      if (filterDiff !== "all") {
+        var filtered = [];
+        for (var i = 0; i < allRecords.length; i++) {
+          if (allRecords[i].difficulty === filterDiff) filtered.push(allRecords[i]);
+        }
+        allRecords = filtered;
+      }
+      var sdRecords = [];
+      for (var i = 0; i < allRecords.length; i++) {
+        var r = allRecords[i];
+        var s = r.time || 0;
+        var m = Math.floor(s / 60);
+        var sec = s % 60;
+        var errors = r.errors || 0;
+        var hintsUsed = r.hints || 0;
+        var undoCount = r.undo || 0;
+        var result = rating.calcRating(r.difficulty, s, errors, hintsUsed, undoCount);
+        var starStr = "";
+        for (var k = 0; k < 5; k++) starStr += (k < result.stars ? "★" : "☆");
+        sdRecords.push({
+          difficulty: r.difficulty,
+          diffLabel: rating.DIFF_LABELS[r.difficulty] || r.difficulty,
+          timeStr: m > 0 ? m + "分" + (sec < 10 ? "0" : "") + sec + "秒" : sec + "秒",
+          stars: result.stars,
+          starStr: starStr,
+          correct: r.correct || 0,
+          errors: errors,
+          hints: hintsUsed,
+          undo: undoCount,
+          createTime: self.formatDate(r.createTime)
+        });
+      }
+      self.setData({ sdRecords: sdRecords, sdLoading: false });
+    }
+
+    function doFetch() {
+      wx.cloud.callFunction({
+        name: "getSudokuRecords",
+        success: function(res) {
+          var cloud = [];
+          if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
+            for (var i = 0; i < res.result.data.length; i++) {
+              var cr = res.result.data[i];
+              cloud.push({ difficulty: cr.difficulty, time: cr.time, hints: cr.hints, errors: cr.errors, undo: cr.undo, correct: cr.correct, createTime: cr.createTime });
+            }
+          }
+          var merged = [];
+          for (var i = 0; i < local.length; i++) merged.push(local[i]);
+          for (var i = 0; i < cloud.length; i++) merged.push(cloud[i]);
+          render(merged);
+        },
+        fail: function() {
+          if (!retried) {
+            retried = true;
+            setTimeout(function() { doFetch(); }, 500);
+          } else {
+            render(local);
+          }
+        }
+      });
+    }
+    doFetch();
+  },
+
+  setSdDifficulty(e) {
+    var diff = e.currentTarget.dataset.diff;
+    var self = this; this.setData({ sdDifficultyFilter: diff }, function() { self.loadSudokuRecords(); });
+  },
+
+  onGoSudoku() {
+    wx.navigateTo({ url: '/pages/sudoku/level/level' });
+  },
+
+  onGoMovingBlock() {
+    wx.navigateTo({ url: '/pages/movingBlocks/level/level' });
   },
 
   onGoTrain() {
@@ -408,14 +646,7 @@ Page({
       scrollIntoView: scrollTarget
     });
 
-    const cacheKey3 = `${filter}_0`;
-    if (this._filterCache[cacheKey3]) {
-      this._allRecords = this._filterCache[cacheKey3];
-      this.loadPage();
-      this._dataLoading = false;
-    } else {
-      this.loadRecords(0);
-      this._dataLoading = false;
-    }
+    this.loadRecords(0);
+    this._dataLoading = false;
   },
 });

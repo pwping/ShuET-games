@@ -1,0 +1,9 @@
+{
+  "name": "saveHuarongRecord",
+  "version": "1.0.0",
+  "description": "保存数字华容道训练记录",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~3.0.0"
+  }
+}

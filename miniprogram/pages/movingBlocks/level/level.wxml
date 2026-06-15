@@ -1,0 +1,49 @@
+<view class="page">
+  <!-- 顶部信息（固定不动） -->
+  <view class="fixed-header">
+    <view class="header">
+      <view class="header-top">
+        <text class="title">开始通关</text>
+        <text class="count-badge">{{totalLevels}}关</text>
+      </view>
+      <text class="subtitle">将红色积木移到出口通关</text>
+    </view>
+    <view class="progress-bar-wrap">
+      <view class="progress-bar" style="width:{{progressPercent}}%;"></view>
+    </view>
+    <text class="progress-text">已通关 {{completedCount}} / {{totalLevels}} 关</text>
+  </view>
+
+  <!-- 关卡列表（可滚动） -->
+  <scroll-view class="level-scroll" scroll-y enable-back-to-top>
+    <view class="level-grid">
+      <view wx:for="{{displayLevels}}" wx:key="id"
+        class="level-card"
+        data-index="{{index}}" catchtap="onLevelTap">
+        <view class="level-inner">
+          <text class="level-num">第{{item.id}}关</text>
+          <view class="level-badge">
+            <text wx:if="{{item.completed}}" class="check-icon">✓</text>
+            <view wx:elif="{{item.showLock}}" class="lock-row">
+              <text class="lock-icon">🔒</text>
+              <text class="steps-text" wx:if="{{item.steps}}">{{item.steps}}步</text>
+            </view>
+            <text wx:elif="{{item.steps}}" class="steps-text">{{item.steps}}步</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{canLoadMore}}" class="load-more" catchtap="onLoadMore">
+      <view class="load-more-line"></view>
+      <view class="load-more-text">展开更多关卡</view>
+      <view class="load-more-line"></view>
+    </view>
+    <view wx:else class="load-done">
+      <view class="load-done-line"></view>
+      <text class="load-done-text">全部关卡已加载完毕</text>
+      <view class="load-done-line"></view>
+    </view>
+  </scroll-view>
+</view>

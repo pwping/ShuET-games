@@ -163,42 +163,107 @@
   color: #EF4444;
 }
 
-/* ===== 统计卡片 ===== */
-.stats-row {
+/* ===== 滑动统计卡片 ===== */
+.stats-swiper-wrap {
+  position: relative;
+  margin: 0 36rpx 10rpx;
+}
+
+.stats-swiper {
+  height: 140rpx;
+}
+
+/* 当前卡片的外发光强化立体感 */
+.stats-card {
   display: flex;
   justify-content: space-around;
   background: #fff;
-  margin: 0 36rpx 20rpx;
   border-radius: 20rpx;
-  padding: 22rpx 20rpx;
+  padding: 28rpx 20rpx;
   border: 2rpx solid rgba(0,0,0,0.04);
   box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.stat-card {
+/* ===== 滑动提示 ===== */
+.swipe-hint {
+  position: absolute;
+  right: -12rpx;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4rpx;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 10;
+}
+
+.swipe-hint.hint-show {
+  opacity: 1;
+}
+
+.swipe-hint-icon {
+  font-size: 28rpx;
+  color: #07C160;
+  animation: bounce-vertical 1.6s ease-in-out infinite;
+}
+
+.swipe-hint-text {
+  font-size: 18rpx;
+  color: #07C160;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 2rpx;
+}
+
+@keyframes bounce-vertical {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(-10rpx);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(10rpx);
+    opacity: 0.7;
+  }
+}
+
+.sc-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex: 1;
 }
 
-.stat-value {
-  font-size: 34rpx;
+.sc-val {
+  font-size: 36rpx;
   font-weight: 800;
   color: #07C160;
-  margin-bottom: 4rpx;
+  margin-bottom: 6rpx;
   line-height: 1;
 }
 
-.stat-label {
+.sc-label {
   font-size: 20rpx;
   color: #94A3B8;
   font-weight: 500;
 }
 
-.stat-divider {
+.sc-divider {
   width: 2rpx;
-  height: 40rpx;
+  height: 48rpx;
   background: #E2E8F0;
   align-self: center;
 }
@@ -313,15 +378,6 @@
 }
 .share-trigger::after {
   display: none;
-}
-
-/* ===== 最佳成绩卡片可点击 ===== */
-.best-time-card {
-  cursor: pointer;
-}
-
-.best-time-card:active {
-  opacity: 0.7;
 }
 
 /* ===== 底部弹窗 - 遮罩 ===== */

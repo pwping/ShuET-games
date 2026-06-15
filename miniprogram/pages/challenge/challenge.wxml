@@ -11,6 +11,9 @@
       <view class="timer-section">
         <text class="timer-value">{{formattedTime}}</text>
       </view>
+      <view class="settings-btn-challenge" bindtap="onShowSettings">
+        <text class="settings-icon-challenge">⚙</text>
+      </view>
     </view>
 
     <!-- 棋盘 -->
@@ -127,6 +130,30 @@
           </button>
         </view>
       </view>
+    </view>
+  </view>
+
+  <!-- 游戏设置弹窗 -->
+  <view class="settings-overlay-cg {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="settings-dialog-cg">
+      <text class="settings-title-cg">游戏设置</text>
+      <view class="settings-list-cg">
+        <view class="settings-row-cg">
+          <view class="settings-label-wrap-cg">
+            <text class="settings-icon-cg-label">🔊</text>
+            <text class="settings-label-text-cg">音效</text>
+          </view>
+          <switch class="settings-switch-cg" checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#07C160"/>
+        </view>
+        <view class="settings-row-cg">
+          <view class="settings-label-wrap-cg">
+            <text class="settings-icon-cg-label">📳</text>
+            <text class="settings-label-text-cg">震动</text>
+          </view>
+          <switch class="settings-switch-cg" checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#07C160"/>
+        </view>
+      </view>
+      <view class="settings-btn-close-cg" bindtap="onCloseSettings">知道了</view>
     </view>
   </view>
 </view>

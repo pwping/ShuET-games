@@ -1,0 +1,44 @@
+<view class="page-container">
+  <!-- ===== 模式标题 Badge ===== -->
+  <view class="mode-title-wrap">
+    <view class="mode-title-badge">
+      <view class="badge-dot"></view>
+      数独技巧
+    </view>
+  </view>
+
+  <!-- ===== 技巧模块卡片（2列网格） ===== -->
+  <view class="level-grid">
+    <view class="level-card"
+      wx:for="{{modules}}" wx:key="key"
+      data-key="{{item.key}}" bindtap="onModuleTap"
+    >
+      <view class="card-row">
+        <view class="card-block" style="background: {{item.color}};">
+          <text class="cb-num">{{item.badge}}</text>
+        </view>
+        <view class="card-info">
+          <text class="card-name" style="color:{{item.color}}">{{item.name}}</text>
+          <text class="card-tag">[{{item.tag}}]</text>
+          <text class="card-desc">{{item.desc}}</text>
+        </view>
+        <view class="card-stats-right">
+          <view class="cs-divider"></view>
+          <view class="cs-content" wx:if="{{stats[item.key] && stats[item.key].count > 0}}">
+            <view class="cs-row">
+              <text class="cs-label">最佳</text>
+              <text class="cs-value">{{stats[item.key].bestTimeStr}}</text>
+            </view>
+            <view class="cs-row">
+              <text class="cs-label">已完成</text>
+              <text class="cs-value">{{stats[item.key].count}}局</text>
+            </view>
+          </view>
+          <view class="cs-content cs-empty" wx:else>
+            <text class="cs-empty-text">尚未开始</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

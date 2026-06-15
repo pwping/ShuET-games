@@ -99,34 +99,34 @@ Page({
       const level = options.level || 'base';
       const localRecords = wx.getStorageSync('shult_records') || [];
 
-      // 从本地记录查询同模式同难度的历史（传入本次用时参与最短比较）
+      // 先用本地记录做初始展示
       const localResult = this.calcHistory(localRecords, mode, level, size, time);
       if (localResult) {
         lastTimeStr = localResult.lastTimeStr;
         bestTimeStr = localResult.bestTimeStr;
         showHistory = true;
       } else {
-        showHistory = true; // 至少显示卡片（仅本次用时行）
+        showHistory = true;
       }
 
-      // 异步查云端，合并后更新更优数据
+      // 异步查云端，合并本地+云端记录（不去重），更新更优数据
       wx.cloud.callFunction({
         name: 'getUserTrainRecords',
         data: {},
         success: res => {
           if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
-            const merged = localRecords.concat(res.result.data);
-            const cloudResult = this.calcHistory(merged, mode, level, size, time);
-            if (cloudResult) {
+            const allRecords = [...localRecords, ...res.result.data];
+            const mergedResult = this.calcHistory(allRecords, mode, level, size, time);
+            if (mergedResult) {
               this.setData({
-                lastTimeStr: cloudResult.lastTimeStr,
-                bestTimeStr: cloudResult.bestTimeStr,
+                lastTimeStr: mergedResult.lastTimeStr,
+                bestTimeStr: mergedResult.bestTimeStr,
                 showHistory: true
               });
             }
-            // 计算全局最佳时间（所有成功记录中最小值）
+            // 全局最佳时间
             const app = getApp();
-            const allSuccess = merged.filter(r => r.status === 'success');
+            const allSuccess = allRecords.filter(r => r.status === 'success');
             const globalBestMs = allSuccess.reduce((min, r) => Math.min(min, r.timeCost), Infinity);
             app.globalData.globalBestTime = globalBestMs === Infinity ? '--' : this.formatTime(globalBestMs);
           }
@@ -330,7 +330,7 @@ Page({
     }
     return {
       title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
-      path: '/pages/index/index',
+      path: '/pages/game-select/game-select',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
   }

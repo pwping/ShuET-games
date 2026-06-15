@@ -48,21 +48,88 @@
     </view>
   </view>
 
-  <!-- ===== 统计卡片 ===== -->
-  <view class="stats-row">
-    <view class="stat-card">
-      <text class="stat-value">{{stats.totalCount}}</text>
-      <text class="stat-label">总训练次数</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-card best-time-card" bindtap="onShowBestDetail">
-      <text class="stat-value">{{stats.bestTime}}</text>
-      <text class="stat-label">最佳成绩 ›</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-card" bindtap="onGoPass">
-      <text class="stat-value">{{stats.currentLevel}}</text>
-      <text class="stat-label">挑战进度 ›</text>
+  <!-- ===== 滑动统计卡片 ===== -->
+  <view class="stats-swiper-wrap">
+    <swiper class="stats-swiper" vertical circular
+      indicator-dots indicator-color="rgba(7,193,96,0.2)" indicator-active-color="#07C160"
+      current="{{swiperCurrent}}" bindchange="onSwiperChange">
+      <swiper-item>
+        <view class="stats-card">
+          <view class="sc-col">
+            <text class="sc-val">{{stats.totalCount}}次</text>
+            <text class="sc-label">舒尔特训练</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col" bindtap="onShowBestDetail">
+            <text class="sc-val">{{stats.bestTime}}</text>
+            <text class="sc-label">最佳成绩 ›</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col" bindtap="onGoPass">
+            <text class="sc-val">{{stats.currentLevel}}</text>
+            <text class="sc-label">挑战进度 ›</text>
+          </view>
+        </view>
+      </swiper-item>
+      <swiper-item>
+        <view class="stats-card">
+          <view class="sc-col">
+            <text class="sc-val">{{hrStats.totalCount}}次</text>
+            <text class="sc-label">华容道训练</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">{{hrStats.bestTime}}</text>
+            <text class="sc-label">最佳用时</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">{{hrStats.minMoves}}</text>
+            <text class="sc-label">最少步数</text>
+          </view>
+        </view>
+      </swiper-item>
+      <swiper-item>
+        <view class="stats-card">
+          <view class="sc-col">
+            <text class="sc-val">{{mbStats.totalCount}}次</text>
+            <text class="sc-label">积木迷阵训练</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">--</text>
+            <text class="sc-label">—</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col" bindtap="onGoMovingBlock">
+            <text class="sc-val">{{mbStats.challengeLevel}}</text>
+            <text class="sc-label">挑战进度 ›</text>
+          </view>
+        </view>
+      </swiper-item>
+      <swiper-item>
+        <view class="stats-card">
+          <view class="sc-col">
+            <text class="sc-val">{{sdStats.totalCount}}次</text>
+            <text class="sc-label">数独训练</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">--</text>
+            <text class="sc-label">—</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">{{sdStats.bestTime}}</text>
+            <text class="sc-label">最佳用时</text>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+    <!-- 滑动提示：首次进入时显示 -->
+    <view class="swipe-hint {{showSwipeHint ? 'hint-show' : ''}}">
+      <view class="swipe-hint-icon">↕</view>
+      <text class="swipe-hint-text">滑动切换</text>
     </view>
   </view>
 
@@ -92,14 +159,6 @@
         <text class="menu-icon-text" style="color: #7C3AED;">⚙</text>
       </view>
       <text class="menu-text">设置</text>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-divider"></view>
-    <view class="menu-item" bindtap="onIntro">
-      <view class="menu-icon-wrap" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA);">
-        <text class="menu-icon-text" style="color: #EA580C;">📖</text>
-      </view>
-      <text class="menu-text">舒尔特介绍</text>
       <text class="menu-arrow">›</text>
     </view>
   </view>

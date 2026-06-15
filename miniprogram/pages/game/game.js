@@ -1,4 +1,5 @@
 const app = getApp();
+const settingsSync = require('../../utils/settings-sync');
 
 const MODES = {
   classic: { name: '经典模式', desc: '从1开始按顺序点击数字' },
@@ -53,7 +54,10 @@ Page({
     parityType: 'odd',
     sizeList: [3, 4, 5, 6, 7, 8, 9, 10],
     ruleHint: '',
-    cellFontSize: '44rpx'
+    cellFontSize: '44rpx',
+    showSettings: false,
+    soundEnabled: true,
+    vibrateEnabled: true
   },
 
   timer: null,
@@ -104,6 +108,14 @@ Page({
       backgroundColor: '#EEF0F4',
       frontColor: '#000000'
     });
+
+    // 加载音效/震动设置
+    const shultSettings = wx.getStorageSync('shult_settings') || {};
+    this.setData({
+      soundEnabled: shultSettings.sound !== false,
+      vibrateEnabled: shultSettings.vibration !== false
+    });
+
     this.generateBoard();
   },
 
@@ -482,12 +494,25 @@ Page({
     }
 
     if (mode === 'shuffle') {
+      // 先把本次点击的数字加入 doneValues
+      this.doneValues.add(cell.value);
       const vals = this.data.board.map(c => c.value);
       for (let i = vals.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [vals[i], vals[j]] = [vals[j], vals[i]];
       }
-      updates.board = this.data.board.map((c, i) => ({ ...c, value: vals[i] }));
+      // 换位后，done/marked/hidden 按数字值分配，而不是按位置
+      updates.board = vals.map((v, i) => {
+        const isDone = this.doneValues.has(v);
+        return {
+          ...this.data.board[i],
+          value: v,
+          done: isDone,
+          marked: isDone && toolMark,
+          hidden: isDone && toolHide,
+          flash: isDone && !toolMark && !toolHide ? 'correct' : ''
+        };
+      });
     }
 
     this.setData(updates);
@@ -535,6 +560,36 @@ Page({
     this.setData({ board });
   },
 
+  /* ===== 设置弹窗 ===== */
+  preventMove() {},
+  onShowSettings() {
+    const shultSettings = wx.getStorageSync('shult_settings') || {};
+    this.setData({
+      showSettings: true,
+      soundEnabled: shultSettings.sound !== false,
+      vibrateEnabled: shultSettings.vibration !== false
+    });
+  },
+  onCloseSettings() {
+    this.setData({ showSettings: false });
+  },
+  onSoundToggle(e) {
+    const enabled = e.detail.value;
+    const settings = wx.getStorageSync('shult_settings') || {};
+    settings.sound = enabled;
+    wx.setStorageSync('shult_settings', settings);
+    this.setData({ soundEnabled: enabled });
+    settingsSync.syncGlobalAfterToggle('sound', enabled);
+  },
+  onVibrateToggle(e) {
+    const enabled = e.detail.value;
+    const settings = wx.getStorageSync('shult_settings') || {};
+    settings.vibration = enabled;
+    wx.setStorageSync('shult_settings', settings);
+    this.setData({ vibrateEnabled: enabled });
+    settingsSync.syncGlobalAfterToggle('vibration', enabled);
+  },
+
   /* ===== 参考等级弹窗 ===== */
   onShowReference() {
     const ref = this.selectComponent('#refSheet');
@@ -577,33 +632,39 @@ Page({
       accuracy
     };
 
+    const now = new Date().toISOString();
+    const createTime = now;
+
+    // 未登录：保存到本地缓存
+    if (!app.globalData.isLoggedIn) {
+      const records = wx.getStorageSync('shult_records') || [];
+      records.unshift({ ...record, createTime });
+      wx.setStorageSync('shult_records', records.slice(0, 100));
+    }
+
+    // 已登录：保存到云端
     if (app.globalData.isLoggedIn) {
       wx.cloud.callFunction({
         name: 'saveTrainRecord',
-        data: { ...record, createTime: new Date().toISOString() }
+        data: { ...record, createTime },
+        complete() {
+          // 不管云函数成功还是失败，都删除本地缓存
+          wx.removeStorageSync('shult_records');
+        }
       });
-
       if (success && !this.data.isPassMode) {
-        const currentMax = wx.getStorageSync('shult_max_size') || 3;
-        if (this.data.size > currentMax) {
-          wx.setStorageSync('shult_max_size', this.data.size);
-          wx.cloud.callFunction({
-            name: 'unlockNewLevel',
-            data: { level: this.data.level, size: this.data.size }
-          });
-        }
+        wx.cloud.callFunction({
+          name: 'unlockNewLevel',
+          data: { level: this.data.level, size: this.data.size }
+        });
       }
-    } else {
-      const records = wx.getStorageSync('shult_records') || [];
-      records.unshift({ ...record, createTime: new Date().toISOString() });
-      wx.setStorageSync('shult_records', records.slice(0, 100));
+    }
 
-      if (success && !this.data.isPassMode) {
-        const currentMax = wx.getStorageSync('shult_max_size') || 3;
-        if (this.data.size > currentMax) {
-          wx.setStorageSync('shult_max_size', this.data.size);
-        }
-      }
+    // 记录最大解锁规格
+    const isNewMax = success && !this.data.isPassMode &&
+      this.data.size > (wx.getStorageSync('shult_max_size') || 3);
+    if (isNewMax) {
+      wx.setStorageSync('shult_max_size', this.data.size);
     }
 
     const qs = `mode=${this.data.mode}&level=${this.data.level}&size=${this.data.size}&time=${elapsed}&accuracy=${accuracy}&status=${success ? 'success' : 'fail'}&pass=${this.data.isPassMode ? '1' : '0'}&passLevel=${this.data.passLevelNumber}`;

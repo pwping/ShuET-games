@@ -49,19 +49,26 @@ exports.main = async (event, context) => {
       finalCreateTime = new Date().toISOString();
     }
 
-    const record = {
-      openid,
-      mode,
-      level,
-      size,
-      timeCost,
-      status,
-      accuracy,
-      createTime: finalCreateTime
-    };
+    // 使用 add 创建新记录（wx-server-sdk 的 update 不支持 upsert）
+    const result = await db.collection('train_records').add({
+      data: {
+        openid,
+        mode,
+        level,
+        size,
+        timeCost,
+        status,
+        accuracy,
+        createTime: finalCreateTime
+      }
+    });
 
-    await db.collection('train_records').add({ data: record });
-    return { code: 200, message: '保存成功', createTime: finalCreateTime };
+    return {
+      code: 200,
+      message: '保存成功',
+      createTime: finalCreateTime,
+      _id: result._id
+    };
   } catch (err) {
     return { code: 500, message: err.message };
   }

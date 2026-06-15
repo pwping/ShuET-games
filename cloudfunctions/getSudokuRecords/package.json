@@ -1,0 +1,9 @@
+{
+  "name": "getSudokuRecords",
+  "version": "1.0.0",
+  "description": "获取数独训练记录",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~3.0.0"
+  }
+}
