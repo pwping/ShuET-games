@@ -283,3 +283,14 @@ page {
   background-repeat: no-repeat;
   background-position: center;
 }
+
+/* ===== 广告 ===== */
+.ad-wrap {
+  width: 100%;
+  margin-top: 12rpx;
+  box-sizing: border-box;
+}
+.ad-wrap ad-custom {
+  border-radius: 16rpx;
+  overflow: hidden;
+}

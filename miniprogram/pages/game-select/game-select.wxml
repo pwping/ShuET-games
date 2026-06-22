@@ -83,6 +83,10 @@
         </view>
       </view>
     </view>
+
+    <view class="ad-wrap-home">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
+    </view>
   </view>
 
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />

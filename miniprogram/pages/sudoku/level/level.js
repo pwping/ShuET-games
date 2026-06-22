@@ -1,4 +1,5 @@
 var rating = require('../../../utils/sudoku-rating');
+var settingsSync = require('../../../utils/settings-sync');
 
 var EXTRA_MODULE = {
   beginner: { tag: '唯一余数法', badge: '1', color: '#3B82F6', desc: '行、列、宫中只剩一个空位时，剩下的唯一数字就是答案' },
@@ -20,12 +21,38 @@ var MODULES = (function() {
 
 Page({
   data: {
-    modules: MODULES,
+    modulesTop: MODULES.slice(0, 4),
+    modulesBottom: MODULES.slice(4),
     stats: {}
   },
 
   onLoad: function() {
     wx.setNavigationBarTitle({ title: '难度选择' });
+    settingsSync.ensureInit();
+    this.initBannerAd();
+  },
+
+  initBannerAd: function() {
+    if (typeof wx.createCustomAd !== 'function') return;
+    var that = this;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#EFF6FF' });
+      wx.setBackgroundColor({ backgroundColor: '#EFF6FF' });
+    });
+    ad.onError(function (err) { console.log('sudoku level ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload: function() {
+    if (this.bannerAd) {
+      this.bannerAd.destroy();
+    }
   },
 
   onShow: function() {

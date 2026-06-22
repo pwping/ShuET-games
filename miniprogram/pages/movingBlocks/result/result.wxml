@@ -73,5 +73,10 @@
         <text class="share-text">分享</text>
       </button>
     </view>
+
+    <!-- ===== 贴片广告 ===== -->
+    <view class="ad-wrap">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+    </view>
   </view>
 </view>

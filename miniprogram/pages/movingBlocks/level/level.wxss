@@ -159,3 +159,13 @@
   color: #C4B59A;
   font-weight: 400;
 }
+
+/* ===== 广告 ===== */
+.ad-wrap {
+  margin-top: 8rpx;
+  padding-bottom: 20rpx;
+}
+.ad-wrap ad-custom {
+  border-radius: 16rpx;
+  overflow: hidden;
+}

@@ -288,3 +288,10 @@
 .sd-empty {
   background: transparent;
 }
+
+/* ===== 贴图广告 ===== */
+.ad-wrap-home {
+  margin-top: 16rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}

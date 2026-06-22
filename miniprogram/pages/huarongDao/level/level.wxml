@@ -7,9 +7,30 @@
     </view>
   </view>
 
-  <!-- ===== 难度卡片 ===== -->
+  <!-- ===== 上方难度卡片（基础 → 极限）===== -->
   <view class="level-grid">
-    <view class="level-card" wx:for="{{levels}}" wx:key="key" bindtap="onLevelTap" data-size="{{item.size}}">
+    <view class="level-card" wx:for="{{levelsTop}}" wx:key="key" bindtap="onLevelTap" data-size="{{item.size}}">
+      <view class="card-row">
+        <view class="card-block" style="background: {{item.color}};">
+          <text class="card-size" style="color: {{item.txtColor}};">{{item.size}}×{{item.size}}</text>
+        </view>
+        <view class="card-info">
+          <text class="card-name">{{item.desc}}</text>
+          <text class="card-stars">{{item.stars}}</text>
+          <text class="card-desc">{{item.subDesc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 贴片广告 ===== -->
+  <view class="ad-wrap">
+    <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+  </view>
+
+  <!-- ===== 下方难度卡片（疯狂 → 宗师）===== -->
+  <view class="level-grid">
+    <view class="level-card" wx:for="{{levelsBottom}}" wx:key="key" bindtap="onLevelTap" data-size="{{item.size}}">
       <view class="card-row">
         <view class="card-block" style="background: {{item.color}};">
           <text class="card-size" style="color: {{item.txtColor}};">{{item.size}}×{{item.size}}</text>

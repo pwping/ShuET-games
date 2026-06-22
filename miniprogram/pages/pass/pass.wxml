@@ -84,10 +84,18 @@
         <text class="btn-card-time">限时 {{nextLevelTime}}s</text>
       </view>
       <view class="btn-card btn-card-skip" bindtap="onSkipChallenge">
+        <view class="ad-badge">
+          <view class="ad-badge-play"></view>
+          <text class="ad-badge-text">AD</text>
+        </view>
         <text class="btn-card-num">直闯第 {{skipLevel}} 关</text>
         <text class="btn-card-action btn-card-action-skip">跳关挑战</text>
         <text class="btn-card-time">限时 {{skipLevelTime}}s</text>
       </view>
+    </view>
+
+    <view class="ad-wrap-pass">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
     </view>
   </view>
 </view>

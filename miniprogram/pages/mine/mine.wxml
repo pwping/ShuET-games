@@ -163,6 +163,11 @@
     </view>
   </view>
 
+  <!-- ===== 贴片广告 ===== -->
+  <view class="ad-wrap">
+    <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+  </view>
+
   <!-- 隐私授权确认按钮 -->
   <button id="privacy-btn" open-type="agreePrivacyAuthorization" style="display:none;"></button>
 

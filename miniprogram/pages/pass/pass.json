@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "接受挑战",
   "navigationBarBackgroundColor": "#FAF8F5",
-  "navigationBarTextStyle": "black"
+  "navigationBarTextStyle": "black",
+  "backgroundColor": "#FAF8F5"
 }

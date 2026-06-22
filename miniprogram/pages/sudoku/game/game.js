@@ -1,5 +1,8 @@
 var settingsSync = require('../../../utils/settings-sync');
 
+// 激励视频广告
+var videoAd = null;
+
 // ===== 数独生成器 =====
 function shuffle(arr) {
   for (var i = arr.length - 1; i > 0; i--) {
@@ -185,7 +188,8 @@ Page({
     winAnim: false,
     showSettings: false,
     soundEnabled: true,
-    vibrateEnabled: true
+    vibrateEnabled: true,
+      hintRemaining: 2
   },
 
   _timerId: null,
@@ -200,9 +204,21 @@ Page({
       diffLabel: DIFF_LABELS[diff],
       diffColor: MODULE_COLORS[diff],
       soundEnabled: sdSettings.sound !== false,
-      vibrateEnabled: sdSettings.vibration !== false
+      vibrateEnabled: sdSettings.vibration !== false,
+      hintRemaining: 2
     });
     wx.setNavigationBarTitle({ title: '数独 · ' + DIFF_LABELS[diff] });
+
+    // 创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-c24dfbbb7eeb1518'
+      });
+      videoAd.onLoad(function () {});
+      videoAd.onError(function (err) { console.error('sudoku game videoAd error', err); });
+      videoAd.onClose(function (res) {});
+    }
+
     this.initGame(diff);
   },
 
@@ -243,7 +259,7 @@ Page({
       hlBoxR: hlBoxR, hlBoxC: hlBoxC, hlRow: hlRow, hlCol: hlCol,
       timer: 0, timerText: '00:00',
       hintsUsed: 0, undoCount: 0, correctCount: 0, errors: 0,
-      isComplete: false, gameStarted: false, winAnim: false,
+      hintRemaining: 2, isComplete: false, gameStarted: false, winAnim: false,
       noteMode: false,
       cellAnimCls: emptyAnim,
       cellAnimStyle: emptyAnimStyle
@@ -413,7 +429,40 @@ Page({
 
   onHint: function() {
     if (this.data.isComplete) return;
-    this._ensureTimer();
+    var that = this;
+
+    // 检查剩余次数
+    if (this.data.hintRemaining <= 0) {
+      // 次数为0，需要看激励广告
+      if (videoAd) {
+        videoAd.onClose(function (res) {
+          if (res && res.isEnded) {
+            // 看完广告恢复5次
+            that.setData({ hintRemaining: 2 });
+            that._doHint();
+          } else {
+            wx.showToast({ title: '需要看完广告才能继续使用提示', icon: 'none' });
+          }
+        });
+        videoAd.show().catch(function () {
+          videoAd.load()
+            .then(function () { return videoAd.show(); })
+            .catch(function (err) {
+              console.error('sudoku game videoAd show fail', err);
+              wx.showToast({ title: '广告加载失败', icon: 'none' });
+            });
+        });
+      } else {
+        wx.showToast({ title: '广告未就绪', icon: 'none' });
+      }
+      return;
+    }
+
+    // 有剩余次数，直接提示，减1
+    this._doHint();
+  },
+
+  _doHint: function() {
     var board = this.data.board, solution = this.data.solution, fixed = this.data.fixed;
     var empty = [];
     for (var r = 0; r < 9; r++)
@@ -428,7 +477,7 @@ Page({
     newBoard[pick.r][pick.c] = solution[pick.r][pick.c];
     this.clearNotes(pick.r, pick.c);
     this.playSound('correct');
-    var sd = { board: newBoard, flatBoard: makeFlat(newBoard), hintsUsed: this.data.hintsUsed + 1 };
+    var sd = { board: newBoard, flatBoard: makeFlat(newBoard), hintsUsed: this.data.hintsUsed + 1, hintRemaining: this.data.hintRemaining - 1 };
     if (!this._cellErrored[pick.r][pick.c]) sd.correctCount = this.data.correctCount + 1;
     this.setData(sd);
     this.checkConflicts();

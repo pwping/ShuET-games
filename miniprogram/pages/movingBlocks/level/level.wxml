@@ -45,5 +45,10 @@
       <text class="load-done-text">全部关卡已加载完毕</text>
       <view class="load-done-line"></view>
     </view>
+
+    <!-- ===== 贴片广告 ===== -->
+    <view class="ad-wrap">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+    </view>
   </scroll-view>
 </view>

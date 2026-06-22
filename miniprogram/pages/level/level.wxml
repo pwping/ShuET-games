@@ -9,7 +9,7 @@
 
   <!-- ===== 难度卡片 ===== -->
   <view class="level-grid {{mode === 'alphabet' ? 'single-col' : ''}}">
-    <view class="level-card" wx:for="{{levels}}" wx:key="key" bindtap="onLevelTap" data-index="{{index}}">
+    <view class="level-card" wx:for="{{levels}}" wx:for-index="idx" wx:key="key" wx:if="{{mode === 'alphabet' || idx < 6}}" bindtap="onLevelTap" data-index="{{idx}}">
       <view class="card-row">
         <view class="card-block" style="background: {{item.color}};">
           <text class="card-size">{{item.size}}×{{item.size}}</text>
@@ -20,6 +20,24 @@
         </view>
       </view>
       <text wx:if="{{item.size === 5 && (mode === 'classic' || mode === 'challenge')}}" class="card-hint">✈️ 飞行员平均8-10秒</text>
+    </view>
+  </view>
+
+  <view class="ad-wrap-level">
+    <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
+  </view>
+
+  <view class="level-grid {{mode === 'alphabet' ? 'single-col' : ''}}" wx:if="{{mode !== 'alphabet'}}">
+    <view class="level-card" wx:for="{{levels}}" wx:for-index="idx" wx:key="key" wx:if="{{idx >= 6}}" bindtap="onLevelTap" data-index="{{idx}}">
+      <view class="card-row">
+        <view class="card-block" style="background: {{item.color}};">
+          <text class="card-size">{{item.size}}×{{item.size}}</text>
+        </view>
+        <view class="card-info">
+          <text class="card-name">{{item.name}}</text>
+          <text class="card-desc">{{item.desc}}</text>
+        </view>
+      </view>
     </view>
   </view>
 

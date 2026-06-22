@@ -130,6 +130,16 @@ page {
   display: block;
 }
 
+/* ===== 广告 ===== */
+.ad-wrap {
+  padding: 0 32rpx;
+  margin: 0 0 20rpx 0;
+}
+.ad-wrap ad-custom {
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
 .bottom-safe {
   height: 40rpx;
 }

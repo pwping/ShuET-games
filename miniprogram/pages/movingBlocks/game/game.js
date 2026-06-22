@@ -3,6 +3,9 @@ const EXIT_COL = 3;
 const levelData = require('./levels-data.js');
 const settingsSync = require('../../../utils/settings-sync');
 
+// 激励视频广告
+let videoAd = null;
+
 function createBoardGrid(blocks) {
   const board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null));
   for (const b of blocks) {
@@ -107,6 +110,10 @@ Page({
     if (this.data.levelId) {
       wx.setNavigationBarTitle({ title: `第${this.data.levelId}关` });
     }
+    // 从结果页返回时，重置到当前关卡的初始位置
+    if (this.hasWon) {
+      this.loadLevel(this.currentLevelIndex);
+    }
   },
 
   onUnload() {
@@ -120,6 +127,18 @@ Page({
       soundEnabled: mbSettings.sound !== false,
       vibrateEnabled: mbSettings.vibrate !== false
     });
+
+    // 创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-c24dfbbb7eeb1518'
+      });
+      videoAd.onLoad(function () {});
+      videoAd.onError(function (err) {
+        console.error('激励视频广告加载失败', err);
+      });
+      videoAd.onClose(function (res) {});
+    }
 
     this._initGame(options);
   },
@@ -405,15 +424,40 @@ Page({
     if (this.hasWon) return;
     if (this._isAutoPlaying) return;
 
-    const blocks = this.data.blocks.map(b => ({ id: b.id, orient: b.orient, size: b.size, row: b.row, col: b.col }));
+    var that = this;
+
+    // 先计算解法
+    const blocks = that.data.blocks.map(b => ({ id: b.id, orient: b.orient, size: b.size, row: b.row, col: b.col }));
     const solution = bfsSolve(blocks);
     if (!solution || solution.length === 0) {
       wx.showToast({ title: '暂无提示', icon: 'none' });
       return;
     }
+    that._pendingSolution = solution;
 
-    this._pendingSolution = solution;
-    this.setData({ showHintModal: true, hintSteps: solution.length });
+    var doHint = function () {
+      that.setData({ showHintModal: true, hintSteps: solution.length });
+    };
+
+    // 有广告时先播放激励视频
+    if (videoAd) {
+      videoAd.onClose(function (res) {
+        if (res && res.isEnded) {
+          doHint();
+        }
+      });
+      videoAd.show().catch(function () {
+        // 失败重试
+        videoAd.load()
+          .then(function () { return videoAd.show(); })
+          .catch(function (err) {
+            console.error('激励视频广告显示失败', err);
+            doHint(); // 广告失败直接显示
+          });
+      });
+    } else {
+      doHint();
+    }
   },
 
   onCancelHint() {
@@ -535,15 +579,19 @@ Page({
   // 移动音效 — 短促"啵"声（440Hz 正弦波 60ms）
   _playPop() {
     if (!this.data.soundEnabled) return;
+    if (this._popPlaying) return;
     if (!this._popCtx) {
       this._popCtx = wx.createInnerAudioContext();
       this._popCtx.volume = 0.25;
       this._genPopAsync();
     }
     if (this._popReady && this._popCtx) {
+      this._popPlaying = true;
       this._popCtx.stop();
       this._popCtx.seek(0);
       this._popCtx.play();
+      var that = this;
+      setTimeout(function () { that._popPlaying = false; }, 80);
     }
   },
 

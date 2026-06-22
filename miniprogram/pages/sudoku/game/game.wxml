@@ -66,6 +66,7 @@
     <view class="tool-btn" bindtap="onHint">
       <text class="tool-icon">💡</text>
       <text class="tool-lbl">提示</text>
+      <view class="hint-badge">{{hintRemaining}}</view>
     </view>
   </view>
 

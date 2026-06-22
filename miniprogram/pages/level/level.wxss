@@ -142,6 +142,13 @@
   height: 40rpx;
 }
 
+/* ===== 贴图广告 ===== */
+.ad-wrap-level {
+  padding: 0 32rpx 20rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
 /* ===== 入场动画 ===== */
 .page-container.slide-in {
   animation: slideInFromRight 0.3s ease-out backwards;

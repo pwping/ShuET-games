@@ -83,6 +83,45 @@ Page({
     this.setData({
       size, time, moves, timeStr, grade, gradeName, starCount, quote,
     });
+
+    // 插屏广告
+    this.showInterstitialAd();
+    // 贴片广告
+    this.initBannerAd();
+  },
+
+  showInterstitialAd() {
+    var interstitialAd = wx.createInterstitialAd({
+      adUnitId: 'adunit-ae9ae21b013ddd4b'
+    });
+    if (!interstitialAd) return;
+    interstitialAd.onLoad(function () {});
+    interstitialAd.onError(function (err) { console.log('huarongDao result interstitial error', err); });
+    interstitialAd.onClose(function () {});
+    interstitialAd.show().catch(function () {});
+    this.interstitialAd = interstitialAd;
+  },
+
+  initBannerAd() {
+    if (typeof wx.createCustomAd !== 'function') return;
+    var that = this;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#FFF0F5' });
+      wx.setBackgroundColor({ backgroundColor: '#FFF0F5' });
+    });
+    ad.onError(function (err) { console.log('huarongDao result ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload() {
+    if (this.bannerAd) this.bannerAd.destroy();
+    if (this.interstitialAd) this.interstitialAd.destroy();
   },
 
   calcGrade(size, time) {

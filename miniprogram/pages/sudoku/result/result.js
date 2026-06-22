@@ -36,6 +36,45 @@ Page({
       quote: quote,
       totalScore: result.total
     });
+
+    // 插屏广告
+    this.showInterstitialAd();
+    // 贴片广告
+    this.initBannerAd();
+  },
+
+  showInterstitialAd: function() {
+    var interstitialAd = wx.createInterstitialAd({
+      adUnitId: 'adunit-ae9ae21b013ddd4b'
+    });
+    if (!interstitialAd) return;
+    interstitialAd.onLoad(function () {});
+    interstitialAd.onError(function (err) { console.log('sudoku result interstitial error', err); });
+    interstitialAd.onClose(function () {});
+    interstitialAd.show().catch(function () {});
+    this.interstitialAd = interstitialAd;
+  },
+
+  initBannerAd: function() {
+    if (typeof wx.createCustomAd !== 'function') return;
+    var that = this;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#F0F4FF' });
+      wx.setBackgroundColor({ backgroundColor: '#F0F4FF' });
+    });
+    ad.onError(function (err) { console.log('sudoku result ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload: function() {
+    if (this.bannerAd) this.bannerAd.destroy();
+    if (this.interstitialAd) this.interstitialAd.destroy();
   },
 
   onRetry: function() {

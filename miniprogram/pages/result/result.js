@@ -10,6 +10,9 @@ const LEVELS = {
 
 const { RATING_DATA } = require('../../utils/rating-data');
 
+// 插屏广告实例
+let interstitialAd = null
+
 /** 评价等级配置 */
 const LEVEL_CONFIG = {
   excellent: { title: '顶尖专注力', subtitle: '' },
@@ -194,6 +197,25 @@ Page({
     setTimeout(() => {
       this.setData({ animIn: true });
     }, 50);
+
+    // 创建插屏广告实例
+    if (wx.createInterstitialAd) {
+      interstitialAd = wx.createInterstitialAd({
+        adUnitId: 'adunit-ae9ae21b013ddd4b'
+      })
+      interstitialAd.onLoad(() => {})
+      interstitialAd.onError((err) => {
+        console.error('插屏广告加载失败', err)
+      })
+      interstitialAd.onClose(() => {})
+    }
+
+    // 在适合的场景显示插屏广告
+    if (interstitialAd) {
+      interstitialAd.show().catch((err) => {
+        console.error('插屏广告显示失败', err)
+      })
+    }
   },
 
   formatTime(ms) {
@@ -333,5 +355,17 @@ Page({
       path: '/pages/game-select/game-select',
       imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
     };
+  },
+
+  // 原生模板广告事件
+  adLoad() {
+    const bg = this.data.isSuccess ? '#F0FDF4' : '#FFF0F0'
+    wx.setNavigationBarColor({ backgroundColor: bg, frontColor: '#000000' })
+  },
+  adError(err) {
+    console.error('原生模板广告加载失败', err)
+  },
+  adClose() {
+    console.log('原生模板广告关闭')
   }
 });

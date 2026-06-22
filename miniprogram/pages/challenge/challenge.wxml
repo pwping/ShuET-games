@@ -129,6 +129,10 @@
             <text class="share-text">分享</text>
           </button>
         </view>
+
+        <view class="ad-wrap-challenge" wx:if="{{showResult}}">
+          <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
+        </view>
       </view>
     </view>
   </view>

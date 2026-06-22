@@ -510,7 +510,7 @@ Page({
           done: isDone,
           marked: isDone && toolMark,
           hidden: isDone && toolHide,
-          flash: isDone && !toolMark && !toolHide ? 'correct' : ''
+          flash: ''
         };
       });
     }

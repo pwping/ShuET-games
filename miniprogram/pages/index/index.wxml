@@ -44,7 +44,38 @@
       <text class="section-sub">由简入繁，循序渐进</text>
     </view>
     <view class="mode-grid">
-      <view class="mode-card" wx:for="{{modes}}" wx:key="key" bindtap="onModeTap" data-mode="{{item.key}}"
+      <view class="mode-card" wx:for="{{modes}}" wx:for-index="idx" wx:key="key" wx:if="{{idx < 4}}" bindtap="onModeTap" data-mode="{{item.key}}"
+           style="background: {{item.bg}};">
+        <view class="mode-card-inner">
+          <view class="mode-icon-wrap">
+          <view class="mode-icon" style="background: {{item.iconBg}};">
+            <view wx:if="{{item.key === 'classic'}}" class="grid-icon">
+              <view class="grid-cell" wx:for="{{9}}" wx:key="*this"></view>
+            </view>
+            <view wx:elif="{{item.key === 'parity'}}" class="cross-grid">
+              <text class="cg-num cg-tl cg-odd">1</text>
+              <text class="cg-num cg-tr cg-even">2</text>
+              <view class="cg-line cg-hline"></view>
+              <view class="cg-line cg-vline"></view>
+              <text class="cg-num cg-bl cg-even">4</text>
+              <text class="cg-num cg-br cg-odd">3</text>
+            </view>
+            <view wx:elif="{{item.key === 'reverse'}}" class="down-arrow"></view>
+            <text wx:else class="icon-text">{{item.icon}}</text>
+          </view>
+          </view>
+          <view class="mode-name">{{item.name}}</view>
+          <view class="mode-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="ad-wrap-mode">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
+    </view>
+
+    <view class="mode-grid">
+      <view class="mode-card" wx:for="{{modes}}" wx:for-index="idx" wx:key="key" wx:if="{{idx >= 4}}" bindtap="onModeTap" data-mode="{{item.key}}"
            style="background: {{item.bg}};">
         <view class="mode-card-inner">
           <view class="mode-icon-wrap">

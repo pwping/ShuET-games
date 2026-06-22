@@ -63,6 +63,45 @@ Page({
 
     // 保存记录
     this.saveRecord({ levelId, moves, steps, time, diff });
+
+    // 插屏广告
+    this.showInterstitialAd();
+    // 贴片广告
+    this.initBannerAd();
+  },
+
+  showInterstitialAd() {
+    var interstitialAd = wx.createInterstitialAd({
+      adUnitId: 'adunit-ae9ae21b013ddd4b'
+    });
+    if (!interstitialAd) return;
+    interstitialAd.onLoad(function () {});
+    interstitialAd.onError(function (err) { console.log('mb result interstitial error', err); });
+    interstitialAd.onClose(function () {});
+    interstitialAd.show().catch(function () {});
+    this.interstitialAd = interstitialAd;
+  },
+
+  initBannerAd() {
+    if (typeof wx.createCustomAd !== 'function') return;
+    var that = this;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#FFFBF0' });
+      wx.setBackgroundColor({ backgroundColor: '#FFFBF0' });
+    });
+    ad.onError(function (err) { console.log('mb result ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload() {
+    if (this.bannerAd) this.bannerAd.destroy();
+    if (this.interstitialAd) this.interstitialAd.destroy();
   },
 
   saveRecord(record) {

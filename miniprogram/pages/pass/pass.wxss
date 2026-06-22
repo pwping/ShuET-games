@@ -1,7 +1,12 @@
+page {
+  background: #FAF8F5;
+  --navbar-height: 0px;
+}
 .page-container {
   min-height: 100vh;
   background: #FAF8F5;
   padding: 0 32rpx calc(50rpx + env(safe-area-inset-bottom));
+  margin-top: -1px;
 }
 
 /* ===== 顶部标题 ===== */
@@ -371,4 +376,39 @@
 
 .btn-card-skip .btn-card-time {
   color: #94A3B8;
+}
+
+/* ===== AD 广告标识 ===== */
+.ad-badge {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 4rpx 14rpx;
+  background: #fff;
+  border: 1rpx solid #999;
+  border-radius: 20rpx;
+}
+.ad-badge-play {
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid #666;
+  border-top: 6rpx solid transparent;
+  border-bottom: 6rpx solid transparent;
+}
+.ad-badge-text {
+  font-size: 18rpx;
+  font-weight: 500;
+  color: #666;
+  letter-spacing: 1rpx;
+}
+
+/* ===== 贴图广告 ===== */
+.ad-wrap-pass {
+  width: 100%;
+  margin-top: 16rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
 }

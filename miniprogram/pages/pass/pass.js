@@ -1,5 +1,8 @@
 const app = getApp();
 
+// 激励视频广告
+let videoAd = null
+
 Page({
   data: {
     bestRecord: null,
@@ -43,7 +46,29 @@ Page({
     return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   },
 
+  onLoad() {
+    // 创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-c24dfbbb7eeb1518'
+      })
+      videoAd.onLoad(() => {})
+      videoAd.onError((err) => {
+        console.error('激励视频广告加载失败', err)
+      })
+      videoAd.onClose((res) => {})
+    }
+  },
+
   onShow() {
+    // 从广告返回后恢复导航栏样式
+    wx.setNavigationBarColor({
+      backgroundColor: '#FAF8F5',
+      frontColor: '#000000'
+    });
+    wx.setBackgroundColor({
+      backgroundColor: '#FAF8F5'
+    });
     this.loadBestRecord();
     this.computeLevelInfo();
   },
@@ -149,10 +174,60 @@ Page({
     });
   },
 
+  // 原生模板广告事件
+  adLoad() {
+    console.log('原生模板广告加载成功')
+    // 广告加载后会污染导航栏，立即重置
+    wx.setNavigationBarColor({
+      backgroundColor: '#FAF8F5',
+      frontColor: '#000000'
+    })
+  },
+  adError(err) {
+    console.error('原生模板广告加载失败', err)
+  },
+  adClose() {
+    console.log('原生模板广告关闭')
+  },
+
   onSkipChallenge() {
     const { skipLevel } = this.data;
-    wx.navigateTo({
-      url: `/pages/challenge/challenge?passLevel=${skipLevel}`
-    });
+    let navigated = false;
+    const doNavigate = () => {
+      if (navigated) return;
+      navigated = true;
+      wx.navigateTo({
+        url: `/pages/challenge/challenge?passLevel=${skipLevel}`
+      });
+    };
+
+    // 显示激励视频广告（先恢复导航栏，避免黑线）
+    if (videoAd) {
+      wx.setNavigationBarColor({
+        backgroundColor: '#FAF8F5',
+        frontColor: '#000000'
+      });
+      wx.setBackgroundColor({
+        backgroundColor: '#FAF8F5'
+      });
+      videoAd.onClose((res) => {
+        if (res && res.isEnded) {
+          doNavigate(); // 完整观看广告后跳转
+        } else {
+          wx.showToast({ title: '需要看完广告才能跳关', icon: 'none' });
+        }
+      });
+      videoAd.show().catch(() => {
+        // 失败重试
+        videoAd.load()
+          .then(() => videoAd.show())
+          .catch(err => {
+            console.error('激励视频广告显示失败', err);
+            doNavigate(); // 广告失败仍然跳转
+          })
+      });
+    } else {
+      doNavigate();
+    }
   }
 });

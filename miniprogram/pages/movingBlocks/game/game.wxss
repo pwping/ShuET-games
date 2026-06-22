@@ -234,12 +234,6 @@
 }
 
 .block.selected {
-  box-shadow:
-    0 0 0 4px rgba(252,211,77,0.5),
-    0 4px 8px rgba(120,80,40,0.2),
-    0 8px 16px rgba(120,80,40,0.1),
-    inset 0 2px 4px rgba(255,255,255,0.6),
-    inset 0 -3px 6px rgba(160,120,60,0.25);
   z-index: 20 !important;
 }
 .block.dragging {
@@ -288,7 +282,35 @@
   padding: 6rpx 0;
 }
 .action-item:active { transform: scale(.92); }
-.action-guide { justify-content: flex-start; }
+.action-guide { justify-content: flex-start; position: relative; }
+
+/* AD 胶囊标识 */
+.ad-badge {
+  position: absolute;
+  top: -4rpx;
+  right: 18rpx;
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  background: #fff;
+  border: 1rpx solid #D4D4D8;
+  border-radius: 20rpx;
+  padding: 2rpx 8rpx 2rpx 6rpx;
+  box-shadow: 0 1rpx 3rpx rgba(0,0,0,0.08);
+}
+.ad-badge-play {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 6rpx 0 6rpx 10rpx;
+  border-color: transparent transparent transparent #71717A;
+}
+.ad-badge-text {
+  font-size: 16rpx;
+  font-weight: 600;
+  color: #71717A;
+  line-height: 1;
+}
 .action-best { justify-content: center; flex-direction: column; gap: 2rpx; }
 .action-help { justify-content: flex-end; }
 .action-icon-guide {

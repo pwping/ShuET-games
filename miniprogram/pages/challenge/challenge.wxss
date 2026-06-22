@@ -1,9 +1,13 @@
+page {
+  background: #EEF2FF;
+}
 .container {
   min-height: 100vh;
   background: linear-gradient(180deg,#EEF2FF 0%,#E0E7FF 40%,#F8FAFC 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  margin-top: -1px;
 }
 
 /* ===== 提示框（下一个数 + 计时器） ===== */
@@ -356,7 +360,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   transition: background 0.3s;
 }
 .result-success {
@@ -782,4 +787,13 @@
 
 .share-text {
   line-height: 1;
+}
+
+/* ===== 贴图广告 ===== */
+.ad-wrap-challenge {
+  width: 100%;
+  margin-top: 12rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
 }

@@ -153,4 +153,18 @@ Page({
     wx.navigateTo({ url: '/pages/intro/intro' });
   },
 
+  // 原生模板广告事件
+  adLoad() {
+    // 广告加载后会污染导航栏，立即重置
+    wx.setNavigationBarColor({
+      backgroundColor: '#F0FDF4',
+      frontColor: '#000000'
+    })
+  },
+  adError(err) {
+    console.error('原生模板广告加载失败', err)
+  },
+  adClose() {
+    console.log('原生模板广告关闭')
+  }
 });

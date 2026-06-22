@@ -218,6 +218,29 @@
 .tool-active .tool-icon { color: #fff; }
 .tool-active .tool-lbl { color: rgba(255,255,255,0.85); }
 
+/* ===== 提示次数角标 ===== */
+.tool-btn {
+  position: relative;
+}
+.hint-badge {
+  position: absolute;
+  top: -4rpx;
+  right: -4rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  background: #EF4444;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 700;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6rpx;
+  box-sizing: border-box;
+  box-shadow: 0 2rpx 6rpx rgba(239,68,68,0.35);
+}
+
 /* ===== 数字选择器 ===== */
 .numpad {
   display: flex;

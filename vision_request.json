@@ -1,0 +1,4 @@
+{
+  "prompt": "This image shows 16 Rush Hour puzzle levels on a 6x6 grid. For each level numbered 1-16: 1) Output a 6x6 grid using letters for each colored car and '.' for empty. The red 2-cell vertical car is the target. 2) List each car with its size (2 or 3 cells), orientation (horizontal or vertical), and grid coordinates. 3) Note the 'at least N steps' number. Output as JSON array of 16 levels with fields: id, grid (6 strings of 6 chars), cars (array of {id,row,col,size,orient}), minSteps.",
+  "image": "c:\\Users\\pwp88\\AppData\\Local\\Temp\\image.7d67169580.png"
+}

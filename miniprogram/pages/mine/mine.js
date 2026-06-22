@@ -63,6 +63,28 @@ Page({
     var randomLetter = letters[Math.floor(Math.random() * 26)];
     var randomNum = Math.floor(1000 + Math.random() * 9000);
     this.setData({ defaultNickName: '微信用户' + randomLetter + randomNum });
+
+    this.initBannerAd();
+  },
+
+  initBannerAd() {
+    if (typeof wx.createCustomAd !== 'function') return;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#FFFFFF' });
+      wx.setBackgroundColor({ backgroundColor: '#FFFFFF' });
+    });
+    ad.onError(function (err) { console.log('mine ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload() {
+    if (this.bannerAd) this.bannerAd.destroy();
   },
 
   onShow() {

@@ -1,6 +1,9 @@
 const app = getApp();
 const settingsSync = require('../../utils/settings-sync');
 
+// 插屏广告
+let interstitialAd = null
+
 // 计算闯关时间限制（秒）
 // 规则：初始90s，>50s时每关减5s，30s~50s时每关减2s，10s~30s时每关减1s，到10s为最后一关
 function getPassTimeLimit(level) {
@@ -102,6 +105,37 @@ Page({
     });
 
     this.generateBoard();
+
+    // 创建插屏广告实例
+    if (wx.createInterstitialAd) {
+      interstitialAd = wx.createInterstitialAd({
+        adUnitId: 'adunit-ae9ae21b013ddd4b'
+      })
+      interstitialAd.onLoad(() => {})
+      interstitialAd.onError((err) => {
+        console.error('插屏广告加载失败', err)
+      })
+      interstitialAd.onClose(() => {})
+    }
+  },
+
+  onShow() {
+    if (!this.data.showResult) {
+      // 广告会污染导航栏，用 setTimeout 确保覆盖系统的默认样式
+      wx.setNavigationBarColor({
+        backgroundColor: '#EEF2FF',
+        frontColor: '#000000'
+      });
+      wx.setBackgroundColor({
+        backgroundColor: '#EEF2FF'
+      });
+      setTimeout(() => {
+        wx.setNavigationBarColor({
+          backgroundColor: '#EEF2FF',
+          frontColor: '#000000'
+        });
+      }, 100);
+    }
   },
 
   onUnload() {
@@ -367,6 +401,14 @@ Page({
       backgroundColor: success ? '#F0FDF4' : '#FFF0F0',
       frontColor: '#000000'
     });
+
+    // 显示插屏广告
+    if (interstitialAd) {
+      interstitialAd.show().catch((err) => {
+        console.error('插屏广告显示失败', err)
+      })
+    }
+
     const resultSuccessText = this.getRandomText(true);
     const resultFailText = this.getRandomText(false);
     this.setData({

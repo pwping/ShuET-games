@@ -1,6 +1,37 @@
 {
-    "enabledMcpjsonServers": [
-        "cloudbase"
-    ],
-    "enableAllProjectMcpServers": true
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/pwp88/.claude/skills/**)",
+      "Bash(echo \"---EXIT:$?\")",
+      "Bash(mkdir -p \"C:/Users/pwp88/.claude/skills\")",
+      "Bash(cp -r .claude/skills/ui-ux-pro-max \"C:/Users/pwp88/.claude/skills/ui-ux-pro-max\")",
+      "Bash(rm -rf .claude/skills/ui-ux-pro-max)",
+      "Bash(mkdir -p \"C:/Users/pwp88/.claude/skills/frontend-design\")",
+      "WebFetch(domain:github.com)",
+      "Bash(rm -rf /tmp/superpowers)",
+      "Bash(git clone *)",
+      "Bash(ls /tmp/superpowers/skills/)",
+      "Bash(cp -r /tmp/superpowers/skills/* \"C:/Users/pwp88/.claude/skills/\")",
+      "Bash(cat \"C:/Users/pwp88/AppData/Local/Temp/superpowers/CLAUDE.md\" | head -100)",
+      "Bash(python3 \"C:\\\\Users\\\\pwp88\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"sudoku puzzle brain game education\" --design-system -p \"ShuET Sudoku\")",
+      "Bash(where python3 *)",
+      "Bash(where python *)",
+      "Bash(python -c \"print\\('ok'\\)\")",
+      "Read(//mnt/c/Users/pwp88/.claude/skills/**)",
+      "Bash(python3 scripts/search.py \"sudoku puzzle brain game education\" --design-system -p \"ShuET Sudoku\")",
+      "Bash(mount)",
+      "Read(//c//**)",
+      "Bash(ls /mnt/)",
+      "Bash(pwd && ls -la /mnt/c/Users/pwp88/ 2>/dev/null | head -20)",
+      "Bash(python3 -c ' *)",
+      "Bash(\"/c/Users/pwp88/AppData/Local/Programs/Python/Python312/python.exe\" -c \"print\\('hello'\\)\")",
+      "Bash(git restore *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "cloudbase"
+  ]
 }

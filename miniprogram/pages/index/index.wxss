@@ -348,6 +348,13 @@
   line-height: 1.3;
 }
 
+/* ===== 贴图广告 ===== */
+.ad-wrap-mode {
+  margin: 24rpx 0;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
 /* ===== 挑战闯关卡片（屏幕底部固定） ===== */
 .challenge-section {
   position: fixed;

@@ -87,6 +87,10 @@
         <text class="share-text">分享</text>
       </button>
     </view>
+
+    <view class="ad-wrap">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
+    </view>
   </view>
 
   <!-- 参考等级弹窗 -->

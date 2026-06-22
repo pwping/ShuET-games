@@ -1,5 +1,6 @@
 {
-  "navigationBarBackgroundColor": "#F0FDF4",
+  "navigationBarBackgroundColor": "#EEF2FF",
   "navigationBarTextStyle": "black",
-  "navigationBarTitleText": "开始挑战"
+  "navigationBarTitleText": "开始挑战",
+  "backgroundColor": "#EEF2FF"
 }

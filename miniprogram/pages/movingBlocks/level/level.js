@@ -10,12 +10,34 @@ Page({
     displayLevels: [],
     completedCount: 0,
     progressPercent: 0,
-    showCount: 20,
+    showCount: 25,
     canLoadMore: true
   },
 
   onShow() {
     this.loadLevels();
+    this.initBannerAd();
+  },
+
+  initBannerAd() {
+    if (this.bannerAd) return;
+    if (typeof wx.createCustomAd !== 'function') return;
+    var ad = wx.createCustomAd({
+      adUnitId: 'adunit-2bb753c35ab3d982',
+      style: { left: 0, top: 0 }
+    });
+    if (!ad) return;
+    ad.onLoad(function () {
+      wx.setNavigationBarColor({ frontColor: '#000000', backgroundColor: '#FFFBF0' });
+      wx.setBackgroundColor({ backgroundColor: '#FFFBF0' });
+    });
+    ad.onError(function (err) { console.log('movingBlocks level ad error', err); });
+    ad.show();
+    this.bannerAd = ad;
+  },
+
+  onUnload() {
+    if (this.bannerAd) this.bannerAd.destroy();
   },
 
   loadLevels() {
@@ -72,11 +94,11 @@ Page({
 
     this.setData({
       levels: allLevels,
-      displayLevels: allLevels.slice(0, 20),
+      displayLevels: allLevels.slice(0, 25),
       completedCount,
       progressPercent: Math.round((completedCount / maxId) * 100),
-      showCount: 20,
-      canLoadMore: allLevels.length > 20
+      showCount: 25,
+      canLoadMore: allLevels.length > 25
     });
   },
 
