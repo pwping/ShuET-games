@@ -178,4 +178,5 @@
   <view class="contact-bar" bindtap="onContact">
     <text class="contact-text">联系开发者：pwp8899@163.com</text>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

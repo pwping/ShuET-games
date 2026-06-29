@@ -90,11 +90,15 @@ Page({
   onShow() {
     this.setData({ isLoggedIn: app.globalData.isLoggedIn });
     this.loadUserInfo();
-    this.loadStats();
-    this.loadHuarongStats();
-    this.loadMovingBlockStats();
-    this.loadSudokuStats();
     this.autoSwipeDemo();
+    // 先用本地缓存渲染（零等待），云端数据到后自动合并
+    if (!this._localDataShown) {
+      this._localDataShown = true;
+      this.loadStats();
+      this.loadHuarongStats();
+      this.loadMovingBlockStats();
+      this.loadSudokuStats();
+    }
   },
 
   autoSwipeDemo() {
@@ -256,34 +260,6 @@ Page({
         }.bind(this)
       });
     }
-  },
-
-  computeModeStats(records) {
-    var MODE_ORDER = ['classic','interference','shuffle','reverse','parity','challenge','memory'];
-    var map = {};
-    records.forEach(function(r) {
-      if (r.status !== 'success') return;
-      var key = r.mode + '-' + r.size;
-      if (!map[key]) {
-        map[key] = { mode: r.mode, size: r.size, count: 0, bestTimeMs: Infinity };
-      }
-      map[key].count++;
-      if (r.timeCost < map[key].bestTimeMs) map[key].bestTimeMs = r.timeCost;
-    });
-    var arr = [];
-    for (var k in map) arr.push(map[k]);
-    arr.sort(function(a, b) {
-      var ai = MODE_ORDER.indexOf(a.mode);
-      var bi = MODE_ORDER.indexOf(b.mode);
-      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi) || a.size - b.size;
-    });
-    return arr.map(function(item) {
-      return {
-        modeLabel: (MODE_NAMES[item.mode] || item.mode) + '(' + item.size + 'x' + item.size + ')',
-        count: item.count,
-        bestTimeLabel: item.bestTimeMs === Infinity ? '--' : this.formatTime(item.bestTimeMs)
-      };
-    }.bind(this));
   },
 
   loadAllStats() {

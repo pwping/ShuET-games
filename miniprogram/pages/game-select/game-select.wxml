@@ -92,4 +92,5 @@
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
 
   <custom-tabbar active="index"></custom-tabbar>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

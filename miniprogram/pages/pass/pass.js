@@ -52,10 +52,10 @@ Page({
       videoAd = wx.createRewardedVideoAd({
         adUnitId: 'adunit-c24dfbbb7eeb1518'
       })
-      videoAd.onLoad(() => {})
-      videoAd.onError((err) => {
-        console.error('激励视频广告加载失败', err)
-      })
+  videoAd.onLoad(() => {})
+  videoAd.onError((err) => {
+    console.error('激励视频广告加载失败', err)
+  })
       videoAd.onClose((res) => {})
     }
   },

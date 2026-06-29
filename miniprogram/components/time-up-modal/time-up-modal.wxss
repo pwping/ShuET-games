@@ -1,0 +1,164 @@
+/* ===== 时间到提示弹窗（与儿童模式统一风格） ===== */
+.tu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.tu-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tu-dialog {
+  width: 580rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 48rpx 32rpx 32rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.12);
+  animation: tuBounceIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+@keyframes tuBounceIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(30rpx); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.tu-header {
+  text-align: center;
+  margin-bottom: 28rpx;
+}
+.tu-icon-circle {
+  width: 88rpx;
+  height: 88rpx;
+  background: #F59E0B;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(245,158,11,0.3);
+}
+.tu-icon-unlock {
+  background: #22C55E;
+  box-shadow: 0 4rpx 16rpx rgba(34,197,94,0.3);
+}
+.tu-icon-text {
+  font-size: 40rpx;
+}
+.tu-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #1F2937;
+  letter-spacing: 2rpx;
+}
+.tu-sub {
+  display: block;
+  font-size: 24rpx;
+  color: #22C55E;
+  margin-top: 8rpx;
+}
+
+.tu-body {
+  background: #F9FAFB;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 28rpx;
+  border: 1rpx solid #E5E7EB;
+  text-align: center;
+}
+.tu-msg-icon {
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
+}
+.tu-msg {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #4B5563;
+  line-height: 1.6;
+}
+
+/* 隐藏的输入框（不可见，只用于接收系统键盘输入） */
+.tu-hidden-input {
+  position: fixed;
+  left: -999rpx;
+  top: -999rpx;
+  width: 1rpx;
+  height: 1rpx;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 解锁密码展示框（6个格子，只展示数字） */
+.tu-pwd-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+}
+.tu-pwd-input {
+  width: 68rpx;
+  height: 76rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  border: 2rpx solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1F2937;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+.tu-pwd-input.filled {
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3rpx rgba(34,197,94,0.12);
+}
+.tu-pwd-input.active {
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3rpx rgba(34,197,94,0.15);
+}
+.tu-pwd-error {
+  color: #EF4444;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+  font-weight: 500;
+}
+
+.tu-actions {
+  display: flex;
+  gap: 16rpx;
+}
+.tu-btn {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.tu-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+.tu-btn-exit {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+.tu-btn-cancel {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+.tu-btn-unlock {
+  background: #22C55E;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(34,197,94,0.3);
+}

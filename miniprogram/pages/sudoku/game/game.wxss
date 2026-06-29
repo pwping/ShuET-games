@@ -105,6 +105,9 @@
   position: relative;
   aspect-ratio: 1;
   box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 /* 所有边框由 JS 类名控制，无 nth-child */
 .br1 { border-right: 1rpx solid #CBD5E1; }
@@ -193,6 +196,7 @@
   border: 2rpx solid #E8EDF5;
   box-shadow: 0 4rpx 12rpx rgba(59,130,246,0.06), 0 1rpx 3rpx rgba(0,0,0,0.03);
   transition: background .2s, box-shadow .2s, transform .15s;
+  position: relative;
 }
 .tool-btn:active {
   transform: scale(.92);
@@ -200,7 +204,6 @@
 .tool-btn.tool-active {
   background: linear-gradient(135deg,#3B82F6,#2563EB);
   border-color: #2563EB;
-  box-shadow: 0 6rpx 16rpx rgba(59,130,246,0.25);
 }
 .tool-icon {
   font-size: 28rpx;
@@ -219,9 +222,6 @@
 .tool-active .tool-lbl { color: rgba(255,255,255,0.85); }
 
 /* ===== 提示次数角标 ===== */
-.tool-btn {
-  position: relative;
-}
 .hint-badge {
   position: absolute;
   top: -4rpx;
@@ -357,3 +357,86 @@
   transition: transform .15s;
 }
 .dialog-btn:active { transform: scale(.97); }
+
+/* ===== iPad 大屏适配 ===== */
+@media (min-width: 500px) {
+  .page {
+    height: 100vh;
+    min-height: auto;
+    padding: 10rpx 0 6rpx;
+  }
+  .stats-row {
+    margin-bottom: 4rpx;
+  }
+  .stats-bar {
+    padding: 8rpx 16rpx;
+  }
+  .sb-value {
+    font-size: 22rpx;
+  }
+  .sb-icon {
+    width: 32rpx;
+    height: 32rpx;
+    font-size: 16rpx;
+  }
+  .sb-divider {
+    height: 28rpx;
+    margin: 0 6rpx;
+  }
+  .settings-btn,
+  .reset-btn {
+    width: 44rpx;
+    height: 44rpx;
+    font-size: 24rpx;
+  }
+  .board-wrap {
+    padding: 0 8rpx;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .board {
+    width: 100%;
+    max-width: 580rpx;
+  }
+  .cell-num {
+    font-size: 22rpx;
+  }
+  .notes-grid {
+    padding: 2rpx;
+  }
+  .note-num {
+    font-size: 14rpx;
+  }
+  .toolbar {
+    padding: 4rpx 24rpx 2rpx;
+    gap: 8rpx;
+    max-width: 580rpx;
+  }
+  .tool-btn {
+    padding: 4rpx 4rpx;
+  }
+  .tool-icon {
+    font-size: 20rpx;
+  }
+  .tool-lbl {
+    font-size: 14rpx;
+  }
+  .hint-badge {
+    min-width: 22rpx;
+    height: 22rpx;
+    font-size: 14rpx;
+  }
+  .numpad {
+    padding: 0 8rpx;
+    gap: 6rpx;
+    max-width: 580rpx;
+  }
+  .num-btn {
+    height: 50rpx;
+  }
+  .num-txt {
+    font-size: 30rpx;
+  }
+}

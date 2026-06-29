@@ -79,4 +79,5 @@
       <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
     </view>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

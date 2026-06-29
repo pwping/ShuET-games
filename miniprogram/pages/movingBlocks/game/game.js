@@ -147,7 +147,12 @@ Page({
     const diff = options.diff || 'easy';
     const groups = levelData.LEVEL_GROUPS[diff];
     const sysInfo = wx.getSystemInfoSync();
-    const boardW = Math.min(sysInfo.windowWidth - 48, 360);
+    // 宽度可用：屏幕宽度减去两侧留白
+    const boardByW = sysInfo.windowWidth - 48;
+    // 高度可用：屏幕高度减去非棋盘元素（统计栏+操作栏+边距）
+    const overhead = Math.round(170 * sysInfo.windowWidth / 750);
+    const boardByH = sysInfo.windowHeight - overhead;
+    const boardW = Math.min(boardByW, boardByH, 600);
     const cellS = Math.floor(boardW / BOARD_SIZE);
     const completed = wx.getStorageSync('mb_completed') || {};
 
@@ -197,6 +202,8 @@ Page({
       timer: 0, timerText: '00:00',
       selectedId: null, won: false,
       levelId: level.id, levelIndex: index,
+      difficulty: this.difficulty,
+      difficultyLabel: levelData.DIFF_MAP[this.difficulty].label,
       totalLevels: groups.length,
       hasPrev: index > 0,
       hasNext: index < groups.length - 1
@@ -409,11 +416,36 @@ Page({
   },
 
   onPrevLevel() {
-    this.loadLevel(this.currentLevelIndex - 1);
+    var prevId = parseInt(this.data.levelId) - 1;
+    if (prevId < 1) {
+      wx.showToast({ title: '已经是第一关', icon: 'none' });
+      return;
+    }
+    var prevDiff = levelData.getDifficulty(String(prevId));
+    this.difficulty = prevDiff;
+    var prevGroup = levelData.LEVEL_GROUPS[prevDiff];
+    var prevIdx = prevGroup.findIndex(function(l) { return parseInt(l.id) === prevId; });
+    if (prevIdx >= 0) {
+      this.hasWon = false;
+      this.loadLevel(prevIdx);
+    }
   },
 
   onNextLevel() {
-    this.loadLevel(this.currentLevelIndex + 1);
+    this.hasWon = false;
+    // 计算下一关的完整 ID（跨难度切换）
+    var nextId = parseInt(this.data.levelId) + 1;
+    if (nextId > levelData.ALL_LEVELS.length) {
+      wx.showToast({ title: '已经是最后一关', icon: 'none' });
+      return;
+    }
+    var nextDiff = levelData.getDifficulty(String(nextId));
+    this.difficulty = nextDiff;
+    var nextGroup = levelData.LEVEL_GROUPS[nextDiff];
+    var nextIdx = nextGroup.findIndex(function(l) { return parseInt(l.id) === nextId; });
+    if (nextIdx >= 0) {
+      this.loadLevel(nextIdx);
+    }
   },
 
   onRestart() {

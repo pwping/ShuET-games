@@ -98,4 +98,5 @@
       <ad-custom unit-id="adunit-2bb753c35ab3d982" bindload="adLoad" binderror="adError" bindclose="adClose"></ad-custom>
     </view>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

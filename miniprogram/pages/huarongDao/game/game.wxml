@@ -34,12 +34,28 @@
             <text class="tile-num" style="font-size:{{tileFont}}rpx">{{item.num}}</text>
           </view>
         </view>
+        <!-- 棋盘中间开始按钮 -->
+        <view class="board-disabled-layer" wx:if="{{!gameStarted}}"></view>
+        <view class="start-btn-overlay" wx:if="{{!gameStarted}}" bindtap="onStart">
+          <text class="start-btn-text">开始</text>
+        </view>
     </view>
   </view>
 
-  <!-- 开始按钮 -->
-  <view class="start-btn-wrap" wx:if="{{!gameStarted}}">
-    <view class="start-btn" bindtap="onStart">开始游戏</view>
+  <!-- 底部卡片：进度条 + 提示 -->
+  <view class="bottom-card">
+    <view class="progress-bar-container">
+      <view class="progress-bar-wrapper">
+        <view class="progress-bar">
+          <view class="progress-fill" style="width:{{totalCount > 0 ? (correctCount / totalCount * 100) : 0}}%;"></view>
+        </view>
+        <view class="hint-chip" catchtap="onHint">
+          <text class="hint-chip-icon">💡</text>
+          <text class="hint-chip-lbl">提示</text>
+          <view class="hint-badge">{{hintRemaining}}</view>
+        </view>
+      </view>
+    </view>
   </view>
 
   <!-- 设置弹窗 -->
@@ -65,4 +81,5 @@
       <view class="settings-close-btn" bindtap="onCloseSettings">知道了</view>
     </view>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

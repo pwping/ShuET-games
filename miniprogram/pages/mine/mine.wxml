@@ -151,7 +151,7 @@
         <text class="menu-text">分享</text>
         <text class="menu-arrow">›</text>
       </view>
-      <button class="share-trigger" open-type="share"></button>
+      <button class="share-full-btn" open-type="share" hover-class="none"></button>
     </view>
     <view class="menu-divider"></view>
     <view class="menu-item" bindtap="goToSettings">
@@ -220,4 +220,5 @@
 
   <!-- 头像设置引导 -->
   <avatar-guide visible="{{showAvatarGuide}}" bind:done="onAvatarGuideDone"></avatar-guide>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

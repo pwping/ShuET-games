@@ -222,6 +222,12 @@ Page({
     this.initGame(diff);
   },
 
+  onShow: function() {
+    if (this.data.isComplete) {
+      this.onRestart();
+    }
+  },
+
   onUnload: function() { this.stopTimer(); },
 
   initGame: function(diff) {
@@ -452,8 +458,6 @@ Page({
               wx.showToast({ title: '广告加载失败', icon: 'none' });
             });
         });
-      } else {
-        wx.showToast({ title: '广告未就绪', icon: 'none' });
       }
       return;
     }

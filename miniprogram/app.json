@@ -58,5 +58,8 @@
   "__usePrivacyCheck__": true,
   "enablePassiveEvent": {
     "default": true
+  },
+  "usingComponents": {
+    "time-up-modal": "/components/time-up-modal/time-up-modal"
   }
 }

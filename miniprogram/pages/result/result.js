@@ -198,8 +198,9 @@ Page({
       this.setData({ animIn: true });
     }, 50);
 
-    // 创建插屏广告实例
+    // 创建插屏广告实例（先销毁旧的）
     if (wx.createInterstitialAd) {
+      if (interstitialAd) interstitialAd.destroy();
       interstitialAd = wx.createInterstitialAd({
         adUnitId: 'adunit-ae9ae21b013ddd4b'
       })
@@ -210,11 +211,13 @@ Page({
       interstitialAd.onClose(() => {})
     }
 
-    // 在适合的场景显示插屏广告
+    // 延迟显示插屏广告
     if (interstitialAd) {
-      interstitialAd.show().catch((err) => {
-        console.error('插屏广告显示失败', err)
-      })
+      setTimeout(function() {
+        interstitialAd.show().catch(function(err) {
+          console.error('插屏广告显示失败', err)
+        })
+      }, 800)
     }
   },
 
@@ -367,5 +370,9 @@ Page({
   },
   adClose() {
     console.log('原生模板广告关闭')
+  },
+
+  onUnload() {
+    if (interstitialAd) interstitialAd.destroy();
   }
 });

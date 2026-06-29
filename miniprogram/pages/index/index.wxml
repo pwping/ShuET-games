@@ -46,6 +46,12 @@
     <view class="mode-grid">
       <view class="mode-card" wx:for="{{modes}}" wx:for-index="idx" wx:key="key" wx:if="{{idx < 4}}" bindtap="onModeTap" data-mode="{{item.key}}"
            style="background: {{item.bg}};">
+        <!-- 锁定角标：剩余>0显示次数，否则显示V标 -->
+        <view class="mode-lock-badge {{item.locked && (!vipRemaining[item.key] || vipRemaining[item.key] <= 0) ? 'show' : ''}}">V</view>
+        <!-- 已解锁次数角标 -->
+        <view class="mode-count-badge {{item.locked && vipRemaining[item.key] > 0 ? 'show' : ''}}">
+          <text class="mcb-text">{{vipRemaining[item.key]}}</text>
+        </view>
         <view class="mode-card-inner">
           <view class="mode-icon-wrap">
           <view class="mode-icon" style="background: {{item.iconBg}};">
@@ -77,6 +83,10 @@
     <view class="mode-grid">
       <view class="mode-card" wx:for="{{modes}}" wx:for-index="idx" wx:key="key" wx:if="{{idx >= 4}}" bindtap="onModeTap" data-mode="{{item.key}}"
            style="background: {{item.bg}};">
+        <view class="mode-lock-badge {{item.locked && (!vipRemaining[item.key] || vipRemaining[item.key] <= 0) ? 'show' : ''}}">V</view>
+        <view class="mode-count-badge {{item.locked && vipRemaining[item.key] > 0 ? 'show' : ''}}">
+          <text class="mcb-text">{{vipRemaining[item.key]}}</text>
+        </view>
         <view class="mode-card-inner">
           <view class="mode-icon-wrap">
           <view class="mode-icon" style="background: {{item.iconBg}};">
@@ -116,7 +126,47 @@
     </view>
   </view>
 
+  <!-- ===== VIP 解锁弹窗 ===== -->
+  <view class="vip-overlay {{showVipModal ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="vip-dialog">
+      <!-- 关闭按钮 -->
+      <view class="vip-close" bindtap="onVipModalClose">✕</view>
+
+      <!-- 头部 -->
+      <view class="vip-header">
+        <view class="vip-crown-wrap">
+          <view class="vip-crown-icon">🏆</view>
+        </view>
+        <text class="vip-title">解锁高级玩法</text>
+        <text class="vip-sub">等你来挑战</text>
+      </view>
+
+      <!-- 描述 -->
+      <view class="vip-body">
+        <view class="vip-desc">
+          <text class="vip-desc-line">可以通过分享或者观看广告</text>
+          <text class="vip-desc-line">立即获得<text class="vip-highlight">5</text>次免费体验机会</text>
+          <text class="vip-desc-line">次数用完后可再次获取</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="vip-actions">
+        <button class="vip-btn vip-btn-share" open-type="share" hover-class="vip-btn-hover">
+          <view class="vip-btn-icon vip-share-icon"></view>
+          <text class="vip-btn-lbl">分享给好友</text>
+        </button>
+        <view class="vip-btn vip-btn-ad" bindtap="onVipAdTap" hover-class="vip-btn-hover">
+          <view class="vip-btn-icon vip-ad-icon"></view>
+          <text class="vip-btn-lbl">观看广告</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
   <!-- 年龄段选择弹窗（共用组件） -->
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
 
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

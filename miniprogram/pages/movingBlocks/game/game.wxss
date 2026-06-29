@@ -451,3 +451,66 @@
   flex: 1;
   margin-bottom: 0;
 }
+
+/* ===== iPad 大屏适配 ===== */
+@media (min-width: 500px) {
+  .page {
+    height: 100vh;
+    min-height: auto;
+    padding: 12rpx 0 8rpx;
+  }
+  .stats-row {
+    margin-bottom: 6rpx;
+  }
+  .stats-bar {
+    padding: 8rpx 18rpx;
+  }
+  .sb-value {
+    font-size: 24rpx;
+  }
+  .sb-icon {
+    width: 36rpx;
+    height: 36rpx;
+    font-size: 22rpx;
+  }
+  .sb-divider {
+    height: 28rpx;
+    margin: 0 8rpx;
+  }
+  .settings-wrap,
+  .reset-wrap {
+    margin-right: 4rpx;
+  }
+  .settings-btn,
+  .reset-btn {
+    width: 44rpx;
+    height: 44rpx;
+    font-size: 24rpx;
+  }
+  .board-wrap {
+    padding: 6rpx 24rpx 0;
+  }
+  .action-bar {
+    margin-top: 6rpx;
+    padding: 6rpx 12rpx;
+  }
+  .action-icon-guide,
+  .action-icon-help {
+    width: 32rpx;
+    height: 32rpx;
+    font-size: 18rpx;
+  }
+  .action-label {
+    font-size: 20rpx;
+  }
+  .best-num {
+    font-size: 24rpx;
+  }
+  .action-item {
+    padding: 2rpx 0;
+  }
+  .action-divider {
+    height: 28rpx;
+    margin: 0 6rpx;
+  }
+}

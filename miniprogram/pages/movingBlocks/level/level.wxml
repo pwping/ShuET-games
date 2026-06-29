@@ -51,4 +51,34 @@
       <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
     </view>
   </scroll-view>
+
+  <!-- ===== 跳关弹窗 ===== -->
+  <view class="skip-overlay {{showSkipModal ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="skip-dialog">
+      <view class="skip-close" bindtap="onSkipModalClose">✕</view>
+      <view class="skip-header">
+        <view class="skip-icon-wrap">🚀</view>
+        <text class="skip-title">跳关解锁</text>
+      </view>
+      <view class="skip-body">
+        <view class="skip-desc">
+          <text class="skip-desc-line">关卡需按顺序挑战</text>
+          <text class="skip-desc-line">通过上一关才能解锁下一关</text>
+          <text class="skip-desc-line">如想直接挑战本关</text>
+          <text class="skip-desc-line">需观看广告解锁激活</text>
+        </view>
+      </view>
+      <view class="skip-actions">
+        <view class="skip-btn skip-btn-order" bindtap="onPlayOrder" hover-class="skip-btn-hover">
+          <view class="skip-btn-icon skip-order-icon"></view>
+          <text class="skip-btn-lbl">按顺序闯关</text>
+        </view>
+        <view class="skip-btn skip-btn-ad" bindtap="onSkipAdTap" hover-class="skip-btn-hover">
+          <view class="skip-btn-icon skip-ad-icon"></view>
+          <text class="skip-btn-lbl">观看广告</text>
+        </view>
+      </view>
+    </view>
+  </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

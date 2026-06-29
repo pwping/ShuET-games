@@ -376,4 +376,5 @@
       </view>
     </scroll-view>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

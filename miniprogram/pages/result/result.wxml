@@ -95,4 +95,5 @@
 
   <!-- 参考等级弹窗 -->
   <reference-sheet id="refSheet" size="{{size}}" />
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

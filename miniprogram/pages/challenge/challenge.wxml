@@ -160,4 +160,5 @@
       <view class="settings-btn-close-cg" bindtap="onCloseSettings">知道了</view>
     </view>
   </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

@@ -797,3 +797,53 @@ page {
   overflow: hidden;
   flex-shrink: 0;
 }
+
+/* ===== iPad 大屏适配 ===== */
+@media (min-width: 500px) {
+  .container {
+    min-height: auto;
+    height: 100vh;
+  }
+  .hint-box {
+    margin: 12rpx 20rpx 6rpx;
+    padding: 10rpx 20rpx;
+    height: 68rpx;
+  }
+  .hint-value {
+    font-size: 38rpx;
+  }
+  .timer-value {
+    font-size: 34rpx;
+  }
+  .game-board-container {
+    padding: 4rpx 16rpx 4rpx;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .game-board {
+    gap: 10rpx;
+    width: 100%;
+    max-width: 560rpx;
+  }
+  .game-cell {
+    border-radius: 14rpx;
+    font-size: 38rpx;
+  }
+  .bottom-card {
+    margin: 4rpx 16rpx 8rpx;
+  }
+  .progress-bar-container {
+    padding: 8rpx 20rpx;
+  }
+  .hint-divider {
+    margin: 0 14rpx;
+  }
+  .settings-btn-challenge {
+    width: 52rpx;
+    height: 52rpx;
+    font-size: 26rpx;
+    margin-left: 14rpx;
+  }
+}

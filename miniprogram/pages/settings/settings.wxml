@@ -18,6 +18,22 @@
   </view>
 
   <view class="settings-section">
+    <view class="setting-item">
+      <view class="setting-info">
+        <view class="setting-title">儿童模式</view>
+        <view class="setting-desc-row">
+          <text class="setting-desc-text">限制使用时长，保护视力</text>
+          <view wx:if="{{childMode}}" class="setting-duration-tag" bindtap="onEditDuration">
+            <text class="setting-duration-text">已设置每日限时{{childDuration}}分钟</text>
+            <text class="setting-duration-arrow">›</text>
+          </view>
+        </view>
+      </view>
+      <switch checked="{{childMode}}" bindchange="onChildModeChange" color="#4CAF50"/>
+    </view>
+  </view>
+
+  <view class="settings-section">
     <view class="setting-item setting-item-tap" bindtap="onTapAgeGroup">
       <view class="setting-left">
         <view class="setting-info-noicon">
@@ -44,6 +60,101 @@
     <text class="logout-text">退出登录</text>
   </view>
 
+  <!-- ===== 儿童模式 - 设置弹窗 ===== -->
+  <view class="cm-overlay {{showChildSetup ? 'active' : ''}}">
+    <view class="cm-dialog-cm" style="transform: translateY(-{{dialogOffset}}px);">
+
+      <view class="cm-header-cm">
+        <view class="cm-icon-circle">
+          <text class="cm-icon-text">👶</text>
+        </view>
+        <text class="cm-title-cm">儿童模式</text>
+        <text class="cm-sub-cm">限制使用时长，保护视力</text>
+      </view>
+
+      <!-- 时长选择 -->
+      <view class="cm-card">
+        <view class="cm-card-label">
+          <text class="cm-card-title">设置使用时长</text>
+          <text class="cm-duration-num">{{childDuration}}</text>
+          <text class="cm-duration-unit">分钟</text>
+        </view>
+        <view class="cm-duration-picker-cm">
+          <picker-view class="cm-picker-view" value="{{pickerInitValue}}" bindchange="onDurationChange" indicator-style="height: 66rpx; background: rgba(34,197,94,0.15); border-radius: 12rpx;">
+            <picker-view-column>
+              <view wx:for="{{durationOptions}}" wx:key="*this" class="cm-picker-item">{{item}} 分钟</view>
+            </picker-view-column>
+          </picker-view>
+          <view class="cm-picker-mask-top-cm"></view>
+          <view class="cm-picker-mask-bottom-cm"></view>
+        </view>
+      </view>
+
+      <!-- 密码设置 -->
+      <view class="cm-card">
+        <view class="cm-card-label">
+          <text class="cm-card-title">设置密码</text>
+        </view>
+        <text class="cm-card-desc">设置6位数字密码，关闭时需要验证</text>
+        <input class="cm-hidden-input" type="number" maxlength="6" value="{{setupPwdStr}}"
+          bindinput="onSetupInput" focus="{{setupInputFocus}}" wx:if="{{showChildSetup}}" />
+        <view class="cm-setup-boxes" bindtap="onSetupBoxTap">
+          <view wx:for="{{setupPwd}}" wx:for-index="idx" wx:key="*this"
+            class="cm-setup-input {{item ? 'filled' : ''}} {{idx === setupPwdStr.length ? 'pwd-active' : ''}}">
+            <text>{{item || ''}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="cm-actions-cm">
+        <view class="cm-btn-cm cm-btn-cancel-cm" bindtap="onCancelChildSetup">
+          <text>取消</text>
+        </view>
+        <view class="cm-btn-cm cm-btn-save-cm" bindtap="onSaveChildSetup">
+          <text>{{saveBtnText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 儿童模式 - 解锁弹窗 ===== -->
+  <view class="cm-overlay {{showChildUnlock ? 'active' : ''}}">
+    <view class="cm-dialog-cm" style="transform: translateY(-{{dialogOffset}}px);">
+
+      <view class="cm-header-cm">
+        <view class="cm-icon-circle">
+          <text class="cm-icon-text">🔓</text>
+        </view>
+        <text class="cm-title-cm">关闭儿童模式</text>
+        <text class="cm-sub-cm">请输入6位数字密码</text>
+      </view>
+
+      <view class="cm-card">
+        <view class="cm-card-label">
+          <text class="cm-card-title">验证密码</text>
+        </view>
+        <input class="cm-hidden-input" type="number" maxlength="6" value="{{unlockPwdStr}}"
+          bindinput="onUnlockInput" focus="{{unlockInputFocus}}" wx:if="{{showChildUnlock}}" />
+        <view class="cm-setup-boxes" bindtap="onUnlockBoxTap">
+          <view wx:for="{{unlockPwd}}" wx:for-index="idx" wx:key="*this"
+            class="cm-setup-input {{item ? 'filled' : ''}} {{idx === unlockPwdStr.length ? 'pwd-active' : ''}}">
+            <text>{{item || ''}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="cm-actions-cm">
+        <view class="cm-btn-cm cm-btn-cancel-cm" bindtap="onUnlockClose">
+          <text>取消</text>
+        </view>
+        <view class="cm-btn-cm cm-btn-save-cm" bindtap="onUnlockVerify">
+          <text>确认关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <age-group-selector visible="{{showAgeSelector}}" bind:change="onAgeChanged" />
 
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

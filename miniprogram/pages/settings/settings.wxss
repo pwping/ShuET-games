@@ -31,6 +31,45 @@
   font-size: 24rpx;
   color: #999;
 }
+.setting-desc-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+.setting-desc-text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.4;
+}
+.setting-duration-tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(34,197,94,0.1);
+  border: 1.5rpx solid rgba(34,197,94,0.2);
+  border-radius: 8rpx;
+  padding: 4rpx 12rpx 4rpx 14rpx;
+  transition: all 0.15s ease;
+  width: auto;
+}
+.setting-duration-tag:active {
+  background: rgba(34,197,94,0.18);
+  transform: scale(0.97);
+}
+.setting-duration-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #22C55E;
+  line-height: 1;
+}
+.setting-duration-arrow {
+  font-size: 28rpx;
+  color: #22C55E;
+  margin-left: 6rpx;
+  font-weight: 400;
+  line-height: 1;
+}
 
 .setting-left {
   display: flex;
@@ -120,3 +159,228 @@
   font-size: 30rpx;
   color: #333;
 }
+
+/* ===== 儿童模式设置弹窗（清新简洁风格） ===== */
+.cm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.cm-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cm-dialog-cm {
+  width: 580rpx;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 48rpx 32rpx 32rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.12);
+  animation: cmBounceIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  position: relative;
+}
+@keyframes cmBounceIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(30rpx); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.cm-header-cm {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+.cm-icon-circle {
+  width: 88rpx;
+  height: 88rpx;
+  background: #22C55E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(34,197,94,0.3);
+}
+.cm-icon-text {
+  font-size: 40rpx;
+}
+.cm-title-cm {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #1F2937;
+  letter-spacing: 2rpx;
+}
+.cm-sub-cm {
+  display: block;
+  font-size: 24rpx;
+  color: #22C55E;
+  margin-top: 8rpx;
+}
+
+/* 卡片 */
+.cm-card {
+  background: #F9FAFB;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E5E7EB;
+}
+.cm-card-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+}
+.cm-card-icon {
+  font-size: 28rpx;
+}
+.cm-card-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #374151;
+}
+.cm-card-desc {
+  display: block;
+  font-size: 22rpx;
+  color: #9CA3AF;
+  margin-bottom: 16rpx;
+  margin-left: 36rpx;
+}
+
+/* 时长显示 */
+.cm-duration-num {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #22C55E;
+  margin-left: auto;
+  line-height: 1;
+}
+.cm-duration-unit {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+/* 时长滚动选择器 */
+.cm-duration-picker-cm {
+  position: relative;
+  height: 200rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #F3F4F6;
+}
+.cm-picker-view {
+  width: 100%;
+  height: 100%;
+}
+.cm-picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 66rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #6B7280;
+}
+.cm-picker-item-selected,
+.picker-item-selected {
+  font-weight: 800 !important;
+  color: #166534 !important;
+  font-size: 30rpx !important;
+}
+.cm-picker-mask-top-cm,
+.cm-picker-mask-bottom-cm {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 56rpx;
+  pointer-events: none;
+}
+.cm-picker-mask-top-cm {
+  top: 0;
+  background: linear-gradient(180deg, rgba(243,244,246,0.85) 0%, rgba(243,244,246,0) 100%);
+}
+.cm-picker-mask-bottom-cm {
+  bottom: 0;
+  background: linear-gradient(0deg, rgba(243,244,246,0.85) 0%, rgba(243,244,246,0) 100%);
+}
+
+/* 6位密码输入框 */
+.cm-setup-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 0 8rpx;
+}
+.cm-setup-input {
+  width: 68rpx;
+  height: 76rpx;
+  border-radius: 12rpx;
+  background: #ffffff;
+  border: 2rpx solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1F2937;
+  padding: 0;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+.cm-setup-input.filled {
+  background: #ffffff;
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3rpx rgba(34,197,94,0.12);
+}
+.cm-setup-input.pwd-active {
+  border-color: #22C55E;
+  box-shadow: 0 0 0 3rpx rgba(34,197,94,0.15);
+}
+.cm-hidden-input {
+  position: fixed;
+  left: -999rpx;
+  top: -999rpx;
+  width: 1rpx;
+  height: 1rpx;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 按钮 */
+.cm-actions-cm {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+.cm-btn-cm {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.cm-btn-cm:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+.cm-btn-cancel-cm {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+.cm-btn-save-cm {
+  background: #22C55E;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(34,197,94,0.3);
+}
+
+

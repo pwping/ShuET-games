@@ -123,4 +123,5 @@
     </view>
   </view>
 
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

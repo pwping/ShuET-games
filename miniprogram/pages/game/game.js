@@ -119,6 +119,13 @@ Page({
     this.generateBoard();
   },
 
+  onShow() {
+    // 从结果页返回时，自动重置游戏
+    if (this._gameCompleted) {
+      this.onRestart();
+    }
+  },
+
   onUnload() {
     this.stopTimer();
     this.clearChallengeTimer();
@@ -597,6 +604,7 @@ Page({
   },
 
   onRestart() {
+    this._gameCompleted = false;
     this.stopTimer();
     this.clearChallengeTimer();
     this.clearMemoryTimer();
@@ -619,6 +627,7 @@ Page({
   },
 
   gameOver(success) {
+    this._gameCompleted = true;
     const elapsed = this.fixedElapsed !== null ? this.fixedElapsed : (Date.now() - this.startTime);
     this.fixedElapsed = null;
     const accuracy = Math.round(this.firstTryCorrect.size / this.data.total * 100);
@@ -668,7 +677,7 @@ Page({
     }
 
     const qs = `mode=${this.data.mode}&level=${this.data.level}&size=${this.data.size}&time=${elapsed}&accuracy=${accuracy}&status=${success ? 'success' : 'fail'}&pass=${this.data.isPassMode ? '1' : '0'}&passLevel=${this.data.passLevelNumber}`;
-    wx.redirectTo({
+    wx.navigateTo({
       url: `/pages/result/result?${qs}`
     });
   }

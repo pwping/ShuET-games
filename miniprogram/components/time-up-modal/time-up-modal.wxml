@@ -1,0 +1,63 @@
+<view class="tu-overlay {{visible ? 'active' : ''}}">
+  <view class="tu-dialog" style="transform: translateY(-{{dialogOffset}}px);">
+    <!-- 时间到主界面 -->
+    <block wx:if="{{!showUnlock}}">
+      <view class="tu-header">
+        <view class="tu-icon-circle">
+          <text class="tu-icon-text">⏰</text>
+        </view>
+        <text class="tu-title">时间到啦！</text>
+        <text class="tu-sub">今天的游戏时间用完咯～</text>
+      </view>
+
+      <view class="tu-body">
+        <view class="tu-msg-icon">👀</view>
+        <text class="tu-msg">小眼睛需要休息啦</text>
+        <text class="tu-msg">咱们明天再玩吧！</text>
+      </view>
+
+      <view class="tu-actions">
+        <view class="tu-btn tu-btn-exit" bindtap="onExit">
+          <text>关闭</text>
+        </view>
+        <view class="tu-btn tu-btn-unlock" bindtap="onShowUnlock">
+          <text>解锁</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 解锁密码界面 -->
+    <block wx:else>
+      <view class="tu-header">
+        <view class="tu-icon-circle tu-icon-unlock">
+          <text class="tu-icon-text">👀</text>
+        </view>
+        <text class="tu-title">解锁继续玩</text>
+        <text class="tu-sub">请爸爸妈妈输入正确密码才能解锁</text>
+      </view>
+
+      <view class="tu-body">
+        <!-- 隐藏的输入框（真正接收输入） -->
+        <input class="tu-hidden-input" type="number" maxlength="6" value="{{unlockPwdStr}}"
+          bindinput="onHiddenInput" focus="{{pwdInputFocus}}" />
+        <!-- 6个展示框（只展示不聚焦） -->
+        <view class="tu-pwd-boxes" bindtap="onPwdBoxTap">
+          <view wx:for="{{unlockPwd}}" wx:for-index="idx" wx:key="*this"
+            class="tu-pwd-input {{item ? 'filled' : ''}} {{idx === unlockPwdStr.length ? 'active' : ''}}">
+            <text>{{item || ''}}</text>
+          </view>
+        </view>
+        <view class="tu-pwd-error" wx:if="{{pwdError}}">密码不对哦，再试一次吧</view>
+      </view>
+
+      <view class="tu-actions">
+        <view class="tu-btn tu-btn-cancel" bindtap="onBack">
+          <text>返回</text>
+        </view>
+        <view class="tu-btn tu-btn-unlock" bindtap="onVerifyPwd">
+          <text>确认</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

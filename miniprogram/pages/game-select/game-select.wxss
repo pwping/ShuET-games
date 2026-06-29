@@ -295,3 +295,23 @@
   border-radius: 16rpx;
   overflow: hidden;
 }
+
+/* ===== iPad 大屏适配 ===== */
+@media (min-width: 500px) {
+  .hero {
+    padding: 36rpx 60rpx 0;
+  }
+  .hero-title {
+    font-size: 48rpx;
+  }
+  .game-grid {
+    padding: 0 60rpx;
+    gap: 20rpx;
+  }
+  .game-card {
+    padding: 36rpx 28rpx;
+  }
+  .game-name {
+    font-size: 26rpx;
+  }
+}

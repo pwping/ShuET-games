@@ -187,3 +187,32 @@ page {
   font-size: 32rpx; color: #CCC;
   font-weight: 300;
 }
+
+/* ===== iPad 大屏适配 ===== */
+@media (min-width: 500px) {
+  .hero {
+    padding: 40rpx 60rpx 24rpx;
+  }
+  .hero-title {
+    font-size: 42rpx;
+  }
+  .hero-stats {
+    padding: 16rpx 20rpx;
+  }
+  .stat-num {
+    font-size: 28rpx;
+  }
+  .mode-section {
+    padding: 24rpx 60rpx 60rpx;
+  }
+  .section-title {
+    font-size: 28rpx;
+  }
+  .mode-card {
+    padding: 20rpx 24rpx;
+    min-height: 140rpx;
+  }
+  .mode-name {
+    font-size: 26rpx;
+  }
+}

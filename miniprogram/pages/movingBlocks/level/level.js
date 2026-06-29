@@ -3,6 +3,9 @@ const levelData = require('../game/levels-data.js');
 // 自动获取关卡总数
 const TOTAL = Math.max(...levelData.ALL_LEVELS.map(l => parseInt(l.id)));
 
+// 激励视频广告
+var videoAd = null;
+
 Page({
   data: {
     totalLevels: TOTAL,
@@ -11,12 +14,37 @@ Page({
     completedCount: 0,
     progressPercent: 0,
     showCount: 25,
-    canLoadMore: true
+    canLoadMore: true,
+    // 跳关弹窗
+    showSkipModal: false,
+    skipTargetLevel: null
+  },
+
+  onLoad() {
+    this.loadLevels();
+    this.initBannerAd();
+
+    // 创建激励视频广告（onClose 只绑定一次）
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-c24dfbbb7eeb1518'
+      });
+      videoAd.onLoad(function () {});
+      videoAd.onError(function (err) { console.error('mb level videoAd error', err); });
+      var that = this;
+      videoAd.onClose(function (res) {
+        if (that._skipAdResolve) {
+          that._skipAdResolve(res);
+          that._skipAdResolve = null;
+        }
+      });
+    }
   },
 
   onShow() {
-    this.loadLevels();
-    this.initBannerAd();
+    // 本地缓存刷新（不触发云调用）
+    const localCompleted = wx.getStorageSync('mb_completed') || {};
+    this.renderLevels(localCompleted);
   },
 
   initBannerAd() {
@@ -83,7 +111,7 @@ Page({
       // 第1关可用，后续关需要前一关已通关
       const prevId = String(i);
       const prevCompleted = i === 0 || !!completed[prevId];
-      const isAvailable = !!lvl && prevCompleted;
+      const isAvailable = !!lvl && (prevCompleted || isCompleted);
       allLevels.push({
         id, available: isAvailable, completed: isCompleted,
         steps: lvl ? lvl.steps : 0,
@@ -112,33 +140,92 @@ Page({
     });
   },
 
+  // 获取下一个可玩的关卡
+  _getNextPlayableLevel() {
+    var levels = this.data.levels;
+    for (var i = 0; i < levels.length; i++) {
+      if (levels[i].available && !levels[i].completed) {
+        return levels[i];
+      }
+    }
+    return null;
+  },
+
+  // 跳转到指定关卡
+  _goLevel(level) {
+    var lvl = levelData.ALL_LEVELS.find(function(l) { return l.id === level.id; });
+    if (!lvl) return;
+    var diff = levelData.getDifficulty(lvl.id);
+    var groups = levelData.ALL_LEVELS.filter(function(l) { return levelData.getDifficulty(l.id) === diff; });
+    var idx = groups.findIndex(function(g) { return g.id === level.id; });
+    if (idx === -1) return;
+    wx.navigateTo({
+      url: '/pages/movingBlocks/game/game?diff=' + diff + '&level=' + idx
+    });
+  },
+
   onLevelTap(e) {
     const index = e.currentTarget.dataset.index;
     const level = this.data.levels[index];
     if (!level) return;
 
-    if (!level.available) {
-      wx.showToast({ title: '请先完成前面的关卡解锁', icon: 'none' });
+    // 可用的关卡直接进入
+    if (level.available) {
+      this._goLevel(level);
       return;
     }
 
-    const lvl = levelData.ALL_LEVELS.find(l => l.id === level.id);
-    if (!lvl) {
-      wx.showToast({ title: '关卡数据不存在', icon: 'none' });
-      return;
-    }
-
-    const diff = levelData.getDifficulty(lvl.id);
-    const groups = levelData.ALL_LEVELS.filter(l => levelData.getDifficulty(l.id) === diff);
-    const idx = groups.findIndex(g => g.id === level.id);
-
-    if (idx === -1) {
-      wx.showToast({ title: '关卡加载失败', icon: 'none' });
-      return;
-    }
-
-    wx.navigateTo({
-      url: `/pages/movingBlocks/game/game?diff=${diff}&level=${idx}`
+    // 锁定关卡：弹出跳关弹窗
+    this.setData({
+      showSkipModal: true,
+      skipTargetLevel: level
     });
-  }
+  },
+
+  // ===== 跳关弹窗 =====
+  onSkipModalClose() {
+    this.setData({ showSkipModal: false, skipTargetLevel: null });
+  },
+
+  // 按顺序闯关
+  onPlayOrder() {
+    var next = this._getNextPlayableLevel();
+    this.onSkipModalClose();
+    if (next) {
+      this._goLevel(next);
+    } else {
+      wx.showToast({ title: '没有可玩的关卡', icon: 'none' });
+    }
+  },
+
+  // 看广告跳关
+  onSkipAdTap() {
+    var that = this;
+    if (!videoAd) {
+      wx.showToast({ title: '广告未就绪', icon: 'none' });
+      return;
+    }
+    that._skipAdResolve = function (res) {
+      if (res && res.isEnded) {
+        // 看完广告，直接进入跳关
+        var target = that.data.skipTargetLevel;
+        that.onSkipModalClose();
+        if (target) {
+          that._goLevel(target);
+        }
+      } else {
+        wx.showToast({ title: '需要看完广告才能跳关', icon: 'none' });
+      }
+    };
+    videoAd.show().catch(function () {
+      videoAd.load()
+        .then(function () { return videoAd.show(); })
+        .catch(function (err) {
+          console.error('mb level videoAd show fail', err);
+          wx.showToast({ title: '广告加载失败，请重试', icon: 'none' });
+        });
+    });
+  },
+
+  preventMove() {}
 });

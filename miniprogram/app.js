@@ -1,55 +1,158 @@
+const CHILD_MODE_KEY = 'child_mode_settings';
+
 App({
   globalData: {
     openid: null,
     userInfo: null,
     isLoggedIn: false,
     globalBestTime: '--',
-    _tabSwitchTarget: '',
-    MODES: [
-      { key: 'classic', name: '经典模式', desc: '从1开始按顺序点击数字' },
-      { key: 'interference', name: '干扰模式', desc: '彩色背景下的抗干扰训练' },
-      { key: 'shuffle', name: '换位模式', desc: '正确后数字重新排列' },
-      { key: 'reverse', name: '倒序模式', desc: '从大到小倒序点击' },
-      { key: 'parity', name: '奇偶模式', desc: '从小到大点击奇数或偶数' },
-      { key: 'challenge', name: '限时模式', desc: '每步限时2秒' },
-      { key: 'alphabet', name: '字母模式', desc: '按顺序点击A-Z字母' },
-      { key: 'memory', name: '记忆模式', desc: '先记忆，然后按顺序点击' }
-    ],
-    LEVELS: [
-      { key: 'base', name: '基础', size: 3 },
-      { key: 'primary', name: '初阶', size: 4 },
-      { key: 'high', name: '标准', size: 5 },
-      { key: 'super', name: '中阶', size: 6 },
-      { key: 'unique', name: '高阶', size: 7 },
-      { key: 'matchless', name: '极限', size: 8 },
-      { key: 'sky', name: '疯狂', size: 9 },
-      { key: 'crazy', name: '宗师', size: 10 }
-    ]
+    _tabSwitchTarget: ''
   },
 
   onLaunch() {
-    // 优先读取登录状态（同步，数据极小不阻塞）
-    const loginState = wx.getStorageSync('shult_login_state') || {};
-    this.globalData.isLoggedIn = loginState.loggedIn || false;
+    // 延迟非关键初始化，让首屏优先渲染
+    var that = this;
+    setTimeout(function () {
+      // 按需加载配置
+      try {
+        var config = require('data/game-config');
+        that.globalData.MODES = config.MODES;
+        that.globalData.LEVELS = config.LEVELS;
+      } catch (e) {
+        console.warn('game-config load failed:', e);
+      }
 
-    // 初始化设置总开关，确保所有游戏设置存在
-    try {
-      const settingsSync = require('utils/settings-sync');
-      settingsSync.ensureInit();
-    } catch (e) {
-      console.warn('settings-sync init failed:', e);
-    }
+      // 延迟 storage 读取
+      var loginState = wx.getStorageSync('shult_login_state') || {};
+      that.globalData.isLoggedIn = loginState.loggedIn || false;
 
-    // 云初始化延迟到首帧渲染后，让页面优先展示
-    wx.nextTick(() => {
-      wx.cloud.init({
-        env: 'xcx-prj-d5gzqi12z8482282f',
-        traceUser: true
-      });
+      try {
+        var settingsSync = require('utils/settings-sync');
+        settingsSync.ensureInit();
+      } catch (e) {
+        console.warn('settings-sync init failed:', e);
+      }
+    }, 100);
+
+    // 云开发初始化延迟到页面空闲时
+    wx.nextTick(function () {
+      setTimeout(function () {
+        wx.cloud.init({
+          env: 'xcx-prj-d5gzqi12z8482282f',
+          traceUser: true
+        });
+      }, 500);
     });
   },
 
-  // 将本地缓存记录同步到云端，无论同步是否成功，都删除本地缓存数据
+  onShow() {
+    this._startChildModeTimer();
+  },
+
+  onHide() {
+    this._stopChildModeTimer();
+  },
+
+  // ===== 儿童模式（累计计时，退出暂停，下次续加） =====
+  _childTimerId: null,
+  _sessionStart: null,
+
+  _startChildModeTimer() {
+    this._stopChildModeTimer();
+
+    var settings = wx.getStorageSync(CHILD_MODE_KEY);
+    if (!settings || !settings.enabled) return;
+
+    // 记录本次进入时间
+    this._sessionStart = Date.now();
+
+    // 跨天重置累计时间
+    if (settings.usedTime || settings.startTime) {
+      var lastDate = settings.lastDate || settings.startTime || Date.now();
+      var lastDay = new Date(lastDate);
+      var today = new Date();
+      if (lastDay.getDate() !== today.getDate() ||
+          lastDay.getMonth() !== today.getMonth() ||
+          lastDay.getFullYear() !== today.getFullYear()) {
+        settings.usedTime = 0;
+        settings.lastDate = Date.now();
+        wx.setStorageSync(CHILD_MODE_KEY, settings);
+      }
+    } else {
+      settings.usedTime = 0;
+      settings.lastDate = Date.now();
+      wx.setStorageSync(CHILD_MODE_KEY, settings);
+    }
+
+    // 立即检查一次
+    this._checkChildModeTime(settings);
+
+    // 每5秒检查一次
+    var that = this;
+    this._childTimerId = setInterval(function () {
+      var s = wx.getStorageSync(CHILD_MODE_KEY);
+      if (s && s.enabled) {
+        that._checkChildModeTime(s);
+      } else {
+        that._stopChildModeTimer();
+      }
+    }, 5000);
+  },
+
+  _stopChildModeTimer() {
+    // 退出时保存本次已用时间
+    this._saveSessionTime();
+    if (this._childTimerId) {
+      clearInterval(this._childTimerId);
+      this._childTimerId = null;
+    }
+  },
+
+  _saveSessionTime() {
+    if (this._sessionStart) {
+      var elapsed = Date.now() - this._sessionStart;
+      if (elapsed > 1000) { // 超过1秒才算
+        var settings = wx.getStorageSync(CHILD_MODE_KEY) || {};
+        settings.usedTime = (settings.usedTime || 0) + elapsed;
+        wx.setStorageSync(CHILD_MODE_KEY, settings);
+      }
+      this._sessionStart = null;
+    }
+  },
+
+  _checkChildModeTime(settings) {
+    if (!settings || !settings.enabled) return;
+
+    var used = settings.usedTime || 0;
+    if (this._sessionStart) {
+      used += Date.now() - this._sessionStart;
+    }
+    var elapsed = Math.floor(used / 60000);
+    if (elapsed >= settings.duration) {
+      this._stopChildModeTimer();
+      this._showTimeUpModal();
+    }
+  },
+
+  _showTimeUpModal() {
+    var pages = getCurrentPages();
+    var page = pages[pages.length - 1];
+    if (page) {
+      page.setData({ _timeUpModalVisible: true });
+    } else {
+      // 页面还没就绪，稍后重试
+      var that = this;
+      var retry = setInterval(function () {
+        var p = getCurrentPages();
+        if (p.length > 0) {
+          clearInterval(retry);
+          p[p.length - 1].setData({ _timeUpModalVisible: true });
+        }
+      }, 200);
+    }
+  },
+
+  // ===== 原有代码 =====
   _syncing: false,
 
   syncLocalRecordsToCloud(callback) {
@@ -79,7 +182,6 @@ App({
       completed++;
       if (completed < total) return;
 
-      // 不管同步成功还是失败，直接删除所有本地缓存记录
       wx.removeStorageSync('shult_records');
       wx.removeStorageSync('huarong_records');
       wx.removeStorageSync('shult_challenge_records');
@@ -90,7 +192,6 @@ App({
       if (callback) callback();
     };
 
-    // 同步舒尔特记录
     shultRecords.forEach(record => {
       wx.cloud.callFunction({
         name: 'saveTrainRecord',
@@ -103,7 +204,6 @@ App({
       });
     });
 
-    // 同步华容道记录
     huarongRecords.forEach(record => {
       wx.cloud.callFunction({
         name: 'saveHuarongRecord',
@@ -115,7 +215,6 @@ App({
       });
     });
 
-    // 同步挑战记录
     challengeRecords.forEach(record => {
       wx.cloud.callFunction({
         name: 'saveChallengeRecord',
@@ -129,7 +228,6 @@ App({
       });
     });
 
-    // 同步积木迷阵记录
     mbRecords.forEach(record => {
       wx.cloud.callFunction({
         name: 'saveMovingBlockRecord',
@@ -145,7 +243,6 @@ App({
       });
     });
 
-    // 同步数独记录
     sudokuRecords.forEach(record => {
       wx.cloud.callFunction({
         name: 'saveSudokuRecord',

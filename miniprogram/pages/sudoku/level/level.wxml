@@ -53,6 +53,10 @@
       wx:for="{{modulesBottom}}" wx:key="key"
       data-key="{{item.key}}" bindtap="onModuleTap"
     >
+      <view class="sd-trophy {{item.locked && (!vipRemaining[item.key] || vipRemaining[item.key] <= 0) ? 'show' : ''}}">V</view>
+      <view class="sd-count-badge {{item.locked && vipRemaining[item.key] > 0 ? 'show' : ''}}">
+        <text class="scb-text">{{vipRemaining[item.key]}}</text>
+      </view>
       <view class="card-row">
         <view class="card-block" style="background: {{item.color}};">
           <text class="cb-num">{{item.badge}}</text>
@@ -81,4 +85,36 @@
       </view>
     </view>
   </view>
+
+  <!-- ===== VIP 解锁弹窗 ===== -->
+  <view class="vip-overlay {{showVipModal ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="vip-dialog">
+      <view class="vip-close" bindtap="onVipModalClose">✕</view>
+      <view class="vip-header">
+        <view class="vip-crown-wrap">
+          <view class="vip-crown-icon">🏆</view>
+        </view>
+        <text class="vip-title">解锁大师难度</text>
+        <text class="vip-sub">等你来挑战</text>
+      </view>
+      <view class="vip-body">
+        <view class="vip-desc">
+          <text class="vip-desc-line">可以通过分享或者观看广告</text>
+          <text class="vip-desc-line">立即获得<text class="vip-highlight">5</text>次免费体验机会</text>
+          <text class="vip-desc-line">次数用完后可再次获取</text>
+        </view>
+      </view>
+      <view class="vip-actions">
+        <button class="vip-btn vip-btn-share" open-type="share" hover-class="vip-btn-hover">
+          <view class="vip-btn-icon vip-share-icon"></view>
+          <text class="vip-btn-lbl">分享给好友</text>
+        </button>
+        <view class="vip-btn vip-btn-ad" bindtap="onVipAdTap" hover-class="vip-btn-hover">
+          <view class="vip-btn-icon vip-ad-icon"></view>
+          <text class="vip-btn-lbl">观看广告</text>
+        </view>
+      </view>
+    </view>
+  </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
 </view>

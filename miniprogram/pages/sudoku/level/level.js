@@ -1,6 +1,12 @@
 var rating = require('../../../utils/sudoku-rating');
 var settingsSync = require('../../../utils/settings-sync');
 
+// 激励视频广告
+var videoAd = null;
+
+// VIP 数据缓存 key
+var VIP_CACHE_KEY = 'sd_vip_access';
+
 var EXTRA_MODULE = {
   beginner: { tag: '唯一余数法', badge: '1', color: '#3B82F6', desc: '行、列、宫中只剩一个空位时，剩下的唯一数字就是答案' },
   basic: { tag: '摒除法', badge: '2', color: '#0891B2', desc: '用已知数字排除同行、同列、同宫的其他位置' },
@@ -22,14 +28,70 @@ var MODULES = (function() {
 Page({
   data: {
     modulesTop: MODULES.slice(0, 4),
-    modulesBottom: MODULES.slice(4),
-    stats: {}
+    modulesBottom: (function() {
+      var bottom = MODULES.slice(4);
+      // 大师级（expert）加上锁定标记
+      for (var i = 0; i < bottom.length; i++) {
+        if (bottom[i].key === 'expert') {
+          bottom[i].locked = true;
+        }
+      }
+      return bottom;
+    })(),
+    stats: {},
+    // VIP 弹窗
+    showVipModal: false,
+    // VIP 剩余次数
+    vipRemaining: {}
+  },
+
+  // ===== VIP 缓存管理 =====
+  _getVipCache() {
+    return wx.getStorageSync(VIP_CACHE_KEY) || {};
+  },
+  _setVipCache(data) {
+    wx.setStorageSync(VIP_CACHE_KEY, data);
+  },
+  _getVipRemaining(key) {
+    var cache = this._getVipCache();
+    return (cache[key] && cache[key].remaining) || 0;
+  },
+  _setVipRemaining(key, remaining) {
+    var cache = this._getVipCache();
+    cache[key] = cache[key] || {};
+    cache[key].remaining = remaining;
+    this._setVipCache(cache);
+  },
+
+  _loadVipCounts() {
+    var remaining = {};
+    remaining.expert = this._getVipRemaining('expert');
+    this.setData({ vipRemaining: remaining });
   },
 
   onLoad: function() {
     wx.setNavigationBarTitle({ title: '难度选择' });
     settingsSync.ensureInit();
     this.initBannerAd();
+    this._loadVipCounts();
+    // 首次加载从本地缓存和云端加载统计数据
+    this.loadStats();
+
+    // 创建激励视频广告（onClose 只绑定一次）
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-c24dfbbb7eeb1518'
+      });
+      videoAd.onLoad(function () {});
+      videoAd.onError(function (err) { console.error('sd level videoAd error', err); });
+      var that = this;
+      videoAd.onClose(function (res) {
+        if (that._vipAdResolve) {
+          that._vipAdResolve(res);
+          that._vipAdResolve = null;
+        }
+      });
+    }
   },
 
   initBannerAd: function() {
@@ -56,7 +118,7 @@ Page({
   },
 
   onShow: function() {
-    this.loadStats();
+    this._loadVipCounts();
   },
 
   loadStats: function() {
@@ -64,19 +126,15 @@ Page({
     var keys = ['beginner','basic','intermediate','advanced','expert'];
     var oldMap = { easy:'basic', medium:'intermediate', hard:'advanced', expert:'expert' };
 
-
-    // 先展示本地缓存
     var localRecords = wx.getStorageSync('sudoku_records') || [];
     var localStats = self._calcStats(keys, oldMap, localRecords);
     self.setData({ stats: localStats });
 
-    // 查云端（不依赖登录状态，失败就当没记录）
     var queryMap = { beginner:['beginner'], basic:['basic','easy'], intermediate:['intermediate','medium'], advanced:['advanced','hard'], expert:['expert'] };
     var cloudByDiff = {};
     var totalCalls = 0;
     for (var qk in queryMap) totalCalls += queryMap[qk].length;
     var remaining = totalCalls;
-
 
     function tryMerge() {
       if (remaining > 0) return;
@@ -125,7 +183,6 @@ Page({
               success: function(res) {
                 if (res.result && res.result.code === 200 && res.result.stats) {
                   cloudByDiff[diffKey] = res.result.stats;
-                } else {
                 }
               },
               fail: function(err) {
@@ -170,6 +227,69 @@ Page({
 
   onModuleTap: function(e) {
     var key = e.currentTarget.dataset.key;
+
+    // 大师级需要检查 VIP
+    if (key === 'expert') {
+      var remaining = this._getVipRemaining('expert');
+      if (remaining > 0) {
+        this._setVipRemaining('expert', remaining - 1);
+        this._loadVipCounts();
+        wx.navigateTo({ url: '/pages/sudoku/game/game?diff=' + key });
+      } else {
+        this.setData({ showVipModal: true });
+      }
+      return;
+    }
+
     wx.navigateTo({ url: '/pages/sudoku/game/game?diff=' + key });
-  }
+  },
+
+  // ===== VIP 解锁弹窗 =====
+  onVipModalClose: function() {
+    this.setData({ showVipModal: false });
+  },
+
+  onVipAdTap: function() {
+    var that = this;
+    if (!videoAd) {
+      wx.showToast({ title: '广告未就绪', icon: 'none' });
+      return;
+    }
+    that._vipAdResolve = function (res) {
+      if (res && res.isEnded) {
+        that._setVipRemaining('expert', 5);
+        that._loadVipCounts();
+        that.onVipModalClose();
+        wx.showToast({ title: '解锁成功！获得5次机会', icon: 'success', duration: 2000 });
+      } else {
+        wx.showToast({ title: '需要看完广告才能解锁', icon: 'none' });
+      }
+    };
+    videoAd.show().catch(function () {
+      videoAd.load()
+        .then(function () { return videoAd.show(); })
+        .catch(function (err) {
+          console.error('sd level videoAd show fail', err);
+          wx.showToast({ title: '广告加载失败，请重试', icon: 'none' });
+        });
+    });
+  },
+
+  onShareAppMessage: function() {
+    if (this.data.showVipModal) {
+      var that = this;
+      setTimeout(function () {
+        that._setVipRemaining('expert', 5);
+        that._loadVipCounts();
+        that.onVipModalClose();
+      }, 2000);
+    }
+    return {
+      title: '我在玩数独，来挑战大师难度吧！',
+      path: '/pages/sudoku/level/level',
+      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+    };
+  },
+
+  preventMove: function() {}
 });
