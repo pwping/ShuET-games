@@ -1,0 +1,68 @@
+<view class="page">
+  <view class="stats-row">
+    <view class="settings-wrap" bindtap="onShowSettings">
+      <view class="settings-btn">⚙</view>
+    </view>
+    <view class="stats-bar">
+      <view class="sb-item sb-time">
+        <view class="sb-icon sb-icon-time">⏱</view>
+        <view class="sb-info">
+          <text class="sb-value">{{timerText}}</text>
+        </view>
+      </view>
+      <view class="sb-divider"></view>
+      <view class="sb-item sb-errors">
+        <view class="sb-icon sb-icon-errors">✕</view>
+        <view class="sb-info">
+          <text class="sb-value">{{errors}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="reset-wrap" bindtap="onRestart">
+      <view class="reset-btn">↻</view>
+    </view>
+  </view>
+
+  <view class="game-rule">
+    <text>记住各数字的位置，按 1 → 2 → 3… 顺序点击，用时越短记忆力越出色！</text>
+  </view>
+
+  <view class="board-wrap">
+    <view class="board" style="width:{{boardWidth}}px;height:{{boardWidth}}px;">
+      <view
+        wx:for="{{cells}}" wx:key="index"
+        class="cell {{item.num > 0 ? 'has-num' : 'empty'}}"
+        data-index="{{index}}"
+        bindtap="onCellTap"
+        style="width:{{cellSize}}px;height:{{cellSize}}px;"
+      >
+        <text wx:if="{{!item.hidden && item.num > 0}}" class="cell-num">{{item.num}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置弹窗 -->
+  <view class="help-overlay {{showSettings ? 'active' : ''}}" catchtouchmove="preventMove">
+    <view class="help-dialog game-settings-dialog">
+      <text class="help-title">游戏设置</text>
+      <view class="settings-list">
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">🔊</text>
+            <text class="settings-label">音效</text>
+          </view>
+          <switch class="settings-switch" checked="{{soundEnabled}}" bindchange="onSoundToggle" color="#8B5CF6"/>
+        </view>
+        <view class="settings-row">
+          <view class="settings-label-wrap">
+            <text class="settings-icon">📳</text>
+            <text class="settings-label">震动</text>
+          </view>
+          <switch class="settings-switch" checked="{{vibrateEnabled}}" bindchange="onVibrateToggle" color="#8B5CF6"/>
+        </view>
+      </view>
+      <view class="help-close-btn" bindtap="onCloseSettings">知道了</view>
+    </view>
+  </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
+</view>

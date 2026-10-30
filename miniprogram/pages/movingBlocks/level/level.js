@@ -1,3 +1,4 @@
+const appConfig = require('../../../config.js');
 const levelData = require('../game/levels-data.js');
 
 // 自动获取关卡总数
@@ -13,7 +14,7 @@ Page({
     displayLevels: [],
     completedCount: 0,
     progressPercent: 0,
-    showCount: 25,
+    showCount: 20,
     canLoadMore: true,
     // 跳关弹窗
     showSkipModal: false,
@@ -27,7 +28,7 @@ Page({
     // 创建激励视频广告（onClose 只绑定一次）
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onLoad(function () {});
       videoAd.onError(function (err) { console.error('mb level videoAd error', err); });
@@ -51,7 +52,7 @@ Page({
     if (this.bannerAd) return;
     if (typeof wx.createCustomAd !== 'function') return;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -101,6 +102,7 @@ Page({
 
   renderLevels(completed) {
     let completedCount = 0;
+    let hasNext = false;
     const allLevels = [];
     const maxId = Math.max(...levelData.ALL_LEVELS.map(l => parseInt(l.id)));
 
@@ -112,21 +114,24 @@ Page({
       const prevId = String(i);
       const prevCompleted = i === 0 || !!completed[prevId];
       const isAvailable = !!lvl && (prevCompleted || isCompleted);
+      const isNext = isAvailable && !isCompleted && !hasNext;
+      if (isNext) hasNext = true;
       allLevels.push({
         id, available: isAvailable, completed: isCompleted,
         steps: lvl ? lvl.steps : 0,
-        showLock: !isCompleted && !isAvailable
+        showLock: !isCompleted && !isAvailable,
+        isNext: isNext
       });
       if (isCompleted) completedCount++;
     }
 
     this.setData({
       levels: allLevels,
-      displayLevels: allLevels.slice(0, 25),
+      displayLevels: allLevels.slice(0, 20),
       completedCount,
       progressPercent: Math.round((completedCount / maxId) * 100),
-      showCount: 25,
-      canLoadMore: allLevels.length > 25
+      showCount: 20,
+      canLoadMore: allLevels.length > 20
     });
   },
 
@@ -162,6 +167,12 @@ Page({
     wx.navigateTo({
       url: '/pages/movingBlocks/game/game?diff=' + diff + '&level=' + idx
     });
+  },
+
+  // 卡片点击 — 进入下一关
+  onStartTap() {
+    var next = this._getNextPlayableLevel();
+    if (next) this._goLevel(next);
   },
 
   onLevelTap(e) {

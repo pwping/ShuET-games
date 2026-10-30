@@ -204,6 +204,32 @@
   color: rgba(255,255,255,0.6);
 }
 
+/* 数字记忆图标 — 6×6网格 */
+.mg-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 11rpx);
+  grid-template-rows: repeat(6, 11rpx);
+  gap: 2.5rpx;
+}
+.mg-icon-cell {
+  width: 11rpx;
+  height: 11rpx;
+  background: #fff;
+  border-radius: 2rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mg-icon-cell.mg-icon-active {
+  background: #7C3AED;
+}
+.mg-icon-num {
+  font-size: 8rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 11rpx;
+}
+
 .game-name {
   font-size: 30rpx; font-weight: 700; color: #1E293B;
   margin-bottom: 8rpx;

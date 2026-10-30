@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const app = getApp();
 
 // 激励视频广告
@@ -50,7 +51,7 @@ Page({
     // 创建激励视频广告实例
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       })
   videoAd.onLoad(() => {})
   videoAd.onError((err) => {

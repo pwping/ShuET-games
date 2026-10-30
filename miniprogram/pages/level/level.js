@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const app = getApp();
 
 var videoAd = null;
@@ -151,7 +152,7 @@ Page({
         return;
       }
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onError(function (err) { console.error('shult level videoAd error', err); });
       videoAd.onClose(function (res) {
@@ -195,7 +196,7 @@ Page({
     return {
       title: '我在玩舒尔特方格，来挑战吧！',
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 

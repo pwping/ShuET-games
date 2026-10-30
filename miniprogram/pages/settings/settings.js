@@ -325,6 +325,9 @@ Page({
           wx.removeStorageSync('shult_settings');
           wx.removeStorageSync('hr_settings');
           wx.removeStorageSync('mb_settings');
+          wx.removeStorageSync('mg_records');
+          wx.removeStorageSync('mg_completed');
+          wx.removeStorageSync('mg_settings');
           wx.removeStorageSync('shult_challenge_settings');
           wx.removeStorageSync('sd_settings');
           wx.removeStorageSync('global_settings');

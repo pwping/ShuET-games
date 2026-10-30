@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const app = getApp();
 const settingsSync = require('../../utils/settings-sync');
 
@@ -109,7 +110,7 @@ Page({
     // 创建插屏广告实例
     if (wx.createInterstitialAd) {
       interstitialAd = wx.createInterstitialAd({
-        adUnitId: 'adunit-ae9ae21b013ddd4b'
+        adUnitId: appConfig.adUnits.interstitial
       })
       interstitialAd.onLoad(() => {})
       interstitialAd.onError((err) => {
@@ -582,7 +583,7 @@ Page({
     return {
       title: `第 ${this.data.passLevelNumber || 1} 关挑战结束，你能挑战到第几关？`,
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   }
 });

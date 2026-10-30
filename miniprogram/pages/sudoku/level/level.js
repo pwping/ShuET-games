@@ -1,3 +1,4 @@
+const appConfig = require('../../../config.js');
 var rating = require('../../../utils/sudoku-rating');
 var settingsSync = require('../../../utils/settings-sync');
 
@@ -80,7 +81,7 @@ Page({
     // 创建激励视频广告（onClose 只绑定一次）
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onLoad(function () {});
       videoAd.onError(function (err) { console.error('sd level videoAd error', err); });
@@ -98,7 +99,7 @@ Page({
     if (typeof wx.createCustomAd !== 'function') return;
     var that = this;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -287,7 +288,7 @@ Page({
     return {
       title: '我在玩数独，来挑战大师难度吧！',
       path: '/pages/sudoku/level/level',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 

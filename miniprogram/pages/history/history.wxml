@@ -47,6 +47,14 @@
       </view>
       <text class="toggle-label">积木迷阵</text>
     </view>
+    <view id="tab-memoryGame" class="toggle-item {{currentGame === 'memoryGame' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="memoryGame">
+      <view class="toggle-icon">
+        <view class="mg-tab-grid">
+          <view wx:for="{{49}}" wx:key="*this" class="mgt-cell {{index === 0 || index === 5 || index === 12 ? 'mgt-cell-hl' : ''}}"></view>
+        </view>
+      </view>
+      <text class="toggle-label">数字记忆</text>
+    </view>
     <view id="tab-sudoku" class="toggle-item {{currentGame === 'sudoku' ? 'active' : ''}}" bindtap="onGameSwitch" data-game="sudoku">
       <view class="toggle-icon">
         <view class="sd-tab-grid">
@@ -372,6 +380,50 @@
         </view>
         <view class="go-train-wrap">
           <view class="go-train" bindtap="onGoHuarong">去练习一下</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 数字记忆 ===== -->
+  <view class="huarong-section" hidden="{{currentGame !== 'memoryGame'}}">
+    <scroll-view class="scroll-wrap" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="record-list">
+        <view class="record-item" wx:for="{{mgRecords}}" wx:key="index">
+          <view class="record-body">
+            <view class="record-left">
+              <view class="record-meta">
+                <text class="level-badge mg-level">第{{item.level}}关</text>
+                <text class="meta-sep">|</text>
+                <text class="accuracy-value">错误{{item.errors}}次</text>
+              </view>
+              <text class="record-time">{{item.createTime}}</text>
+            </view>
+            <view class="record-right">
+              <view class="time-badge success">
+                <text class="time-value">{{item.timeStr}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="loading-hint" wx:if="{{mgLoading}}">
+          <text>加载中...</text>
+        </view>
+        <view class="empty-state" wx:elif="{{mgRecords.length === 0}}">
+          <view class="empty-icon">
+            <view class="mg-empty-grid">
+              <view wx:for="{{49}}" wx:key="*this" class="mge-cell-s {{index === 0 || index === 5 || index === 12 ? 'mge-cell-hl' : ''}}"></view>
+            </view>
+          </view>
+          <view class="empty-text">暂无数字记忆记录</view>
+        </view>
+
+        <view class="load-more" wx:if="{{mgRecords.length > 0}}">
+          <text>没有记录啦，快去练习吧。</text>
+        </view>
+        <view class="go-train-wrap">
+          <view class="go-train" bindtap="onGoMemoryGame">去练习一下</view>
         </view>
       </view>
     </scroll-view>

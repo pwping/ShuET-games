@@ -1,3 +1,4 @@
+const appConfig = require('../../../config.js');
 var rating = require('../../../utils/sudoku-rating');
 
 Page({
@@ -45,7 +46,7 @@ Page({
 
   showInterstitialAd: function() {
     var interstitialAd = wx.createInterstitialAd({
-      adUnitId: 'adunit-ae9ae21b013ddd4b'
+      adUnitId: appConfig.adUnits.interstitial
     });
     if (!interstitialAd) return;
     interstitialAd.onLoad(function () {});
@@ -59,7 +60,7 @@ Page({
     if (typeof wx.createCustomAd !== 'function') return;
     var that = this;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -92,7 +93,7 @@ Page({
   onShareAppMessage: function() {
     return {
       title: '数独 ' + this.data.diffLabel + ' ' + this.data.timerText + ' 通关！',
-      path: '/pages/sudoku/level/level'
+      path: '/pages/game-select/game-select'
     };
   }
 });

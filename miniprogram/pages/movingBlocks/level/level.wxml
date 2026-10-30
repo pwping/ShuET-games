@@ -1,24 +1,32 @@
 <view class="page">
   <!-- 顶部信息（固定不动） -->
   <view class="fixed-header">
-    <view class="header">
-      <view class="header-top">
-        <text class="title">开始通关</text>
-        <text class="count-badge">{{totalLevels}}关</text>
+    <view class="mode-title-wrap">
+      <view class="mode-title-badge">
+        <view class="badge-dot"></view>
+        选择关卡
       </view>
-      <text class="subtitle">将红色积木移到出口通关</text>
     </view>
-    <view class="progress-bar-wrap">
-      <view class="progress-bar" style="width:{{progressPercent}}%;"></view>
+    <view class="progress-card">
+      <view class="pc-title-row" bindtap="onStartTap" hover-class="btn-hover">
+        <text class="pc-main-title">{{completedCount > 0 ? '第' + completedCount + '关' : '未开始'}}</text>
+        <text class="pc-badge" wx:if="{{completedCount > 0}}">已通关</text>
+      </view>
+      <view class="pc-sub-row">
+        <text class="pc-sub-text">已通关 {{completedCount}} / {{totalLevels}} 关</text>
+      </view>
+      <view class="pc-progress-bar">
+        <view class="pc-progress-fill" style="width:{{progressPercent}}%"></view>
+      </view>
     </view>
-    <text class="progress-text">已通关 {{completedCount}} / {{totalLevels}} 关</text>
   </view>
 
   <!-- 关卡列表（可滚动） -->
   <scroll-view class="level-scroll" scroll-y enable-back-to-top>
+    <view class="section-header">选择关卡 (1-{{totalLevels}})</view>
     <view class="level-grid">
       <view wx:for="{{displayLevels}}" wx:key="id"
-        class="level-card"
+        class="level-card {{item.completed ? 'completed' : ''}} {{item.isNext ? 'next' : ''}} {{item.showLock ? 'locked' : ''}}"
         data-index="{{index}}" catchtap="onLevelTap">
         <view class="level-inner">
           <text class="level-num">第{{item.id}}关</text>

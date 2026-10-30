@@ -5,15 +5,7 @@
       <view class="avatar-ring">
         <view class="user-avatar-placeholder">
           <view class="grid-icon">
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
-            <view class="grid-cell"></view>
+            <view wx:for="{{gridCells}}" wx:key="index" class="grid-cell {{item.active ? 'gc-active' : ''}}">{{item.num || ''}}</view>
           </view>
         </view>
       </view>
@@ -28,15 +20,7 @@
           </view>
           <view wx:else class="user-avatar-placeholder logged">
             <view class="grid-icon">
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
-              <view class="grid-cell"></view>
+              <view wx:for="{{gridCells}}" wx:key="index" class="grid-cell {{item.active ? 'gc-active' : ''}}">{{item.num || ''}}</view>
             </view>
           </view>
         </view>
@@ -103,6 +87,24 @@
           <view class="sc-divider"></view>
           <view class="sc-col" bindtap="onGoMovingBlock">
             <text class="sc-val">{{mbStats.challengeLevel}}</text>
+            <text class="sc-label">挑战进度 ›</text>
+          </view>
+        </view>
+      </swiper-item>
+      <swiper-item>
+        <view class="stats-card">
+          <view class="sc-col">
+            <text class="sc-val">{{mgStats.totalCount}}次</text>
+            <text class="sc-label">数字记忆训练</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col">
+            <text class="sc-val">--</text>
+            <text class="sc-label">—</text>
+          </view>
+          <view class="sc-divider"></view>
+          <view class="sc-col" bindtap="onGoMemoryGame">
+            <text class="sc-val">{{mgStats.challengeLevel}}</text>
             <text class="sc-label">挑战进度 ›</text>
           </view>
         </view>

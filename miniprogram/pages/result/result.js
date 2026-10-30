@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const MODES = {
   classic: '经典模式', interference: '干扰模式', shuffle: '换位模式',
   reverse: '倒序模式', parity: '奇偶模式', challenge: '限时模式', memory: '记忆模式',
@@ -202,7 +203,7 @@ Page({
     if (wx.createInterstitialAd) {
       if (interstitialAd) interstitialAd.destroy();
       interstitialAd = wx.createInterstitialAd({
-        adUnitId: 'adunit-ae9ae21b013ddd4b'
+        adUnitId: appConfig.adUnits.interstitial
       })
       interstitialAd.onLoad(() => {})
       interstitialAd.onError((err) => {
@@ -356,7 +357,7 @@ Page({
     return {
       title: `你能几秒内找完以下数字，我用时${app.globalData.globalBestTime}。`,
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 

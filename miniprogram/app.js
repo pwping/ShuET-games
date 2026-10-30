@@ -1,4 +1,5 @@
 const CHILD_MODE_KEY = 'child_mode_settings';
+const appConfig = require('./config.js');
 
 App({
   globalData: {
@@ -38,7 +39,7 @@ App({
     wx.nextTick(function () {
       setTimeout(function () {
         wx.cloud.init({
-          env: 'xcx-prj-d5gzqi12z8482282f',
+          env: appConfig.envId,
           traceUser: true
         });
       }, 500);
@@ -167,15 +168,16 @@ App({
     const huarongRecords = wx.getStorageSync('huarong_records') || [];
     const mbRecords = wx.getStorageSync('mb_records') || [];
     const sudokuRecords = wx.getStorageSync('sudoku_records') || [];
+    const mgRecords = wx.getStorageSync('mg_records') || [];
 
-    const hasLocal = shultRecords.length > 0 || challengeRecords.length > 0 || huarongRecords.length > 0 || mbRecords.length > 0 || sudokuRecords.length > 0;
+    const hasLocal = shultRecords.length > 0 || challengeRecords.length > 0 || huarongRecords.length > 0 || mbRecords.length > 0 || sudokuRecords.length > 0 || mgRecords.length > 0;
     if (!hasLocal) {
       this._syncing = false;
       if (callback) callback();
       return;
     }
 
-    const total = shultRecords.length + challengeRecords.length + huarongRecords.length + mbRecords.length + sudokuRecords.length;
+    const total = shultRecords.length + challengeRecords.length + huarongRecords.length + mbRecords.length + sudokuRecords.length + mgRecords.length;
     let completed = 0;
 
     const checkDone = () => {
@@ -187,6 +189,7 @@ App({
       wx.removeStorageSync('shult_challenge_records');
       wx.removeStorageSync('mb_records');
       wx.removeStorageSync('sudoku_records');
+      wx.removeStorageSync('mg_records');
 
       this._syncing = false;
       if (callback) callback();
@@ -253,6 +256,19 @@ App({
           errors: record.errors || 0,
           correct: record.correct || 0,
           undo: record.undo || 0,
+          createTime: record.createTime || new Date().toISOString()
+        },
+        complete: checkDone
+      });
+    });
+
+    mgRecords.forEach(record => {
+      wx.cloud.callFunction({
+        name: 'saveMemoryGameRecord',
+        data: {
+          level: record.level,
+          time: record.time || 0,
+          errors: record.errors || 0,
           createTime: record.createTime || new Date().toISOString()
         },
         complete: checkDone

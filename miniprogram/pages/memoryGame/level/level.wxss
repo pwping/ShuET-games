@@ -1,0 +1,198 @@
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F5F3FF 0%, #FFFFFF 100%);
+}
+
+.mode-title-wrap {
+  padding: 72rpx 32rpx;
+  display: flex;
+  justify-content: center;
+}
+.mode-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #7C3AED;
+  background: rgba(124,58,237,0.08);
+  padding: 12rpx 48rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid rgba(124,58,237,0.12);
+}
+.badge-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #8B5CF6;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.3;transform:scale(.7)}
+}
+
+.progress-card {
+  margin: 0 32rpx 32rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx;
+  box-shadow: 0 6rpx 24rpx rgba(124,58,237,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  border: 2rpx solid rgba(124,58,237,0.08);
+}
+.pc-title-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.pc-main-title {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #1E293B;
+}
+.pc-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 700;
+  padding: 4rpx 18rpx;
+  border-radius: 20rpx;
+}
+.pc-sub-row {
+  margin-top: 12rpx;
+}
+.pc-sub-text {
+  font-size: 26rpx;
+  color: #94A3B8;
+  font-weight: 500;
+}
+.pc-progress-bar {
+  margin-top: 20rpx;
+  height: 16rpx;
+  background: #E2E8F0;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.pc-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
+.section-header {
+  padding: 0 32rpx 16rpx;
+}
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14rpx;
+  padding: 0 28rpx;
+}
+.level-item {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  position: relative;
+  background: #E2E8F0;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.level-item:active {
+  transform: scale(0.95) translateY(2rpx);
+}
+.level-item.unlocked {
+  background: #EDE9FE;
+}
+.level-item.locked {
+  opacity: 0.5;
+}
+.level-item.next {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+  box-shadow: 0 4rpx 16rpx rgba(124,58,237,0.3);
+}
+.level-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+.level-num {
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #64748B;
+}
+.level-item.unlocked .level-num {
+  color: #7C3AED;
+}
+.level-item.next .level-num {
+  color: #fff;
+}
+.level-badge {
+  min-height: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.check-icon {
+  font-size: 24rpx;
+  color: #07C160;
+  font-weight: bold;
+}
+.lock-icon {
+  font-size: 24rpx;
+  color: #D4D4D4;
+  opacity: 0.6;
+}
+
+/* ===== 加载更多 ===== */
+.level-scroll .load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  padding: 16rpx 0;
+  cursor: pointer;
+}
+.level-scroll .load-more-line {
+  width: 100rpx; height: 2rpx; background: #E2E8F0; flex-shrink: 0;
+}
+.level-scroll .load-more-text {
+  font-size: 26rpx; color: #A78BFA; font-weight: 500; white-space: nowrap;
+}
+.level-scroll .load-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  padding: 12rpx 0;
+}
+.level-scroll .load-done-line {
+  width: 100rpx; height: 2rpx; background: #E2E8F0; flex-shrink: 0;
+}
+.level-scroll .load-done-text {
+  font-size: 24rpx; color: #CBD5E1; white-space: nowrap;
+}
+
+.ad-wrap {
+  padding: 12rpx 28rpx;
+}
+.ad-wrap ad-custom {
+  border-radius: 16rpx;
+  overflow: hidden;
+}

@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const app = getApp();
 
 // 激励视频广告
@@ -60,7 +61,7 @@ Page({
     // 创建激励视频广告（onClose 只绑定一次）
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onLoad(function () {});
       videoAd.onError(function (err) { console.error('index videoAd error', err); });
@@ -251,7 +252,7 @@ Page({
     return {
       title: '我在玩舒尔特方格专注力训练，一起来挑战吧！',
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 
@@ -269,7 +270,7 @@ Page({
   // 复制链接
   onCopyLink() {
     wx.setClipboardData({
-      data: 'https://tcb.cloud.tencent.com/dev/xcx-prj-d5gzqi12z8482282f',
+      data: appConfig.consoleUrl,
       success: () => {
         wx.showToast({ title: '链接已复制', icon: 'success' });
       },

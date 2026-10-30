@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 Page({
   data: {
     sdIconCells: (function() {
@@ -36,6 +37,25 @@ Page({
       wx.setStorageSync('sd_icon_cells', result);
       return result;
     })(),
+    mgIconCells: (function() {
+      var cached = wx.getStorageSync('mg_icon_cells');
+      if (cached && cached.length === 36) return cached;
+      var cells = new Array(36).fill(null);
+      var positions = [];
+      for (var i = 0; i < 36; i++) positions.push(i);
+      // Fisher-Yates shuffle
+      for (var i = positions.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = positions[i];
+        positions[i] = positions[j];
+        positions[j] = tmp;
+      }
+      cells[positions[0]] = { num: '1', active: true };
+      cells[positions[1]] = { num: '2', active: true };
+      cells[positions[2]] = { num: '3', active: true };
+      wx.setStorageSync('mg_icon_cells', cells);
+      return cells;
+    })(),
     games: [
       {
         key: 'shuert',
@@ -70,6 +90,15 @@ Page({
         grid: false,
         isNew: true
       },
+      {
+        key: 'memoryGame',
+        name: '数字记忆',
+        desc: '记住数字位置，按顺序点击',
+        bg: '#fff',
+        iconBg: 'linear-gradient(135deg,#8B5CF6,#C4B5FD)',
+        grid: false,
+        isNew: true
+      },
       // 百数斩暂隐藏
     ],
     showAgeSelector: false
@@ -98,6 +127,8 @@ Page({
       wx.navigateTo({ url: '/pages/movingBlocks/level/level' });
     } else if (key === 'sudoku') {
       wx.navigateTo({ url: '/pages/sudoku/level/level' });
+    } else if (key === 'memoryGame') {
+      wx.navigateTo({ url: '/pages/memoryGame/level/level' });
     } else {
       wx.showToast({ title: '开发中，敬请期待', icon: 'none' });
     }
@@ -108,7 +139,7 @@ Page({
     return {
       title: '脑力训练首选，舒尔特方格 & 数字华容道',
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 

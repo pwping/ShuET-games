@@ -1,0 +1,59 @@
+<view class="page-container">
+  <view class="mode-title-wrap">
+    <view class="mode-title-badge">
+      <view class="badge-dot"></view>
+      选择关卡
+    </view>
+  </view>
+
+  <view class="progress-card">
+    <view class="pc-title-row" bindtap="onStartTap" hover-class="btn-hover">
+      <text class="pc-main-title">{{displayMaxLevel > 0 ? '第' + displayMaxLevel + '关' : '未开始'}}</text>
+      <text class="pc-badge" wx:if="{{displayMaxLevel > 0}}">已通关</text>
+    </view>
+    <view class="pc-sub-row">
+      <text class="pc-sub-text">已通关 {{displayMaxLevel}} / {{MAX_DISPLAY || 34}} 关</text>
+    </view>
+    <view class="pc-progress-bar">
+      <view class="pc-progress-fill" style="width:{{displayMaxLevel / (MAX_DISPLAY || 34) * 100}}%"></view>
+    </view>
+  </view>
+
+  <view class="section-header">
+    <text class="section-title">选择关卡（1~{{MAX_DISPLAY || 34}}）</text>
+  </view>
+
+  <scroll-view class="level-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="level-grid">
+      <view class="level-item {{item.completed ? 'unlocked' : ''}} {{!item.unlocked ? 'locked' : ''}} {{item.isNext ? 'next' : ''}}"
+        wx:for="{{displayLevels}}" wx:key="id"
+        data-level="{{item.id}}" bindtap="onLevelTap"
+      >
+        <view class="level-inner">
+          <text class="level-num">第{{item.id}}关</text>
+          <view class="level-badge">
+            <text wx:if="{{item.completed}}" class="check-icon">✓</text>
+            <text wx:elif="{{!item.unlocked}}" class="lock-icon">🔒</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{canLoadMore}}" class="load-more" bindtap="onLoadMore">
+      <view class="load-more-line"></view>
+      <view class="load-more-text">展开更多关卡</view>
+      <view class="load-more-line"></view>
+    </view>
+    <view wx:else class="load-done">
+      <view class="load-done-line"></view>
+      <text class="load-done-text">全部关卡已加载完毕</text>
+      <view class="load-done-line"></view>
+    </view>
+  </scroll-view>
+
+  <view class="ad-wrap">
+    <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+  </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
+</view>

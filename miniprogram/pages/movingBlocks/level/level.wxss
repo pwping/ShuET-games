@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   background: #FFFBF0;
-  padding: 32rpx 24rpx 0;
+  padding: 0 24rpx 0;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -11,34 +11,68 @@
   flex-shrink: 0;
 }
 
-/* ===== 顶部 ===== */
-.header { margin-bottom: 16rpx; }
-.header-top { display: flex; align-items: baseline; gap: 16rpx; }
-.title {
-  font-size: 48rpx; font-weight: 800;
-  color: #854D0E; letter-spacing: -1rpx;
+/* ===== 标题 ===== */
+.mode-title-wrap {
+  padding: 72rpx 32rpx;
+  display: flex;
+  justify-content: center;
 }
-.count-badge {
-  font-size: 22rpx; color: #FFF;
-  background: linear-gradient(135deg, #FACC15, #FDE047);
-  padding: 4rpx 18rpx; border-radius: 20rpx; font-weight: 600;
-  box-shadow: 0 2rpx 8rpx rgba(250,204,21,0.4);
+.mode-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #854D0E;
+  background: rgba(180,83,9,0.08);
+  padding: 12rpx 48rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid rgba(180,83,9,0.12);
 }
-.subtitle { font-size: 26rpx; color: #A16207; margin-top: 4rpx; display: block; }
+.badge-dot {
+  width: 14rpx; height: 14rpx;
+  border-radius: 50%;
+  background: #FACC15;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.3;transform:scale(.7)}
+}
 
-/* ===== 进度条 — 亮黄风格 ===== */
-.progress-bar-wrap {
-  height: 8rpx; background: #FEF3C7; border-radius: 4rpx;
-  margin: 20rpx 0 8rpx; overflow: hidden;
+/* ===== 进度卡片 — 黄色主题 ===== */
+.progress-card {
+  margin: 0 0 32rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx;
+  box-shadow: 0 6rpx 24rpx rgba(180,140,80,0.06), 0 1rpx 4rpx rgba(0,0,0,0.04);
+  border: 2rpx solid rgba(250,204,21,0.15);
 }
-.progress-bar {
+.pc-title-row {
+  display: flex; align-items: center; gap: 16rpx;
+}
+.pc-main-title {
+  font-size: 44rpx; font-weight: 800; color: #1E293B;
+}
+.pc-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #FACC15, #FDE047);
+  color: #78350F; font-size: 22rpx; font-weight: 700;
+  padding: 4rpx 18rpx; border-radius: 20rpx;
+}
+.pc-sub-row { margin-top: 12rpx; }
+.pc-sub-text {
+  font-size: 26rpx; color: #94A3B8; font-weight: 500;
+}
+.pc-progress-bar {
+  margin-top: 20rpx; height: 16rpx; background: #FEF3C7;
+  border-radius: 8rpx; overflow: hidden;
+}
+.pc-progress-fill {
   height: 100%;
   background: linear-gradient(90deg, #FACC15, #FDE047);
-  border-radius: 4rpx; transition: width 0.4s ease;
-}
-.progress-text {
-  font-size: 22rpx; color: #A16207; display: block;
-  margin-bottom: 16rpx; font-weight: 500;
+  border-radius: 8rpx; transition: width 0.4s ease;
 }
 
 /* ===== 滚动区域 ===== */
@@ -47,6 +81,14 @@
   height: 0;
   padding: 0 24rpx 40rpx;
   margin: 0 -24rpx;
+}
+
+/* ===== 选择关卡标题 ===== */
+.section-header {
+  padding: 0 24rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #64748B;
 }
 
 /* ===== 5列网格 ===== */
@@ -79,6 +121,41 @@
   box-shadow: 
     0 2rpx 4rpx rgba(180,140,80,0.1),
     inset 0 1rpx 2rpx rgba(255,255,255,0.6);
+}
+/* 未解锁 — 灰色调 */
+.level-card.locked {
+  background: linear-gradient(145deg, #E2E8F0, #CBD5E1);
+  box-shadow: 
+    0 2rpx 4rpx rgba(0,0,0,0.04),
+    inset 0 1rpx 2rpx rgba(255,255,255,0.5);
+  border-color: #D4D8DD;
+  opacity: 0.6;
+}
+.level-card.locked .level-num { color: #94A3B8; }
+.level-card.locked .steps-text { color: #A0AEBD; }
+/* 待玩下一关 — 高亮选中 */
+.level-card.next {
+  background: linear-gradient(145deg, #FDE047, #FACC15);
+  box-shadow: 
+    0 4rpx 12rpx rgba(250,204,21,0.35),
+    0 0 0 4rpx rgba(250,204,21,0.25),
+    0 8rpx 24rpx rgba(180,140,80,0.15),
+    inset 0 1rpx 2rpx rgba(255,255,255,0.9);
+  border-color: #EAB308;
+}
+/* 已通关 — 浅黄底 + 黄色字 */
+.level-card.completed {
+  background: linear-gradient(145deg, #FEF9C3, #FEF08A);
+  box-shadow:
+    0 3rpx 6rpx rgba(180,140,80,0.08),
+    inset 0 1rpx 2rpx rgba(255,255,255,0.9);
+  border-color: rgba(234,179,8,0.3);
+}
+.level-card.completed .level-num {
+  color: #B45309;
+}
+.level-card.completed .check-icon {
+  color: #B45309;
 }
 
 .level-inner {

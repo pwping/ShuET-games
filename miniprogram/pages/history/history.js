@@ -58,6 +58,8 @@ Page({
     sdLoading: false,
     sdDifficultyFilter: 'all',
     sdDiffList: rating.DIFF_LIST,
+    mgRecords: [],
+    mgLoading: false,
     scrollToGame: ''
   },
 
@@ -83,6 +85,12 @@ Page({
         records: [],
         mbRecords: [],
       }, () => this.loadMovingBlockRecords());
+    } else if (game === 'memoryGame') {
+      this.setData({
+        currentGame: 'memoryGame',
+        records: [],
+        mgRecords: [],
+      }, () => this.loadMemoryGameRecords());
     } else if (game === 'sudoku') {
       this.setData({
         currentGame: 'sudoku',
@@ -142,6 +150,8 @@ Page({
       this.loadMovingBlockRecords();
     } else if (this.data.currentGame === 'sudoku') {
       this.loadSudokuRecords();
+    } else if (this.data.currentGame === 'memoryGame') {
+      this.loadMemoryGameRecords();
     }
   },
 
@@ -165,6 +175,12 @@ Page({
         records: [],
         sdRecords: [],
       }, () => this.loadSudokuRecords());
+    } else if (tab === 'memoryGame') {
+      this.setData({
+        currentGame: 'memoryGame',
+        records: [],
+        mgRecords: [],
+      }, () => this.loadMemoryGameRecords());
     }
   },
 
@@ -583,6 +599,77 @@ Page({
 
   onGoSudoku() {
     wx.navigateTo({ url: '/pages/sudoku/level/level' });
+  },
+
+  loadMemoryGameRecords() {
+    var self = this;
+    self.setData({ mgLoading: true });
+    var local = wx.getStorageSync('mg_records') || [];
+    console.log('[数字记忆-数据来源] 本地缓存 mg_records:', JSON.stringify(local));
+    console.log('[数字记忆-数据来源] 本地缓存条数:', local.length);
+    var retried = false;
+
+    function render(allRecords, debugInfo) {
+      console.log('[数字记忆-数据来源] render 收到总记录数:', allRecords.length, '| 明细:', debugInfo);
+      allRecords.sort(function(a, b) {
+        return (b.createTime || '').localeCompare(a.createTime || '');
+      });
+      var mgRecords = [];
+      for (var i = 0; i < allRecords.length; i++) {
+        var r = allRecords[i];
+        var s = r.time || 0;
+        var m = Math.floor(s / 60);
+        var sec = s % 60;
+        mgRecords.push({
+          level: r.level,
+          errors: r.errors || 0,
+          timeStr: m > 0 ? m + '分' + (sec < 10 ? '0' : '') + sec + '秒' : sec + '秒',
+          createTime: self.formatDate(r.createTime)
+        });
+      }
+      console.log('[数字记忆-数据来源] 最终渲染 mgRecords 条数:', mgRecords.length);
+      self.setData({ mgRecords: mgRecords, mgLoading: false });
+    }
+
+    function doFetch() {
+      wx.cloud.callFunction({
+        name: 'getMemoryGameRecords',
+        success: function(res) {
+          var cloud = [];
+          var code = res.result && res.result.code;
+          console.log('[数字记忆-数据来源] 云函数返回 code:', code, '| 完整结果:', JSON.stringify(res.result));
+          if (res.result && res.result.code === 200 && Array.isArray(res.result.data)) {
+            for (var i = 0; i < res.result.data.length; i++) {
+              var cr = res.result.data[i];
+              cloud.push({ level: cr.level, time: cr.time, errors: cr.errors, createTime: cr.createTime });
+            }
+            console.log('[数字记忆-数据来源] 云端返回数据条数:', cloud.length);
+          } else {
+            console.log('[数字记忆-数据来源] 云端未返回有效数据, 原因:', !res.result ? '无result' : res.result.code !== 200 ? 'code=' + res.result.code : (!Array.isArray(res.result.data) ? 'data非数组' : '其他'));
+          }
+          var merged = [];
+          for (var i = 0; i < local.length; i++) merged.push(local[i]);
+          for (var i = 0; i < cloud.length; i++) merged.push(cloud[i]);
+          render(merged, '本地=' + local.length + '条, 云端=' + cloud.length + '条');
+        },
+        fail: function(err) {
+          console.log('[数字记忆-数据来源] 云函数调用失败:', JSON.stringify(err));
+          if (!retried) {
+            retried = true;
+            console.log('[数字记忆-数据来源] 500ms后重试...');
+            setTimeout(function() { doFetch(); }, 500);
+          } else {
+            console.log('[数字记忆-数据来源] 重试后仍失败，仅使用本地数据（', local.length, '条）');
+            render(local, '仅本地=' + local.length + '条（云端不可用）');
+          }
+        }
+      });
+    }
+    doFetch();
+  },
+
+  onGoMemoryGame() {
+    wx.navigateTo({ url: '/pages/memoryGame/level/level' });
   },
 
   onGoMovingBlock() {

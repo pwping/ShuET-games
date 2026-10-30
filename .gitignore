@@ -32,6 +32,8 @@
 .env.*
 !.env.example
 project.private.config.json
+# 本地工作记忆（含开发笔记，可能提到密钥）
+.workbuddy/
 
 # ============================================
 # 依赖

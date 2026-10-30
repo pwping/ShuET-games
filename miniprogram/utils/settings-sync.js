@@ -1,15 +1,17 @@
 /**
- * 设置同步工具 - 管理全局音效/震动总开关与4个游戏独立设置的联动
+ * 设置同步工具 - 管理全局音效/震动总开关与5个游戏独立设置的联动
  * 存储key：
  *   global_settings     - 总开关
  *   hr_settings         - 华容道
  *   mb_settings         - 积木迷阵
  *   shult_settings      - 舒尔特普通
  *   shult_challenge_settings - 舒尔特挑战
+ *   sd_settings         - 数独
+ *   mg_settings         - 数字记忆
  */
 
 // 所有游戏存储key列表
-const GAME_KEYS = ['hr_settings', 'mb_settings', 'shult_settings', 'shult_challenge_settings', 'sd_settings'];
+const GAME_KEYS = ['hr_settings', 'mb_settings', 'shult_settings', 'shult_challenge_settings', 'sd_settings', 'mg_settings'];
 
 /**
  * 检查所有游戏的某个设置是否全部开启

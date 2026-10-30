@@ -1,4 +1,5 @@
 // 各等级评价语录（随机显示）
+const appConfig = require('../../../config.js');
 const QUOTES = {
   excellent: [
     '天才玩家！这操作如丝般顺滑~',
@@ -72,7 +73,7 @@ Page({
 
   showInterstitialAd() {
     var interstitialAd = wx.createInterstitialAd({
-      adUnitId: 'adunit-ae9ae21b013ddd4b'
+      adUnitId: appConfig.adUnits.interstitial
     });
     if (!interstitialAd) return;
     interstitialAd.onLoad(function () {});
@@ -86,7 +87,7 @@ Page({
     if (typeof wx.createCustomAd !== 'function') return;
     var that = this;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -158,7 +159,7 @@ Page({
   onShareAppMessage() {
     return {
       title: `积木迷阵 第${this.data.levelId}关 ${this.data.moves}步通关！`,
-      path: '/pages/movingBlocks/level/level'
+      path: '/pages/game-select/game-select'
     };
   }
 });

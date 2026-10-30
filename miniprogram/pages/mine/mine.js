@@ -1,3 +1,4 @@
+const appConfig = require('../../config.js');
 const app = getApp();
 var rating = require('../../utils/sudoku-rating');
 
@@ -24,6 +25,10 @@ Page({
       totalCount: 0,
       challengeLevel: '--'
     },
+    mgStats: {
+      totalCount: 0,
+      challengeLevel: '--'
+    },
     sdStats: {
       totalCount: 0,
       bestTime: '--'
@@ -36,7 +41,8 @@ Page({
     sheetTranslateY: 0,
     defaultNickName: '',
     swiperCurrent: 0,
-    showSwipeHint: true
+    showSwipeHint: true,
+    gridCells: []
   },
 
   _winHeight: 0,
@@ -50,7 +56,7 @@ Page({
     return {
       title: '你能几秒内找完以下数字，我用时' + app.globalData.globalBestTime + '。',
       path: '/pages/game-select/game-select',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 
@@ -63,14 +69,14 @@ Page({
     var randomLetter = letters[Math.floor(Math.random() * 26)];
     var randomNum = Math.floor(1000 + Math.random() * 9000);
     this.setData({ defaultNickName: '微信用户' + randomLetter + randomNum });
-
+    this.generateGridIcon();
     this.initBannerAd();
   },
 
   initBannerAd() {
     if (typeof wx.createCustomAd !== 'function') return;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -97,6 +103,7 @@ Page({
       this.loadStats();
       this.loadHuarongStats();
       this.loadMovingBlockStats();
+      this.loadMemoryGameStats();
       this.loadSudokuStats();
     }
   },
@@ -215,6 +222,7 @@ Page({
         self.loadStats();
         self.loadHuarongStats();
         self.loadMovingBlockStats();
+        self.loadMemoryGameStats();
         self.loadSudokuStats();
         self._logining = false;
       });
@@ -266,6 +274,7 @@ Page({
     this.loadStats();
     this.loadHuarongStats();
     this.loadMovingBlockStats();
+    this.loadMemoryGameStats();
     this.loadSudokuStats();
   },
 
@@ -434,6 +443,44 @@ Page({
     });
   },
 
+  // ===== 数字记忆统计 =====
+  loadMemoryGameStats() {
+    var local = wx.getStorageSync('mg_records') || [];
+    var localCount = local.length;
+    var maxLevel = 0;
+    for (var i = 0; i < local.length; i++) {
+      var id = parseInt(local[i].level, 10);
+      if (!isNaN(id) && id > maxLevel) maxLevel = id;
+    }
+    var localLevel = maxLevel > 0 ? '第' + maxLevel + '关' : '--';
+    var self = this;
+    wx.cloud.callFunction({
+      name: 'getMemoryGameRecords',
+      data: { limit: 200 },
+      success: function(res) {
+        var cloudCount = 0, cloudMaxLevel = 0;
+        if (res.result && res.result.code === 200 && res.result.data) {
+          cloudCount = res.result.data.length;
+          for (var i = 0; i < res.result.data.length; i++) {
+            var id = parseInt(res.result.data[i].level, 10);
+            if (!isNaN(id) && id > cloudMaxLevel) cloudMaxLevel = id;
+          }
+        }
+        var level = Math.max(maxLevel, cloudMaxLevel) > 0 ? '第' + Math.max(maxLevel, cloudMaxLevel) + '关' : '--';
+        self.setData({
+          'mgStats.totalCount': localCount + cloudCount,
+          'mgStats.challengeLevel': level
+        });
+      },
+      fail: function() {
+        self.setData({
+          'mgStats.totalCount': localCount,
+          'mgStats.challengeLevel': localLevel
+        });
+      }
+    });
+  },
+
   // ===== 数独统计 =====
   loadSudokuStats() {
     var local = wx.getStorageSync('sudoku_records') || [];
@@ -555,12 +602,32 @@ Page({
     wx.navigateTo({ url: '/pages/movingBlocks/level/level' });
   },
 
+  onGoMemoryGame() {
+    wx.navigateTo({ url: '/pages/memoryGame/level/level' });
+  },
+
   goToHistory() {
     wx.navigateTo({ url: '/pages/history/history' });
   },
 
   goToSettings() {
     wx.navigateTo({ url: '/pages/settings/settings' });
+  },
+
+  // 生成数字记忆 3x3 网格图标（随机3个位置显示1/2/3，紫色背景）
+  generateGridIcon() {
+    var cells = new Array(9).fill(null);
+    var positions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    for (var i = positions.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = positions[i];
+      positions[i] = positions[j];
+      positions[j] = tmp;
+    }
+    cells[positions[0]] = { num: '1', active: true };
+    cells[positions[1]] = { num: '2', active: true };
+    cells[positions[2]] = { num: '3', active: true };
+    this.setData({ gridCells: cells });
   },
 
   onContact() {

@@ -1,3 +1,4 @@
+const appConfig = require('../../../config.js');
 var settingsSync = require('../../../utils/settings-sync');
 
 // 激励视频广告
@@ -60,7 +61,7 @@ Page({
     // 创建激励视频广告（onClose 只绑定一次）
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onLoad(function () {});
       videoAd.onError(function (err) { console.error('hr level videoAd error', err); });
@@ -82,7 +83,7 @@ Page({
     if (typeof wx.createCustomAd !== 'function') return;
     var that = this;
     var ad = wx.createCustomAd({
-      adUnitId: 'adunit-2bb753c35ab3d982',
+      adUnitId: appConfig.adUnits.custom,
       style: { left: 0, top: 0 }
     });
     if (!ad) return;
@@ -170,7 +171,7 @@ Page({
     return {
       title: '我在玩数字华容道，一起来挑战吧！',
       path: '/pages/huarongDao/mode/mode',
-      imageUrl: 'cloud://xcx-prj-d5gzqi12z8482282f.7863-xcx-prj-d5gzqi12z8482282f-1426704286/images/share-card.png'
+      imageUrl: appConfig.shareImageUrl
     };
   },
 

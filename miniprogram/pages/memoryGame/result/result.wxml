@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="deco-circle deco-big"></view>
+  <view class="deco-circle deco-small"></view>
+
+  <view class="main-content">
+    <view class="icon-section">
+      <view class="icon-wrap">
+        <text class="icon-emoji">{{starLevel === 'excellent' ? '🏆' : starLevel === 'good' ? '⭐' : '💪'}}</text>
+        <view class="icon-ring"></view>
+      </view>
+    </view>
+
+    <text class="result-level">第{{level}}关</text>
+
+    <view class="stars-row title-stars">
+      <text class="star {{stars >= 1 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 2 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 3 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 4 ? 'active' : ''}}">★</text>
+      <text class="star {{stars >= 5 ? 'active' : ''}}">★</text>
+    </view>
+
+    <text class="result-quote">{{quote}}</text>
+
+    <view class="stats-row">
+      <view class="stat-card">
+        <view class="stat-icon-wrap">
+          <text class="stat-icon">⏱</text>
+        </view>
+        <text class="stat-value">{{timerText}}</text>
+        <text class="stat-label">用时</text>
+      </view>
+      <view class="stat-card">
+        <view class="stat-icon-wrap">
+          <text class="stat-icon">✕</text>
+        </view>
+        <text class="stat-value">{{errors}}次</text>
+        <text class="stat-label">错误</text>
+      </view>
+      <view class="stat-card">
+        <view class="stat-icon-wrap">
+          <text class="stat-icon">✓</text>
+        </view>
+        <text class="stat-value">{{accuracy}}%</text>
+        <text class="stat-label">正确率</text>
+      </view>
+    </view>
+
+    <view class="records-entry" bindtap="onRecordList" hover-class="entry-hover">
+      <text class="records-entry-text">查看全部关卡记录</text>
+      <text class="records-entry-arrow">→</text>
+    </view>
+
+    <!-- 全部通关祝贺 -->
+    <view class="all-clear-banner" wx:if="{{!showNextBtn}}">
+      <text class="acb-icon">🎉</text>
+      <text class="acb-text">恭喜！你已通关全部 34 关！</text>
+      <text class="acb-sub">记忆力已臻化境，太厉害了！</text>
+    </view>
+
+    <view class="bottom-actions">
+      <view class="btn-primary" bindtap="onRetry" hover-class="btn-hover">
+        <text>再玩一次</text>
+      </view>
+      <view class="btn-secondary" bindtap="onNext" hover-class="btn-hover-light" wx:if="{{showNextBtn}}">
+        <text>下一关</text>
+      </view>
+      <button class="btn-share" open-type="share" hover-class="share-hover">
+        <view class="share-icon-wechat"></view>
+        <text class="share-text">分享</text>
+      </button>
+    </view>
+
+    <view class="ad-wrap">
+      <ad-custom unit-id="adunit-2bb753c35ab3d982"></ad-custom>
+    </view>
+  </view>
+<time-up-modal visible="{{_timeUpModalVisible}}" />
+</view>

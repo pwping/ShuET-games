@@ -74,6 +74,13 @@
                   </view>
                 </view>
               </view>
+              <view wx:elif="{{item.key === 'memoryGame'}}">
+                <view class="mg-icon-grid">
+                  <view wx:for="{{mgIconCells}}" wx:key="index" class="mg-icon-cell {{item.active ? 'mg-icon-active' : ''}}">
+                    <text wx:if="{{item && item.num}}" class="mg-icon-num">{{item.num}}</text>
+                  </view>
+                </view>
+              </view>
               <text wx:else class="coming-soon-icon">⚡</text>
             </view>
           </view>

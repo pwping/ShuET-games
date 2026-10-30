@@ -714,3 +714,49 @@
   border-radius: 3rpx;
   opacity: 0.4;
 }
+
+/* ===== 数字记忆 Tab 图标 ===== */
+.mg-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 6rpx);
+  gap: 1.5rpx;
+}
+.mgt-cell {
+  width: 6rpx;
+  height: 6rpx;
+  background: #CBD5E1;
+  border-radius: 1rpx;
+}
+.toggle-item.active .mgt-cell {
+  background: #07C160;
+}
+.mgt-cell-hl {
+  background: #07C160 !important;
+}
+.toggle-item:not(.active) .mgt-cell-hl {
+  background: #07C160 !important;
+}
+/* 数字记忆等级徽章 */
+.level-badge.mg-level {
+  font-size: 26rpx;
+  padding: 6rpx 18rpx;
+}
+/* 数字记忆空状态图标 */
+.mg-empty-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 10rpx);
+  gap: 2rpx;
+  padding: 6rpx;
+  background: rgba(124,58,237,0.1);
+  border-radius: 6rpx;
+}
+.mge-cell-s {
+  width: 10rpx;
+  height: 10rpx;
+  background: #7C3AED;
+  border-radius: 2rpx;
+  opacity: 0.3;
+}
+.mge-cell-hl {
+  opacity: 1;
+}

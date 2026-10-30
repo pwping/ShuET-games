@@ -1,3 +1,4 @@
+const appConfig = require('../../../config.js');
 const BOARD_SIZE = 6;
 const EXIT_COL = 3;
 const levelData = require('./levels-data.js');
@@ -108,7 +109,7 @@ Page({
 
   onShow() {
     if (this.data.levelId) {
-      wx.setNavigationBarTitle({ title: `第${this.data.levelId}关` });
+      wx.setNavigationBarTitle({ title: `积木迷阵 · 第${this.data.levelId}关` });
     }
     // 从结果页返回时，重置到当前关卡的初始位置
     if (this.hasWon) {
@@ -131,7 +132,7 @@ Page({
     // 创建激励视频广告实例
     if (wx.createRewardedVideoAd) {
       videoAd = wx.createRewardedVideoAd({
-        adUnitId: 'adunit-c24dfbbb7eeb1518'
+        adUnitId: appConfig.adUnits.reward
       });
       videoAd.onLoad(function () {});
       videoAd.onError(function (err) {
@@ -195,7 +196,7 @@ Page({
     this.currentLevelIndex = index;
     this.timerStarted = false;
 
-    wx.setNavigationBarTitle({ title: `第${level.id}关` });
+    wx.setNavigationBarTitle({ title: `积木迷阵 · 第${level.id}关` });
 
     this.setData({
       blocks, moves: 0, steps: level.steps,
