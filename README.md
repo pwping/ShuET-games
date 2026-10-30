@@ -13,42 +13,42 @@
 
 ## 游戏截图
 
-图片存放于 [`docs/screenshots/`](docs/screenshots)，按 `1.png` ~ `17.png` 命名。
+图片存放于 [`docs/screenshots/`](docs/screenshots)，按 `1.jpg` ~ `16.jpg` 命名。
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/1.png" width="240" alt="截图 1"></td>
-    <td align="center"><img src="docs/screenshots/2.png" width="240" alt="截图 2"></td>
-    <td align="center"><img src="docs/screenshots/3.png" width="240" alt="截图 3"></td>
+    <td align="center"><img src="docs/screenshots/1.jpg" width="240" alt="游戏大厅"></td>
+    <td align="center"><img src="docs/screenshots/2.jpg" width="240" alt="舒尔特方格：选择玩法"></td>
+    <td align="center"><img src="docs/screenshots/3.jpg" width="240" alt="舒尔特方格：截图 3"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/4.png" width="240" alt="截图 4"></td>
-    <td align="center"><img src="docs/screenshots/5.png" width="240" alt="截图 5"></td>
-    <td align="center"><img src="docs/screenshots/6.png" width="240" alt="截图 6"></td>
+    <td align="center"><img src="docs/screenshots/4.jpg" width="240" alt="舒尔特方格：截图 4"></td>
+    <td align="center"><img src="docs/screenshots/5.jpg" width="240" alt="数字华容道：选择难度"></td>
+    <td align="center"><img src="docs/screenshots/6.jpg" width="240" alt="截图 6"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/7.png" width="240" alt="截图 7"></td>
-    <td align="center"><img src="docs/screenshots/8.png" width="240" alt="截图 8"></td>
-    <td align="center"><img src="docs/screenshots/9.png" width="240" alt="截图 9"></td>
+    <td align="center"><img src="docs/screenshots/7.jpg" width="240" alt="截图 7"></td>
+    <td align="center"><img src="docs/screenshots/8.jpg" width="240" alt="截图 8"></td>
+    <td align="center"><img src="docs/screenshots/9.jpg" width="240" alt="截图 9"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/10.png" width="240" alt="截图 10"></td>
-    <td align="center"><img src="docs/screenshots/11.png" width="240" alt="截图 11"></td>
-    <td align="center"><img src="docs/screenshots/12.png" width="240" alt="截图 12"></td>
+    <td align="center"><img src="docs/screenshots/10.jpg" width="240" alt="截图 10"></td>
+    <td align="center"><img src="docs/screenshots/11.jpg" width="240" alt="截图 11"></td>
+    <td align="center"><img src="docs/screenshots/12.jpg" width="240" alt="截图 12"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/13.png" width="240" alt="截图 13"></td>
-    <td align="center"><img src="docs/screenshots/14.png" width="240" alt="截图 14"></td>
-    <td align="center"><img src="docs/screenshots/15.png" width="240" alt="截图 15"></td>
+    <td align="center"><img src="docs/screenshots/13.jpg" width="240" alt="截图 13"></td>
+    <td align="center"><img src="docs/screenshots/14.jpg" width="240" alt="截图 14"></td>
+    <td align="center"><img src="docs/screenshots/15.jpg" width="240" alt="截图 15"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/16.png" width="240" alt="截图 16"></td>
-    <td align="center"><img src="docs/screenshots/17.png" width="240" alt="截图 17"></td>
+    <td align="center"><img src="docs/screenshots/16.jpg" width="240" alt="截图 16"></td>
+    <td align="center"></td>
     <td align="center"></td>
   </tr>
 </table>
 
-> 截图建议：手机截图 750×1624（iPhone 9:19.5）或等比，宽度统一、背景一致；表格按每行 3 张排版，宽度 240px。
+> 截图为真机 1264×2728（iPhone 9:19.5），页面内按 240px 宽展示。新增图片放同名目录并在此追加一行即可。
 
 ---
 
