@@ -162,7 +162,7 @@ miniprogram/
 cloudfunctions/      21 个云函数，每个独立部署
 scripts/             辅助脚本（关卡求解、校验，纯本地算法，不调外部 API）
 design-system/       设计规范
-docs/                补充文档
+docs/                补充文档（screenshots/ 存 README 截图，1.png ~ 17.png）
 md/ yx/              早期原型与素材（不参与编译）
 ```
 

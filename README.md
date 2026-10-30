@@ -11,8 +11,50 @@
 
 ---
 
+## 游戏截图
+
+图片存放于 [`docs/screenshots/`](docs/screenshots)，按 `1.png` ~ `17.png` 命名。
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/1.png" width="240" alt="截图 1"></td>
+    <td align="center"><img src="docs/screenshots/2.png" width="240" alt="截图 2"></td>
+    <td align="center"><img src="docs/screenshots/3.png" width="240" alt="截图 3"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/4.png" width="240" alt="截图 4"></td>
+    <td align="center"><img src="docs/screenshots/5.png" width="240" alt="截图 5"></td>
+    <td align="center"><img src="docs/screenshots/6.png" width="240" alt="截图 6"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/7.png" width="240" alt="截图 7"></td>
+    <td align="center"><img src="docs/screenshots/8.png" width="240" alt="截图 8"></td>
+    <td align="center"><img src="docs/screenshots/9.png" width="240" alt="截图 9"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/10.png" width="240" alt="截图 10"></td>
+    <td align="center"><img src="docs/screenshots/11.png" width="240" alt="截图 11"></td>
+    <td align="center"><img src="docs/screenshots/12.png" width="240" alt="截图 12"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/13.png" width="240" alt="截图 13"></td>
+    <td align="center"><img src="docs/screenshots/14.png" width="240" alt="截图 14"></td>
+    <td align="center"><img src="docs/screenshots/15.png" width="240" alt="截图 15"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/16.png" width="240" alt="截图 16"></td>
+    <td align="center"><img src="docs/screenshots/17.png" width="240" alt="截图 17"></td>
+    <td align="center"></td>
+  </tr>
+</table>
+
+> 截图建议：手机截图 750×1624（iPhone 9:19.5）或等比，宽度统一、背景一致；表格按每行 3 张排版，宽度 240px。
+
+---
+
 ## 目录
 
+- [游戏截图](#游戏截图)
 - [功能一览](#功能一览)
 - [技术架构](#技术架构)
 - [快速开始](#快速开始)
