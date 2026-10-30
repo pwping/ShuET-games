@@ -130,11 +130,10 @@ ShuET-games/
 | 云开发环境 ID | `miniprogram/config.js` | 1 处 |
 | 云存储桶名 | `miniprogram/config.js` | 1 处 |
 | 广告位 ID | `miniprogram/config.js` | 3 个 |
-| 通义千问 API Key | `.env`（参考 `.env.example`，仅辅助脚本用） | 可选 |
 
-云函数侧**零配置**，全部走 `DYNAMIC_CURRENT_ENV`。
+云函数侧**零配置**，全部走 `DYNAMIC_CURRENT_ENV`。项目不含任何第三方 API Key。
 
 ## 说明
 
-- `.env`、`project.private.config.json`、`node_modules` 已在 `.gitignore` 中，不会被提交
+- `project.private.config.json`、`node_modules`、`.env` 已在 `.gitignore` 中，不会被提交
 - `cloudfunctions/*/node_modules` 由云端安装，本地不需要提交
