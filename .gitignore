@@ -32,6 +32,9 @@
 .env.*
 !.env.example
 project.private.config.json
+# 误用开发者工具直接打开 miniprogram/ 子目录时自动生成的重复配置
+miniprogram/project.config.json
+miniprogram/project.private.config.json
 # 本地工作记忆（含开发笔记，可能提到密钥）
 .workbuddy/
 
