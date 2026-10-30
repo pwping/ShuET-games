@@ -142,7 +142,8 @@ huarong_records  sudoku_records  movingBlock_records  memoryGame_records
 | `DEPLOY.md` | 人 | 傻瓜式 5 步部署 + 验收清单 + 故障表 |
 | `DATABASE.md` | 人 / AI | 9 集合字段、12 条索引、权限规则 |
 | `AGENTS.md` | AI | 本文件：部署协议 + 代码结构 + 坑 |
-| `README.md` | 人 | 项目介绍与功能列表 |
+| `README.md` | 人 | 项目介绍、功能、架构、FAQ |
+| `LICENSE` | — | MIT，仓库对外授权方式 |
 
 文档与代码冲突时，**以代码为准**，并顺手把文档改对。
 
