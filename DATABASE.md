@@ -57,7 +57,7 @@
 ## 在 CloudBase 控制台创建步骤
 
 1. 登录 [CloudBase 控制台](https://tcb.cloud.tencent.com/dev)
-2. 选择环境：`xcx-prj-d5gzqi12z8482282f`
+2. 选择环境：`<你的环境 ID>`（在 `miniprogram/config.js` 的 `envId` 里填的是同一个）
 3. 进入「数据库」页面
 4. 点击「创建集合」，依次创建以上4个集合
 5. 为每个集合添加对应的索引

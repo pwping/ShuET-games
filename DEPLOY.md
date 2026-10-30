@@ -4,7 +4,7 @@
 2026-04-29 17:26
 
 ## 环境信息
-- CloudBase 环境ID: `xcx-prj-d5gzqi12z8482282f`
+- CloudBase 环境ID: `<你的环境 ID>`（填在 `miniprogram/config.js` 的 `envId`）
 - 运行时: Nodejs18.15
 
 ---
@@ -69,7 +69,7 @@
 3. 点击「真机调试」在手机上测试
 
 ### 数据库索引配置（重要）：
-1. 访问 https://tcb.cloud.tencent.com/dev?envId=xcx-prj-d5gzqi12z8482282f#/db/doc
+1. 访问 https://tcb.cloud.tencent.com/dev?envId=<你的环境ID>#/db/doc
 2. 进入各集合的「索引」标签页
 3. 按上述索引配置手动创建
 
