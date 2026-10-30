@@ -1,6 +1,6 @@
 # 智趣训练
 
-一套专注力训练游戏合集，微信小程序原生开发 + 腾讯云 CloudBase 后端。
+一套专注力训练游戏合集，微信小程序原生开发 + 腾讯云 CloudBase 后端。零 npm 依赖、无构建工具。
 
 包含 5 款游戏：**舒尔特方格**、**数字华容道**、**数独**、**积木迷阵**、**数字记忆**。
 
@@ -21,68 +21,42 @@
 | 数字记忆 | 数字闪现记忆 |
 
 ### 通用能力
-- 训练记录：本地存储 + 云端同步
+- 训练记录：本地存储 + 云端同步（未登录也能玩）
 - 儿童模式：1-30 分钟时长限制、6 位密码保护、累计计时、跨天重置
 - 年龄段参考标准对比
 - 音效/震动总开关 + 分游戏独立设置
-- 激励视频、自定义、插屏三类广告位
+- 激励视频、自定义、插屏三类广告位（可留空关闭）
+- iPad 横屏适配
 
 ---
 
-## 快速开始
+## 部署
 
-### 1. 拿到代码
+**只需要填 2 个值**：小程序 AppID、云开发环境 ID。
 
-```bash
-git clone <你的仓库地址>
-cd ShuET-games
-```
+- 人工部署：看 [DEPLOY.md](DEPLOY.md)（5 步 + 验收清单 + 故障排查表）
+- **让 AI 助手部署**：把代码交给任意 AI 编码工具（WorkBuddy / Claude Code / Cursor / Codex 等），说一句
 
-### 2. 换成你自己的配置
+  > 按 AGENTS.md 的部署协议把这个项目跑起来
 
-项目里所有需要替换的 ID 都集中在 **`miniprogram/config.js`** 一个文件里，打开它改成你自己的：
+  它会读 `AGENTS.md` §0，主动问你要 AppID 和环境 ID，然后自己建表、指路部署云函数、验收。你只需要提供这 2 个值，以及在开发者工具里点「上传并部署」。
 
-| 配置项 | 填什么 | 从哪拿 |
+| 文档 | 内容 |
+|---|---|
+| [DEPLOY.md](DEPLOY.md) | 部署步骤、验收清单、常见故障 |
+| [DATABASE.md](DATABASE.md) | 9 个集合的字段、12 条索引、权限规则 |
+| [AGENTS.md](AGENTS.md) | 给 AI 助手的部署协议与代码约定 |
+
+### 需要替换的配置（全项目仅 2 个文件）
+
+| 配置 | 位置 | 是否必填 |
 |---|---|---|
-| `envId` | 云开发环境 ID | 微信开发者工具 → 云开发 → 设置 → 环境 ID |
-| `storageBucket` | 云存储桶名 | 云开发 → 存储 → 打开任意文件 → 详情里的 `cloud://<envId>.<bucket>/...` 取第二段 |
-| `adUnits.reward` | 激励视频广告位 | 微信公众平台 → 流量主 → 广告位管理 |
-| `adUnits.custom` | 自定义广告位 | 同上 |
-| `adUnits.interstitial` | 插屏广告位 | 同上 |
+| 小程序 AppID | `project.config.json` → `appid` | ✅ 必填 |
+| 云开发环境 ID | `miniprogram/config.js` → `envId` | ✅ 必填 |
+| 云存储桶名 | `miniprogram/config.js` → `storageBucket` | 可选，留空则分享卡片用默认截图 |
+| 3 个广告位 ID | `miniprogram/config.js` → `adUnits` | 可选，留空则不展示广告 |
 
-> 没有流量主权限？广告位留空字符串即可，代码里有空值保护，不会报错。
-
-### 3. 换 AppID
-
-打开 `project.config.json`，把最后一行的 `appid` 改成你自己的小程序 AppID：
-
-```json
-"appid": "wx你的AppID"
-```
-
-或者用微信开发者工具导入项目后，在「详情 → 基本信息 → AppID」里修改。
-
-### 4. 建数据库集合
-
-在 CloudBase 控制台创建以下 **9 个集合**（字段定义见 [DATABASE.md](DATABASE.md)）：
-
-```
-users                  train_records          level_progress
-pass_progress          challenge_records      huarong_records
-sudoku_records         movingBlock_records    memoryGame_records
-```
-
-索引约定：所有集合以 `openid` 为查询键；`users`、`level_progress`、`pass_progress` 的 `openid` 建唯一索引。
-
-### 5. 部署云函数
-
-在微信开发者工具里右键 `cloudfunctions/` 下的每个函数 → **上传并部署（云端安装依赖）**，共 22 个。
-
-云函数统一使用 `cloud.DYNAMIC_CURRENT_ENV`，**部署到哪个环境就用哪个环境，不需要改代码**。
-
-### 6. 编译运行
-
-微信开发者工具打开**项目根目录**（不是 `miniprogram/`），点击编译。
+云函数侧**零配置**：21 个函数统一 `cloud.DYNAMIC_CURRENT_ENV`，部署到哪个环境就用哪个。项目不含任何第三方 API Key、不需要 `.env`。
 
 ---
 
@@ -91,20 +65,20 @@ sudoku_records         movingBlock_records    memoryGame_records
 ```
 ShuET-games/
 ├── miniprogram/              小程序前端
-│   ├── config.js             ★ 配置中心（环境 ID、广告位）
-│   ├── app.js                入口 + 儿童模式计时器
+│   ├── config.js             ★ 配置中心（环境 ID、云存储桶、广告位）
+│   ├── app.js                入口 + 云开发初始化 + 儿童模式计时器
 │   ├── app.json              路由与分包配置
 │   ├── pages/                主包 11 页 + 4 个游戏分包
 │   ├── components/           自定义组件
 │   └── utils/                缓存、设置同步、评级数据
-├── cloudfunctions/           22 个云函数（每个独立部署）
+├── cloudfunctions/           21 个云函数（每个独立部署）
+├── scripts/                  辅助脚本（关卡求解、校验，纯本地算法）
 ├── docs/                     补充文档
 ├── design-system/            设计规范
-├── scripts/                  辅助脚本
-├── project.config.json       ★ 项目配置（AppID）
-├── AGENTS.md                 给 AI 编码助手的项目上下文
-├── DATABASE.md               数据库字段定义
-└── DEPLOY.md                 部署说明
+├── project.config.json       ★ 项目配置（AppID、目录指向）
+├── DEPLOY.md                 部署指南
+├── DATABASE.md               数据库字段与索引
+└── AGENTS.md                 给 AI 助手的项目上下文
 ```
 
 ### 页面结构
@@ -120,20 +94,8 @@ ShuET-games/
 - 腾讯云 CloudBase（云函数 + 云数据库 + 云存储）
 - 无构建工具，无 npm 依赖
 
-## 配置项清单
-
-假设你要二次开发或部署自己的版本，需要替换的东西一共就这些：
-
-| 类型 | 位置 | 数量 |
-|---|---|---|
-| 小程序 AppID | `project.config.json` | 1 处 |
-| 云开发环境 ID | `miniprogram/config.js` | 1 处 |
-| 云存储桶名 | `miniprogram/config.js` | 1 处 |
-| 广告位 ID | `miniprogram/config.js` | 3 个 |
-
-云函数侧**零配置**，全部走 `DYNAMIC_CURRENT_ENV`。项目不含任何第三方 API Key。
-
 ## 说明
 
-- `project.private.config.json`、`node_modules`、`.env` 已在 `.gitignore` 中，不会被提交
+- `project.private.config.json`、`node_modules` 已在 `.gitignore` 中
 - `cloudfunctions/*/node_modules` 由云端安装，本地不需要提交
+- 前端不直连数据库，所有读写经云函数，因此集合权限可设 `{"read": false, "write": false}`
